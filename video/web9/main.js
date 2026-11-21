@@ -47,7 +47,8 @@ function captionSVG(T) {
   const KEY = /^(nunca|volta!|pão\.|era\.|máscara,|enlouquecido\.|pedra,|aposentada\.|Nove|dias|VOLTO|relógio|enorme|duas|horas\.|inteiro!|voltei!)$/;
   const spans = c.words.map((w, k) => `<tspan fill="${k === ai ? '#ffd23f' : (KEY.test(w.w) ? '#ff7a45' : '#ffffff')}">${esc(w.w)}</tspan>`).join(' ');
   const plain = c.words.map(w => esc(w.w)).join(' ');
-  const fs = 92;
+  const len = c.words.map(w => w.w).join(' ').length;
+  const fs = Math.min(92, Math.floor(1700 / Math.max(1, len)));  // keep long captions inside ~960 px
   return `<g transform="translate(540 1300) scale(${(0.8 + 0.2 * ap).toFixed(3)})" opacity="${clamp(ap * 1.6).toFixed(3)}">
    <text x="5" y="9" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${fs}" fill="#1b1018" opacity="0.5" stroke="#1b1018" stroke-width="18" stroke-linejoin="round" word-spacing="6">${plain}</text>
    <text x="0" y="0" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${fs}" stroke="#2a2030" stroke-width="16" stroke-linejoin="round" paint-order="stroke" word-spacing="6">${spans}</text></g>`;
