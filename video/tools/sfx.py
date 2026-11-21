@@ -1,0 +1,44 @@
+# Synthesizes an SFX stem (24 kHz mono, same length as the narration). Voice is never touched.
+import numpy as np, wave
+SR = 24000; N = int(89.6 * SR)
+out = np.zeros(N); rng = np.random.default_rng(7)
+def add(t, sig):
+    i = int(t * SR); j = min(N, i + len(sig)); out[i:j] += sig[:j - i]
+def env(n, a=0.002, d=0.05):
+    t = np.arange(n) / SR; return np.minimum(1, t / a) * np.exp(-t / d)
+def tick(freq=2600, d=0.012, amp=0.25):
+    n = int(0.08 * SR); t = np.arange(n) / SR
+    return amp * env(n, 0.0005, d) * (np.sin(2*np.pi*freq*t) + 0.5*rng.standard_normal(n))
+def clunk(amp=0.35):
+    n = int(0.35 * SR); t = np.arange(n) / SR
+    return amp * env(n, 0.001, 0.08) * (np.sin(2*np.pi*880*t) + 0.6*np.sin(2*np.pi*1320*t) + 0.3*np.sin(2*np.pi*220*t))
+def whoosh(dur, amp=0.18):
+    n = int(dur * SR); x = rng.standard_normal(n); k = np.ones(30) / 30
+    x = np.convolve(x, k, 'same'); w = np.sin(np.pi * np.arange(n) / n) ** 2
+    return amp * x * w / np.abs(x).max()
+def thud(amp=0.5):
+    n = int(0.25 * SR); t = np.arange(n) / SR
+    f = 140 * np.exp(-t * 12) + 60
+    return amp * env(n, 0.001, 0.05) * np.sin(2*np.pi*np.cumsum(f)/SR) + tick(1800, 0.006, 0.2)[:n] if n <= len(tick()) else amp * env(n, 0.001, 0.05) * np.sin(2*np.pi*np.cumsum(f)/SR)
+def rumble(dur, amp=0.25):
+    n = int(dur * SR); x = np.cumsum(rng.standard_normal(n)); x -= np.convolve(x, np.ones(800)/800, 'same')
+    w = np.sin(np.pi * np.arange(n) / n); return amp * w * x / np.abs(x).max()
+cues = []
+for i in range(5): add(11.2 + i*0.22, tick()); cues.append((11.2+i*0.22, 0.08, 'tique', 'relógio de parede: 5 minutos'))
+add(12.45, whoosh(0.9, 0.1)); cues.append((12.45, 0.9, 'whoosh leve', 'ponteiro gira uma hora'))
+add(40.9, rumble(1.3)); cues.append((40.9, 1.3, 'ronco grave', 'relógio surge do chão'))
+for c in [46.88, 52.82, 59.88, 60.40, 60.94]: add(c, clunk()); cues.append((c, 0.35, 'clunk metálico', 'ponteiro salta após "já volto"'))
+add(56.76, whoosh(1.0)); cues.append((56.76, 1.0, 'whoosh', 'passa um dia inteiro'))
+# accelerating ticks during the crazy spin
+t = 64.94; gap = 0.18
+while t < 68.25: add(t, tick(2400, 0.008, 0.18)); t += gap; gap = max(0.035, gap * 0.9)
+add(68.3, clunk(0.4)); cues.append((64.94, 3.4, 'tiques acelerando + clunk final', 'relógio enlouquece'))
+add(65.2, whoosh(3.0, 0.12))
+for c in [74.97, 75.45]: add(c, thud()); cues.append((c, 0.25, 'toc grave', 'pão duro como pedra'))
+add(88.15, whoosh(0.45, 0.08)); cues.append((88.15, 0.45, 'swish', 'placa vira para VOLTO'))
+pk = np.abs(out).max(); print('sfx peak', pk)
+pcm = (np.clip(out, -1, 1) * 32767).astype('<i2')
+with wave.open('audio/sfx_stem.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
+with open('work/SOUND_PLAN.md', 'w') as f:
+    f.write('# Plano de som\n\nNarração original intocada como trilha mestre. Efeitos sintetizados localmente (tools/sfx.py), mixados ~14–20 dB abaixo da voz, só em ações visíveis. Sem música.\n\n| Início (s) | Duração (s) | Som | Propósito |\n|---|---|---|---|\n')
+    for c in sorted(cues): f.write(f'| {c[0]:.2f} | {c[1]:.2f} | {c[2]} | {c[3]} |\n')
