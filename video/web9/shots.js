@@ -1,16 +1,19 @@
 // Shot list v3 — hook, faster cutting (2.5–3 s), side-view walks, emotion symbols, livelier sets, clearer story beats.
 const plazaPigeons = (T, t, fly) => pigeon(1020, 980, t, 3, 0.8, fly) + pigeon(1110, 990, t, 4, 0.8, fly) + pigeon(560, 1000, t, 5, 0.8, fly);
 
-const SHOTS = [
-  // H1 — hook: the crazy clock, flash-forward ("Nesta cidade,")
-  { t0: 0, draw(t, T) {
+const SHOTS = [];
+// H1 — hook: the crazy clock, flash-forward ("Nesta cidade,"); also reused as the loop-back ending
+function hookClock(t, T) {
+  {
     const ang = T * 2600, day = 9;
-    const S = plazaSky(66);
     const cam = { ...focus(960, 560, lerp(1.05, 1.25, E.out(clamp(t / 1.3)))), r: Math.sin(t * 5) * 6 };
     return { cam, layers: [Lr(0.05, sky('#3a3a7a', '#f2a46a', { id: 'h1', stars: 0.4, t })), Lr(0.15, clouds(T * 6, '#fff6ea', 0.6, 13, 0)),
       Lr(1, `<path d="M 960 -360 L 380 120 L 1540 120 Z" fill="#3c6a5a" stroke="${INK}" stroke-width="8"/><rect x="560" y="900" width="800" height="900" fill="#a85a3a" stroke="${INK}" stroke-width="8"/><rect x="560" y="900" width="800" height="900" fill="url(#pBrick)"/>` + clockFace(960, 560, 390, ang / 12, ang, { day: `${day} DIAS`, blur: 1, glow: 0.8 }))],
-      over: speedLines(540, 960, 14, 380, (T * 500) % 360, 0.4, Math.floor(T * 15)) + comic(T, 0.05, 'TIC-TIC-TIC', 540, 1240, { size: 96, life: 1.25 }) };
-  } },
+      over: speedLines(540, 960, 14, 380, (T * 500) % 360, 0.4, Math.floor(T * 15)) + (T >= 0 ? comic(T, 0.05, 'TIC-TIC-TIC', 540, 1240, { size: 96, life: 1.25 }) : '') };
+  }
+}
+SHOTS.push(
+  { t0: 0, draw(t, T) { return hookClock(t, T); } },
   // H2 — "quem diz já volto": Polo waves at the camera from the bakery door
   { t0: 1.3, draw(t, T) {
     const waveA = wave(T, 1.45, 2.9, 165, 22);
@@ -47,8 +50,9 @@ const SHOTS = [
     const px = lerp(700, 1580, E.inOut(walkT));
     const turned = T > 7.7;
     const waveA = wave(T, 7.76, 8.65, 165, 20);
-    const polo = turned ? P_('polo', { x: px, y: 900, s: 0.62, t: T, face: -0.55, lx: -1, armR: waveA != null ? waveA : 14, bendR: 25, expr: 'happy', mouth: talk(T, [[7.76, 8.3]]) })
-      : P_('polo', { x: px, y: 900, s: 0.62, t: T, face: 0.8, side: true, walk: T * 13, expr: 'happy' });
+    const tn = pulse(T, 7.7, 0.1);
+    const polo = turned ? P_('polo', { x: px, y: 900, s: 0.62, t: T, face: -0.55, lx: -1, armR: waveA != null ? waveA : 14, bendR: 25, expr: 'happy', mouth: talk(T, [[7.76, 8.3]]), turn: tn })
+      : P_('polo', { x: px, y: 900, s: 0.62, t: T, face: 0.8, side: true, walk: T * 13, expr: 'happy', turn: tn });
     return { cam: frameG(px, 900, 2.15, 1420), layers: [
       Lr(0.9, bakeryInterior(T, { hour: 270, min: 0, doorOpen: E.out(inv(7.25, 7.8, T)), clockX: 1150, clockY: 170 })), Lr(1, polo)] };
   } },
@@ -100,8 +104,8 @@ const SHOTS = [
   // 7 — day 2: mother searching (side-view walk, sweat)
   { t0: 22.3, xf: 0.4, draw(t, T) {
     const mx = 500 + t * 110;
-    const lookBack = Math.sin(T * 1.9) > 0.6;
-    const mae = lookBack ? P_('mae', { x: mx, y: 930, s: 0.66, t: T, face: -0.5, lx: -1, armR: 150, bendR: 95, expr: 'worried' }) : P_('mae', { x: mx, y: 930, s: 0.66, t: T, face: 0.8, side: true, walk: T * 8, expr: 'worried' });
+    const sv = Math.sin(T * 1.9), lookBack = sv > 0.6, tn = clamp(1 - Math.abs(sv - 0.6) * 9);
+    const mae = lookBack ? P_('mae', { x: mx, y: 930, s: 0.66, t: T, face: -0.5, lx: -1, armR: 150, bendR: 95, expr: 'worried', turn: tn }) : P_('mae', { x: mx, y: 930, s: 0.66, t: T, face: 0.8, side: true, walk: T * 8, expr: 'worried', turn: tn });
     return { cam: push(frameG(mx, 930, 2.25, 1420), t, 3.2, 0.05), layers: [...backC(t), Lr(1, streetC(t) + walkers(t, 945, 0.4, 41, 3, 3200) + lamp(300, 930, 1) + bench(820, 935, 0.8) + mae + emote('sweat', mx + 50, 930 - 0.66 * 1.05 * 390, (t % 1.6), 1))] };
   } },
   // 8a — she hears the bus
@@ -131,8 +135,9 @@ const SHOTS = [
     const bx = 1180 + t * 430;
     const run = T < 34.7;
     const mx = 380 + 380 * E.inOut(inv(32.7, 34.9, T));
-    const mae = run ? P_('mae', { x: mx, y: 960, s: 0.66, t: T, face: 0.8, side: true, run: true, walk: T * 16, armFront: 165 + Math.sin(T * 16) * 10, armBack: 160, expr: 'surprised', mouth: talk(T, [[32.74, 33.4]]) * 0.6 })
-      : P_('mae', { x: mx, y: 960, s: 0.66, t: T, face: 0.6, lx: 1, armL: lerp(168, 12, E.inOut(inv(34.9, 35.4, T))), armR: lerp(168, 12, E.inOut(inv(34.9, 35.4, T))), expr: 'sad' });
+    const tn = pulse(T, 34.7, 0.1);
+    const mae = run ? P_('mae', { x: mx, y: 960, s: 0.66, t: T, face: 0.8, side: true, run: true, walk: T * 16, armFront: 165 + Math.sin(T * 16) * 10, armBack: 160, expr: 'surprised', mouth: talk(T, [[32.74, 33.4]]) * 0.6, turn: tn })
+      : P_('mae', { x: mx, y: 960, s: 0.66, t: T, face: 0.6, lx: 1, armL: lerp(168, 12, E.inOut(inv(34.9, 35.4, T))), armR: lerp(168, 12, E.inOut(inv(34.9, 35.4, T))), expr: 'sad', turn: tn });
     const puff = Array.from({ length: 5 }, (_, i) => { const ph = (T * 1.5 + i / 5) % 1; return `<circle cx="${f2(bx - 20 - ph * 200)}" cy="${f2(960 - ph * 40)}" r="${f2(14 + ph * 34)}" fill="#e0dcd6" opacity="${f2(0.6 * (1 - ph))}"/>`; }).join('');
     return { cam: frameG(mx + 160, 960, 1.4, 1440), layers: [...backC(t), Lr(1, streetC(t, 880) + puff + bus(bx, 1000, { t: T, wheel: T * 500, passengers: ['', '', '', '', ''], driver: P_('motorista', { t: T, face: 0.6, shadow: false }), dT: 'translate(66 178) scale(0.36)' }) + mae + emote('sweat', mx - 40, 960 - 0.66 * 1.05 * 400, (t % 1.2), 1))],
       over: comic(T, 34.3, 'VRUUM...', 640, 640, { size: 80, life: 1.0, fill: '#ffffff', rot: 6 }) };
@@ -250,7 +255,9 @@ const SHOTS = [
   { t0: 83.5, xf: 0.4, draw(t, T) { return ctaShot(t, T, push(frameG(380, 905, 1.8, 1430), t, 3.4, 0.07)); } },
   // 22b — closer: flips the sign to "VOLTO", points down to the comments
   { t0: 86.9, draw(t, T) { return ctaShot(t, T, push(frameG(370, 905, 2.05, 1400), t, 2.7, 0.08)); } },
-];
+  // 23 — loop: whip back to the spinning clock so the last frame flows into frame 0
+  { t0: 89.43, draw(t, T) { return hookClock(0, T - 89.6); } },
+);
 
 // ----- shared shot bodies (so a beat can be cut into several camera angles) -----
 function driverShot(t, T, cam, close) {
@@ -285,8 +292,9 @@ function retireShot(t, T, cam) {
   const young = P_('padeiro2', { x: 400, y: 900, s: 0.6, t: T, face: 0.3, expr: 'happy', armR: wave(T, 76.3, 77.6, 150, 18) || 20, bendR: 30 });
   const px = lerp(1250, 900, E.out(inv(76.4, 78.0, T)));
   const arrived = T > 78.0;
-  const polo = arrived ? P_('polo', { x: px, y: 910, s: 0.62, t: T, face: -0.7, lx: -1, expr: T > 78.55 ? 'surprised' : 'happy', holdR: bread({ s: 0.45, stone: 1, cracks: 1 }), armR: 30, bendR: 50, armL: 10 })
-    : P_('polo', { x: px, y: 910, s: 0.62, t: T, face: -0.8, side: true, walk: T * 11, expr: 'happy', holdR: bread({ s: 0.45, stone: 1, cracks: 1 }) });
+  const tn = pulse(T, 78.0, 0.1);
+  const polo = arrived ? P_('polo', { x: px, y: 910, s: 0.62, t: T, face: -0.7, lx: -1, expr: T > 78.55 ? 'surprised' : 'happy', holdR: bread({ s: 0.45, stone: 1, cracks: 1 }), armR: 30, bendR: 50, armL: 10, turn: tn })
+    : P_('polo', { x: px, y: 910, s: 0.62, t: T, face: -0.8, side: true, walk: T * 11, expr: 'happy', holdR: bread({ s: 0.45, stone: 1, cracks: 1 }), turn: tn });
   return { cam, layers: [...backA(t, ['#eaa070', '#f8d8a8']),
     Lr(1, streetARow(T, { pigeons: false }) + banner(300, 470, 480, 'FELIZ APOSENTADORIA!', T) + leaves(150, 1400, 935, 4, 50) + young + table(780, 900) + cake(780, 830, T) + old + polo + emote('excl', px, 910 - 0.62 * 430, T - 78.55, 0.75) + emote('sweat', px + 40, 910 - 0.62 * 380, T - 78.8, 0.75))],
     tint: ['#e8a070', 0.08] };
@@ -298,9 +306,9 @@ function ctaShot(t, T, cam) {
   const down = T >= 88.75;
   const shrug = E.back(inv(84.4, 84.9, T)) * (1 - E.inOut(inv(86.9, 87.4, T)));
   const polo = P_('polo', { x: 470, y: 905, s: 0.7, t: T, face: point ? -0.5 : 0.05, expr: T < 86.9 ? 'smug' : 'happy', lx: point ? -1 : 0, ly: down ? 0.8 : 0,
-    armR: down ? 62 + Math.sin(T * 10) * 6 : lerp(25, 80, shrug), bendR: down ? -18 : lerp(50, 80, shrug), armL: point ? 95 : lerp(12, 80, shrug), bendL: point ? 5 : lerp(12, 80, shrug), holdR: down ? '' : bread({ s: 0.45, stone: 1, cracks: 1, rot: -20 }) });
+    armR: down ? 62 + Math.sin(T * 10) * 6 : lerp(25, 80, shrug), bendR: down ? -18 : lerp(50, 80, shrug), armL: point ? 95 : lerp(12, 80, shrug), bendL: point ? 5 : lerp(12, 80, shrug), holdR: down ? '' : bread({ s: 0.45, stone: 1, cracks: 1, rot: -20 }), handL: point ? 'point' : null, handR: down ? 'point' : null });
   const sign = hangSign(285, 745, 'JÁ VOLTO', Math.sin(T * 1.5) * 2 + pulse(T, 88.6, 0.3) * 6, { w: 176, h: 62, fs: 28, flip, text2: 'VOLTO' });
-  const arrow = down ? `<g transform="translate(540 ${f2(1700 + Math.sin(T * 10) * 18)})" opacity="${f2(clamp((T - 88.75) / 0.15))}"><path d="M -34 -40 L 34 -40 L 34 0 L 70 0 L 0 70 L -70 0 L -34 0 Z" fill="#ffd23f" stroke="#211c26" stroke-width="10" stroke-linejoin="round"/></g>` : '';
+  const arrow = down ? `<g transform="translate(540 ${f2(1450 + Math.sin(T * 10) * 16)})" opacity="${f2(clamp((T - 88.75) / 0.15))}"><path d="M -34 -40 L 34 -40 L 34 0 L 70 0 L 0 70 L -70 0 L -34 0 Z" fill="#ffd23f" stroke="#211c26" stroke-width="10" stroke-linejoin="round"/></g>` : '';
   return { cam, layers: [
     Lr(0.04, sky('#c86a7a', '#f6b07a', { sun: 560, sunX: 1650, sunC: '#ffe0a8', sunR: 110, id: 'e' })), Lr(0.1, clouds(T, '#f8c0a8', 0.85, 5, 40)), Lr(0.3, farTown('#9a5a6a', 760, 5) + haze('#f6b07a', 400, 900, 0.5)),
     Lr(1, bakeryFacade(-200, 900, { t: T, sign: false, night: true }) + sign + polo + lamp(640, 905, 0.9, 1) + dust(T, 0, 400, 800, 500, 16, 9, '#ffe7a0') + emote('q', 520, 905 - 0.7 * 430, T - 84.5, 0.8))],

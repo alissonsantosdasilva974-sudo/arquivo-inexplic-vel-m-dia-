@@ -45,9 +45,13 @@ function captionSVG(T) {
   const spans = c.words.map((w, k) => `<tspan fill="${k === ai ? '#ffd23f' : (KEY.test(w.w) ? '#ff7a45' : '#ffffff')}">${esc(w.w)}</tspan>`).join(' ');
   const plain = c.words.map(w => esc(w.w)).join(' ');
   const fs = 92;
-  return `<g transform="translate(540 1530) scale(${(0.8 + 0.2 * ap).toFixed(3)})" opacity="${clamp(ap * 1.6).toFixed(3)}">
+  return `<g transform="translate(540 1300) scale(${(0.8 + 0.2 * ap).toFixed(3)})" opacity="${clamp(ap * 1.6).toFixed(3)}">
    <text x="5" y="9" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${fs}" fill="#1b1018" opacity="0.5" stroke="#1b1018" stroke-width="18" stroke-linejoin="round" word-spacing="6">${plain}</text>
    <text x="0" y="0" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${fs}" stroke="#2a2030" stroke-width="16" stroke-linejoin="round" paint-order="stroke" word-spacing="6">${spans}</text></g>`;
+}
+function badge() {
+  return `<g transform="translate(64 214)" opacity="0.92"><circle r="34" fill="#f4c4a1" stroke="#211c26" stroke-width="5"/><circle cx="-11" cy="-4" r="7" fill="#fff" stroke="#211c26" stroke-width="3"/><circle cx="11" cy="-4" r="7" fill="#fff" stroke="#211c26" stroke-width="3"/><circle cx="-10" cy="-3" r="2.5" fill="#211c26"/><circle cx="12" cy="-3" r="2.5" fill="#211c26"/><path d="M -8 14 Q 0 20 8 14" stroke="#211c26" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M -30 28 Q 0 46 30 28" stroke="#f2c230" stroke-width="10" fill="none"/>
+   <text x="46" y="14" font-family="Fredoka" font-weight="700" font-size="44" fill="#ffffff" stroke="#211c26" stroke-width="10" paint-order="stroke" letter-spacing="2">POLO</text></g>`;
 }
 function renderFrame(f) {
   const T = f / FPS;
@@ -68,7 +72,7 @@ function renderFrame(f) {
    <rect width="1080" height="1920" fill="url(#gVig)"/>
    <image href="paper.png" x="0" y="0" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>
    <image href="noise.png" x="${(f * 37) % 7 - 7}" y="${(f * 53) % 9 - 9}" width="1096" height="1936" opacity="0.07" style="mix-blend-mode:overlay"/>
-   ${over}${captionSVG(T)}</svg>`;
+   ${over}${captionSVG(T)}${badge()}</svg>`;
   document.getElementById('stage').innerHTML = svg;
   return i;
 }

@@ -28,6 +28,23 @@ function limb(x1, y1, a, b, l1, l2, side) {
   return { ex, ey, hx, hy };
 }
 
+
+// Hand with pose: 'fist' (default), 'open' (fingers spread, for waving), 'point' (index finger along the forearm)
+function hand9(hx, hy, ex, ey, col, pose, hl) {
+  const a = Math.atan2(hy - ey, hx - ex), deg = a * 180 / Math.PI;
+  let s = `<g transform="translate(${f2(hx)} ${f2(hy)}) rotate(${f2(deg)})">`;
+  if (pose === 'open') {
+    for (const k of [-32, -10, 12, 34]) s += `<g transform="rotate(${k})"><rect x="6" y="-4.5" width="20" height="9" rx="4.5" fill="${col}" stroke="${INK9}" stroke-width="3.5"/></g>`;
+    s += `<g transform="rotate(-80)"><rect x="4" y="-4.5" width="15" height="9" rx="4.5" fill="${col}" stroke="${INK9}" stroke-width="3.5"/></g>`;
+  } else if (pose === 'point') {
+    s += `<rect x="6" y="-5" width="30" height="10" rx="5" fill="${col}" stroke="${INK9}" stroke-width="3.5"/>`;
+  } else {
+    s += `<g transform="rotate(-70)"><rect x="4" y="-4.5" width="13" height="9" rx="4.5" fill="${col}" stroke="${INK9}" stroke-width="3.5"/></g>`;
+  }
+  s += `<circle r="13" fill="${col}" stroke="${INK9}" stroke-width="4"/><circle cx="-3" cy="-5" r="3.5" fill="#ffffff" opacity="${hl}"/>`;
+  return s + '</g>';
+}
+
 function face9(d, P, fx) {
   const ey = HY - 10, sep = d.sep || 31, er = 19;
   const bl = Math.max(d.blink, autoBlink(d.t, P.seed));
@@ -161,7 +178,7 @@ function person(id, o = {}) {
     const hand = P.hands || P.skin;
     return { svg: `<path d="${p}" stroke="${INK9}" stroke-width="27" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${p}" stroke="${P.top}" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` +
       `<path d="M ${f2(L.ex - 5)} ${f2(L.ey - 3)} l 8 4" stroke="${P.topD}" stroke-width="3" stroke-linecap="round"/>` +
-      `<circle cx="${f2(L.hx)}" cy="${f2(L.hy)}" r="13" fill="${hand}" stroke="${INK9}" stroke-width="4"/><circle cx="${f2(L.hx - 4)}" cy="${f2(L.hy - 5)}" r="3.5" fill="#ffffff" opacity="${P.hands ? 0.25 : 0.3}"/>`, ...L };
+      hand9(L.hx, L.hy, L.ex, L.ey, hand, side < 0 ? (d.handL || (a > 120 ? 'open' : 'fist')) : (d.handR || (a > 120 ? 'open' : 'fist')), P.hands ? 0.25 : 0.3), ...L };
   };
   const aL = armSvg(-1, d.armL, d.bendL), aR = armSvg(1, d.armR, d.bendR);
   g += `<g transform="translate(0 ${f2(breath * 0.4)})">`;
@@ -181,7 +198,7 @@ function person(id, o = {}) {
   g += face9(d, P, fx);
   g += hairFront(P, d, dir, fx);
   g += '</g></g>';
-  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (d.flip ? -1 : 1))} ${f2(s)})">${g}</g>`;
+  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (d.flip ? -1 : 1) * (1 - 0.45 * (d.turn || 0)))} ${f2(s)})">${g}</g>`;
 }
 
 // 3/4 side view used for walking/running: knees bend, arms swing, face turned toward travel direction.
@@ -209,7 +226,7 @@ function personSide(P, d, s, g) {
     const hx = ex + dir * Math.sin(B) * 54, hy = ey + Math.cos(B) * 54;
     const col = back ? P.topD : P.top;
     const pth = `M ${sx} ${sy} L ${f2(ex)} ${f2(ey)} L ${f2(hx)} ${f2(hy)}`;
-    return { svg: `<path d="${pth}" stroke="${INK9}" stroke-width="27" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${pth}" stroke="${col}" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${f2(hx)}" cy="${f2(hy)}" r="13" fill="${P.hands || P.skin}" stroke="${INK9}" stroke-width="4"/>`, hx, hy };
+    return { svg: `<path d="${pth}" stroke="${INK9}" stroke-width="27" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${pth}" stroke="${col}" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` + hand9(hx, hy, ex, ey, P.hands || P.skin, a > 120 ? 'open' : 'fist', 0.25), hx, hy };
   };
   g += `<g transform="translate(0 ${f2(bob - d.jump)}) rotate(${f2(d.tilt + (d.run ? dir * 7 : dir * 2))} 0 -60)">`;
   const back = armSvg(w + Math.PI, true, d.armBack), front = armSvg(w, false, d.armFront);
@@ -226,7 +243,7 @@ function personSide(P, d, s, g) {
   g += face9(Object.assign({}, d, { face: dir * 1.2, sep: 20, lx: dir }), P, dir * 27);
   g += hairFront(P, d, dir, dir * 27);
   g += '</g></g>';
-  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s)} ${f2(s)})">${g}</g>`;
+  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (1 - 0.45 * (d.turn || 0)))} ${f2(s)})">${g}</g>`;
 }
 
 // Emotion symbols (reference style). x,y = head top in world units; age = seconds since trigger.

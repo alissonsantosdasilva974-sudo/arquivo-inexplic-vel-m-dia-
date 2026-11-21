@@ -12,6 +12,6 @@ window.renderCover = () => {
   const title = (txt, y, size, fill) => `<text x="540" y="${y}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${size}" fill="${fill}" stroke="#211c26" stroke-width="22" stroke-linejoin="round" paint-order="stroke">${txt}</text>`;
   const clock = `<g transform="translate(905 715) rotate(10) scale(0.3)">${clockFace(0, 0, 300, 300, 0, { day: '9 DIAS' })}</g>`;
   const head = `<g transform="rotate(-4 540 300)">${title('QUEM DIZ', 250, 120, '#ffffff')}${title('"JÁ VOLTO"', 390, 150, '#ffd23f')}${title('NUNCA VOLTA!', 520, 120, '#ff7a45')}</g>`;
-  document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${body}<rect width="1080" height="1920" fill="url(#gGlow)"/><rect width="1080" height="1920" fill="url(#gVig)"/><image href="paper.png" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>${clock}${head}</svg>`;
+  document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${body}<rect width="1080" height="1920" fill="url(#gGlow)"/><rect width="1080" height="1920" fill="url(#gVig)"/><image href="paper.png" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>${clock}${head}${badge()}</svg>`;
 };
 </script></body></html>

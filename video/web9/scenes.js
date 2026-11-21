@@ -14,6 +14,7 @@ const P_ = (id, o) => person(id, o);
 // comic onomatopoeia (orbita-style), drawn in screen space
 function comic(T, t0, text, x, y, o = {}) {
   const dt = T - t0, life = o.life || 0.9;
+  if (y > 900) y = y - 680; x = clamp(x, 260, 780);
   if (dt < 0 || dt > life) return '';
   const pop = E.back(clamp(dt / 0.16)), out = 1 - E.in(clamp((dt - life + 0.2) / 0.2));
   const wob = Math.sin(dt * 30) * 2 * (1 - clamp(dt / 0.4));
@@ -72,6 +73,7 @@ function streetC(t, base = 880) {
   const walls = ['#c8dce8', '#e8d8c0', '#d8e8d0', '#e8c8c8', '#d0d0e8'];
   while (x < 3600) { const w = 300 + r() * 160, h = 380 + r() * 220; s += house(x, base, w, h, { wall: walls[Math.floor(r() * 5)], roof: mix('#5a7a9a', '#9a6a6a', r()), windows: 2, flat: r() < 0.5, glass: '#7a9ab0', shutters: r() < 0.4 ? '#5a7a9a' : null, seed: (x | 0) }); x += w + 40 + r() * 40; }
   s += street(base, { walk: '#d8d4c8', road: '#8a8a92' });
+  s += busStop(240, base + 40) + fruitStall(1000, base + 40, t);
   for (let i = -20; i < 40; i++) s += `<rect x="${i * 220}" y="${base + 250}" width="120" height="14" rx="6" fill="#f4efe0" opacity="0.8"/>`;
   return s;
 }
@@ -101,3 +103,20 @@ function rockingChair(x, base, ang) {
 }
 const poloFist = () => `<g><circle r="16" fill="#1d1a22" stroke="${INK9}" stroke-width="4"/></g>`;
 
+
+function busStop(x, base) {
+  return `<g><rect x="${x - 120}" y="${base - 300}" width="12" height="300" fill="#5a6a7a" stroke="${INK}" stroke-width="3"/><rect x="${x + 110}" y="${base - 300}" width="12" height="300" fill="#5a6a7a" stroke="${INK}" stroke-width="3"/>
+  <path d="M ${x - 140} ${base - 300} L ${x + 140} ${base - 300} L ${x + 130} ${base - 330} L ${x - 130} ${base - 330} Z" fill="#3c8a86" stroke="${INK}" stroke-width="4"/>
+  <rect x="${x - 100}" y="${base - 280}" width="200" height="150" rx="6" fill="#cfe6ee" stroke="${INK}" stroke-width="3" opacity="0.75"/><path d="M ${x - 90} ${base - 160} L ${x - 30} ${base - 270}" stroke="#fff" stroke-width="6" opacity="0.5"/>
+  <rect x="${x - 100}" y="${base - 70}" width="200" height="14" rx="4" fill="#a46a3a" stroke="${INK}" stroke-width="3"/><path d="M ${x - 84} ${base - 56} V ${base} M ${x + 84} ${base - 56} V ${base}" stroke="${INK}" stroke-width="6"/>
+  <rect x="${x + 150}" y="${base - 380}" width="10" height="380" fill="#4a4a5a" stroke="${INK}" stroke-width="3"/><rect x="${x + 120}" y="${base - 440}" width="70" height="70" rx="35" fill="#f2c230" stroke="${INK}" stroke-width="4"/>
+  <text x="${x + 155}" y="${base - 396}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#211c26">PONTO</text></g>`;
+}
+function fruitStall(x, base, t) {
+  let s = `<rect x="${x - 120}" y="${base - 120}" width="240" height="120" fill="#b87a4a" stroke="${INK}" stroke-width="4"/><rect x="${x - 120}" y="${base - 120}" width="240" height="120" fill="url(#pWoodV)"/>`;
+  s += `<path d="M ${x - 130} ${base - 120} V ${base - 300} M ${x + 130} ${base - 120} V ${base - 300}" stroke="${INK}" stroke-width="8"/>`;
+  for (let i = 0; i < 6; i++) s += `<path d="M ${x - 150 + i * 50} ${base - 300} h 50 v 40 q -25 18 -50 0 Z" fill="${i % 2 ? '#fff4dc' : '#e86a4a'}" stroke="${INK}" stroke-width="3"/>`;
+  const fr = [['#e86a4a', 0], ['#f2c230', 1], ['#7ab06a', 2], ['#f08a3a', 3]];
+  fr.forEach(([c, k]) => { for (let j = 0; j < 4; j++) s += `<circle cx="${x - 95 + k * 60 + (j % 2) * 18}" cy="${base - 128 - Math.floor(j / 2) * 16}" r="11" fill="${c}" stroke="${INK}" stroke-width="2.5"/>`; });
+  return s;
+}
