@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0}</style></head><body><div id="s"></div>
+<script src="lib.js"></script><script src="characters.js"></script>
+<script>
+const ids=['polo','padeira','mae','motorista','barnabe','menino','mulher','moca','viz1','viz2','viz3'];
+const ex=['neutral','happy','worried','smug','laugh','surprised','joy','happy','neutral','happy','sad'];
+let s='<rect width="1920" height="1080" fill="#efe3c8"/>';
+ids.forEach((id,i)=>{s+=person(id,{x:110+(i%6)*320,y:i<6?500:1040,s:1.1,face:(i%3-1)*0.5,expr:ex[i],t:0.3,armR:i*14,bendR:20})});
+s+=person('padeira',{x:1800,y:1040,old:true,expr:'happy',s:1.1,t:0.3});
+document.getElementById('s').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080">'+s+'</svg>';
+</script></body></html>
