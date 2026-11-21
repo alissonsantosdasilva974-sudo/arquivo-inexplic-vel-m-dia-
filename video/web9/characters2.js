@@ -13,7 +13,7 @@ const CAST2 = {
   motorista:{ skin: '#f3cfae', top: '#3c5a8a', topD: '#2a426c', topType: 'shirt', tie: '#c8443c', bottom: '#28324c', shoes: '#1d1a22', hair: 'driverCap', stache: '#4a2a1a', w: 1.18, seed: 4 },
   barnabe:  { skin: '#eab88a', top: '#f4efe2', topD: '#d6cfbe', topType: 'vest', vest: '#8a6a3a', bottom: '#5a5a6a', shoes: '#3a2a20', hair: 'sides', stache: '#f6f3ec', hat: 'straw', cane: 1, w: 1.12, seed: 5 },
   menino:   { skin: '#8d5a34', top: '#e86a4a', topD: '#c24a32', topType: 'tee', pattern: 'pStripeH', bottom: '#3d5a9e', shorts: 1, shoes: '#f4f1ea', hair: 'cap', hairC: '#1e1410', scale: 0.74, w: 1.0, seed: 6 },
-  mulher:   { skin: '#e0ac79', top: '#3f9a6e', topD: '#2c7a52', topType: 'dress', pattern: 'pDots', bottom: '#3f9a6e', shoes: '#c8443c', hair: 'cloud', hairC: '#6a3a24', glasses: '#d0604a', blush: 1, ear: '#f2c230', w: 1.18, seed: 7 },
+  mulher:   { skin: '#e0ac79', top: '#4a74c0', topD: '#3458a0', topType: 'dress', pattern: 'pDots', bottom: '#4a74c0', shoes: '#c8443c', hair: 'cloud', hairC: '#6a3a24', glasses: '#d0604a', blush: 1, ear: '#f2c230', w: 1.18, seed: 7 },
   moca:     { skin: '#f5d0b0', top: '#ee8aaa', topD: '#d06a8c', topType: 'tee', bottom: '#4f72b8', shoes: '#f4f1ea', hair: 'long', hairC: '#7a4426', bow: '#f2c230', blush: 1, ear: '#ee8aaa', scale: 0.95, w: 1.0, seed: 8 },
   viz1:     { skin: '#c98b5e', top: '#6a9ad0', topD: '#4c7ab0', topType: 'shirt', bottom: '#5a4a3a', shoes: '#2a2228', hair: 'short', hairC: '#1d1a22', w: 1.1, seed: 9 },
   viz2:     { skin: '#f1c08f', top: '#d0704a', topD: '#a8502e', topType: 'tee', pattern: 'pStripeH', bottom: '#3a3a4a', shoes: '#2a2228', hair: 'short', hairC: '#8a5a2a', w: 1.15, seed: 10 },
@@ -54,17 +54,20 @@ function head2(P, d, fx, dir, side) {
   s += `<path d="${skull}" fill="${skD}"/>`;
   s += `<clipPath id="ck${P.seed}${side ? 's' : ''}"><path d="${skull}"/></clipPath><g clip-path="url(#ck${P.seed}${side ? 's' : ''})"><circle cx="${-dir * 14 - 6}" cy="${H2 - 14}" r="${HR2 + 2}" fill="${sk}"/><ellipse cx="-30" cy="${H2 - 44}" rx="28" ry="16" fill="#fff" opacity="0.22" transform="rotate(-28 -30 ${H2 - 44})"/><rect x="-100" y="${H2 - 100}" width="200" height="200" fill="url(#pSkin)"/></g>`;
   s += `<path d="${skull}" fill="none" stroke="${OL}" stroke-width="${LW}"/>`;
-  s += P.poloFace ? poloFace2(P, d, fx) : face2(P, d, fx, dir, side);
+  s += P.poloFace ? poloFace2(P, d, fx, side) : face2(P, d, fx, dir, side);
   s += hairFront2(P, d, dir, fx);
   return s;
 }
 
 function lidPath(cx, cy, rx, ry, lid, col) {
+  // upper eyelid clipped to the eye ellipse: arc over the top of the eye, closed by the (slightly curved) lid line
   if (lid <= 0.02) return '';
-  const ly = cy - ry + 2 * ry * lid;
+  const ly = cy - ry + 2 * ry * Math.min(lid, 0.98);
   const half = rx * Math.sqrt(Math.max(0, 1 - Math.pow((ly - cy) / ry, 2)));
-  return `<path d="M ${f2(cx - rx - 2)} ${f2(cy - ry - 3)} H ${f2(cx + rx + 2)} V ${f2(ly)} Q ${f2(cx)} ${f2(ly + 4)} ${f2(cx - rx - 2)} ${f2(ly)} Z" fill="${col}"/>` +
-    `<path d="M ${f2(cx - half - 2)} ${f2(ly)} Q ${f2(cx)} ${f2(ly + 4)} ${f2(cx + half + 2)} ${f2(ly)}" stroke="${OL}" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;
+  const big = ly > cy ? 1 : 0;
+  return `<path d="M ${f2(cx - half)} ${f2(ly)} A ${rx} ${ry} 0 ${big} 1 ${f2(cx + half)} ${f2(ly)} Q ${f2(cx)} ${f2(ly + 4)} ${f2(cx - half)} ${f2(ly)} Z" fill="${col}"/>` +
+    `<ellipse cx="${f2(cx)}" cy="${f2(cy)}" rx="${rx}" ry="${ry}" fill="none" stroke="${OL}" stroke-width="4.5"/>` +
+    `<path d="M ${f2(cx - half - 1)} ${f2(ly)} Q ${f2(cx)} ${f2(ly + 4)} ${f2(cx + half + 1)} ${f2(ly)}" stroke="${OL}" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;
 }
 
 function face2(P, d, fx, dir, side) {
@@ -113,8 +116,8 @@ function face2(P, d, fx, dir, side) {
 }
 
 // Polo keeps the user's design: big round white eyes, tiny pupils, small curl nose, small mouth.
-function poloFace2(P, d, fx) {
-  const fdd = Object.assign({}, d, { sep: d.sep || 33 });
+function poloFace2(P, d, fx, side) {
+  const fdd = Object.assign({}, d, { sep: d.sep || (side ? 20 : 33) });
   const old = HY; // v1 face uses HY (-322); same placement works on the r=84 head
   return face9(fdd, CAST.polo, fx);
 }
@@ -139,12 +142,12 @@ function hairFront2(P, d, dir, fx) {
       for (let i = 0; i < 4; i++) s += `<path d="M ${-56 + i * 30} ${H2 - 80 + Math.abs(i - 1.5) * 6} q 8 -8 16 -2" stroke="${hl}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
       return s;
     }
-    case 'long': return `<path d="M -86 ${H2 + 4} C -92 ${H2 - 108} 92 ${H2 - 108} 86 ${H2 + 4} Q 56 ${H2 - 70} ${f2(fx + 14)} ${H2 - 58} Q -34 ${H2 - 46} -86 ${H2 + 4} Z" fill="${c}" stroke="${OL}" stroke-width="${LW}"/><path d="M -40 ${H2 - 80} q 26 -14 56 -6" stroke="${hl}" stroke-width="6" fill="none" stroke-linecap="round"/>` +
+    case 'long': return `<path d="M -86 ${H2 + 4} C -92 ${H2 - 108} 92 ${H2 - 108} 86 ${H2 + 4} Q 56 ${H2 - 70} ${f2(fx + 14)} ${H2 - 58} Q -34 ${H2 - 46} -86 ${H2 + 4} Z" fill="${c}" stroke="${OL}" stroke-width="${LW}"/><path d="M -40 ${H2 - 62} q 26 -14 56 -6" stroke="${hl}" stroke-width="6" fill="none" stroke-linecap="round"/>` +
       (P.bow ? `<path d="M 34 ${H2 - 86} l -28 -18 l 0 36 Z M 34 ${H2 - 86} l 28 -18 l 0 36 Z" fill="${P.bow}" stroke="${OL}" stroke-width="4.5" stroke-linejoin="round"/><circle cx="34" cy="${H2 - 86}" r="9" fill="${P.bow}" stroke="${OL}" stroke-width="4"/>` : '');
-    case 'short': return `<path d="M -86 ${H2 - 2} C -92 ${H2 - 110} 92 ${H2 - 110} 86 ${H2 - 2} Q 74 ${H2 - 46} ${f2(fx + 36)} ${H2 - 58} Q -12 ${H2 - 46} -38 ${H2 - 66} Q -62 ${H2 - 40} -86 ${H2 - 2} Z" fill="${c}" stroke="${OL}" stroke-width="${LW}"/><path d="M -30 ${H2 - 88} q 30 -10 60 0" stroke="${hl}" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+    case 'short': return `<path d="M -86 ${H2 - 2} C -92 ${H2 - 110} 92 ${H2 - 110} 86 ${H2 - 2} Q 74 ${H2 - 46} ${f2(fx + 36)} ${H2 - 58} Q -12 ${H2 - 46} -38 ${H2 - 66} Q -62 ${H2 - 40} -86 ${H2 - 2} Z" fill="${c}" stroke="${OL}" stroke-width="${LW}"/><path d="M -30 ${H2 - 66} q 30 -10 60 0" stroke="${hl}" stroke-width="6" fill="none" stroke-linecap="round"/>`;
     case 'chef': return `<path d="M -70 ${H2 - 30} Q -74 ${H2 - 60} -60 ${H2 - 62} L 60 ${H2 - 62} Q 74 ${H2 - 60} 70 ${H2 - 30} Q 0 ${H2 - 46} -70 ${H2 - 30} Z" fill="${c}" stroke="${OL}" stroke-width="${LW - 1}"/>` +
       `<rect x="-68" y="${H2 - 100}" width="136" height="40" rx="10" fill="#f6efe2" stroke="${OL}" stroke-width="${LW}"/><path d="M -66 ${H2 - 96} C -112 ${H2 - 120} -76 ${H2 - 184} -36 ${H2 - 158} C -26 ${H2 - 208} 30 ${H2 - 208} 38 ${H2 - 158} C 76 ${H2 - 184} 112 ${H2 - 120} 66 ${H2 - 96} Z" fill="#fffbf2" stroke="${OL}" stroke-width="${LW}"/><path d="M -30 ${H2 - 150} q -6 22 4 44 M 20 ${H2 - 160} q 6 26 -2 52" stroke="#e6dcc8" stroke-width="5" fill="none"/>`;
-    case 'cap': return `<path d="M -84 ${H2 - 18} C -84 ${H2 - 112} 84 ${H2 - 112} 84 ${H2 - 18} Z" fill="#3a6ab8" stroke="${OL}" stroke-width="${LW}"/><path d="M -40 ${H2 - 96} q 30 -12 64 0" stroke="#6a9ae0" stroke-width="6" fill="none"/><path d="M ${dir * 20} ${H2 - 22} Q ${dir * 100} ${H2 - 30} ${dir * 124} ${H2 - 12} Q ${dir * 80} ${H2 - 2} ${dir * 20} ${H2 - 10} Z" fill="#2a5096" stroke="${OL}" stroke-width="${LW - 1}" stroke-linejoin="round"/><circle cx="0" cy="${H2 - 92}" r="8" fill="#2a5096" stroke="${OL}" stroke-width="4"/>`;
+    case 'cap': return `<g transform="translate(0 -16)"><path d="M -84 ${H2 - 18} C -84 ${H2 - 112} 84 ${H2 - 112} 84 ${H2 - 18} Z" fill="#3a6ab8" stroke="${OL}" stroke-width="${LW}"/><path d="M -40 ${H2 - 74} q 30 -12 64 0" stroke="#6a9ae0" stroke-width="6" fill="none"/><path d="M ${dir * 20} ${H2 - 22} Q ${dir * 100} ${H2 - 30} ${dir * 124} ${H2 - 12} Q ${dir * 80} ${H2 - 2} ${dir * 20} ${H2 - 10} Z" fill="#2a5096" stroke="${OL}" stroke-width="${LW - 1}" stroke-linejoin="round"/><circle cx="0" cy="${H2 - 92}" r="8" fill="#2a5096" stroke="${OL}" stroke-width="4"/></g>`;
     case 'driverCap': return `<g transform="translate(0 -26)"><path d="M -82 ${H2 - 24} C -82 ${H2 - 116} 82 ${H2 - 116} 82 ${H2 - 24} Z" fill="#3c5a8a" stroke="${OL}" stroke-width="${LW}"/><rect x="-86" y="${H2 - 38}" width="172" height="20" rx="8" fill="#1e2e4e" stroke="${OL}" stroke-width="${LW - 1}"/><path d="M ${dir * 6} ${H2 - 20} Q ${dir * 76} ${H2 - 16} ${dir * 114} ${H2 - 2} L ${dir * 6} ${H2 - 6} Z" fill="#14203a" stroke="${OL}" stroke-width="${LW - 1}"/><circle cx="0" cy="${H2 - 70}" r="12" fill="#f2c230" stroke="${OL}" stroke-width="4"/></g>`;
     case 'sides': return `<path d="M -86 ${H2 + 16} Q -104 ${H2 - 28} -76 ${H2 - 44} Q -70 ${H2 - 6} -82 ${H2 + 22} Z M 86 ${H2 + 16} Q 104 ${H2 - 28} 76 ${H2 - 44} Q 70 ${H2 - 6} 82 ${H2 + 22} Z" fill="#f6f3ec" stroke="${OL}" stroke-width="${LW - 1}"/>` +
       (P.hat === 'straw' ? `<ellipse cx="0" cy="${H2 - 56}" rx="134" ry="24" fill="#e8c46a" stroke="${OL}" stroke-width="${LW}"/><path d="M -68 ${H2 - 58} C -66 ${H2 - 128} 66 ${H2 - 128} 68 ${H2 - 58} Z" fill="#e8c46a" stroke="${OL}" stroke-width="${LW}"/><path d="M -68 ${H2 - 72} Q 0 ${H2 - 62} 68 ${H2 - 72} L 67 ${H2 - 58} Q 0 ${H2 - 50} -67 ${H2 - 58} Z" fill="#c8443c"/><path d="M -40 ${H2 - 104} q 30 -12 60 -2" stroke="#fff2c0" stroke-width="6" fill="none"/>` : '');

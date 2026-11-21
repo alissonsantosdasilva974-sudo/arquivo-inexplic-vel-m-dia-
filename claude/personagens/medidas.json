@@ -1,0 +1,210 @@
+{
+ "polo": {
+  "id": "polo",
+  "files": [
+   "polo_frente.svg",
+   "polo_lado.svg",
+   "polo_expr_neutra.svg",
+   "polo_expr_surpreso.svg",
+   "polo_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -418.20001220703125,
+   "w": 280,
+   "h": 424.2000427246094
+  }
+ },
+ "mae": {
+  "id": "mae",
+  "files": [
+   "mae_frente.svg",
+   "mae_lado.svg",
+   "mae_expr_neutra.svg",
+   "mae_expr_surpreso.svg",
+   "mae_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -465.8999938964844,
+   "w": 280,
+   "h": 471.9000244140625
+  }
+ },
+ "padeira": {
+  "id": "padeira",
+  "files": [
+   "padeira_frente.svg",
+   "padeira_lado.svg",
+   "padeira_expr_neutra.svg",
+   "padeira_expr_surpreso.svg",
+   "padeira_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -515.5,
+   "w": 280,
+   "h": 521.5000610351562
+  }
+ },
+ "padeira_aposentada": {
+  "id": "padeira",
+  "files": [
+   "padeira_aposentada_frente.svg",
+   "padeira_aposentada_lado.svg",
+   "padeira_aposentada_expr_neutra.svg",
+   "padeira_aposentada_expr_surpreso.svg",
+   "padeira_aposentada_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -464,
+   "w": 280,
+   "h": 470.0000305175781
+  }
+ },
+ "padeiro_novo": {
+  "id": "padeiro2",
+  "files": [
+   "padeiro_novo_frente.svg",
+   "padeiro_novo_lado.svg",
+   "padeiro_novo_expr_neutra.svg",
+   "padeiro_novo_expr_surpreso.svg",
+   "padeiro_novo_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -513.2999877929688,
+   "w": 280,
+   "h": 519.300048828125
+  }
+ },
+ "motorista": {
+  "id": "motorista",
+  "files": [
+   "motorista_frente.svg",
+   "motorista_lado.svg",
+   "motorista_expr_neutra.svg",
+   "motorista_expr_surpreso.svg",
+   "motorista_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -441,
+   "w": 280,
+   "h": 447.0000305175781
+  }
+ },
+ "barnabe": {
+  "id": "barnabe",
+  "files": [
+   "barnabe_frente.svg",
+   "barnabe_lado.svg",
+   "barnabe_expr_neutra.svg",
+   "barnabe_expr_surpreso.svg",
+   "barnabe_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -430.845458984375,
+   "w": 280,
+   "h": 436.8454895019531
+  }
+ },
+ "menino": {
+  "id": "menino",
+  "files": [
+   "menino_frente.svg",
+   "menino_lado.svg",
+   "menino_expr_neutra.svg",
+   "menino_expr_surpreso.svg",
+   "menino_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -98,
+   "y": -304.0099792480469,
+   "w": 196,
+   "h": 308.2099914550781
+  }
+ },
+ "mulher_oculos": {
+  "id": "mulher",
+  "files": [
+   "mulher_oculos_frente.svg",
+   "mulher_oculos_lado.svg",
+   "mulher_oculos_expr_neutra.svg",
+   "mulher_oculos_expr_surpreso.svg",
+   "mulher_oculos_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -441.79998779296875,
+   "w": 280,
+   "h": 447.8000183105469
+  }
+ },
+ "moca": {
+  "id": "moca",
+  "files": [
+   "moca_frente.svg",
+   "moca_lado.svg",
+   "moca_expr_neutra.svg",
+   "moca_expr_surpreso.svg",
+   "moca_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -126.00000762939453,
+   "y": -381.05999755859375,
+   "w": 252.00001525878906,
+   "h": 386.46002197265625
+  }
+ },
+ "vizinho1": {
+  "id": "viz1",
+  "files": [
+   "vizinho1_frente.svg",
+   "vizinho1_lado.svg",
+   "vizinho1_expr_neutra.svg",
+   "vizinho1_expr_surpreso.svg",
+   "vizinho1_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -421.5,
+   "w": 280,
+   "h": 427.5000305175781
+  }
+ },
+ "vizinho2": {
+  "id": "viz2",
+  "files": [
+   "vizinho2_frente.svg",
+   "vizinho2_lado.svg",
+   "vizinho2_expr_neutra.svg",
+   "vizinho2_expr_surpreso.svg",
+   "vizinho2_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -422.20001220703125,
+   "w": 280,
+   "h": 428.2000427246094
+  }
+ },
+ "vizinha3": {
+  "id": "viz3",
+  "files": [
+   "vizinha3_frente.svg",
+   "vizinha3_lado.svg",
+   "vizinha3_expr_neutra.svg",
+   "vizinha3_expr_surpreso.svg",
+   "vizinha3_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -444.79998779296875,
+   "w": 280,
+   "h": 450.8000183105469
+  }
+ }
+}

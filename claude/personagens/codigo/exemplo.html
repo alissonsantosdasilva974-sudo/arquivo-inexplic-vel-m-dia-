@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Personagens — exemplo animado</title>
+<style>body{margin:0;background:#2b2b33}svg{display:block;margin:auto}</style></head>
+<body>
+<svg id="stage" xmlns="http://www.w3.org/2000/svg" width="1080" height="900" viewBox="0 0 1080 900"></svg>
+<script src="lib.js"></script>
+<script src="defs.js"></script>
+<script src="characters_v1.js"></script>  <!-- props: note10() (nota de R$10), bread() -->
+<script src="characters.js"></script>     <!-- face9() do Polo, hand9(), emote() -->
+<script src="characters2.js"></script>    <!-- rig atual: person(), personSide2(), CAST2 -->
+<script>
+// Helpers de animação usados no episódio
+const talk = (T, iv) => { for (const [a, b] of iv) if (T >= a && T <= b) return 0.25 + 0.55 * Math.abs(Math.sin((T - a) * 17)); return 0; };
+const wave = (T, a, b, base = 160, amp = 18) => (T >= a && T <= b) ? base + Math.sin((T - a) * 14) * amp * Math.min(1, (T - a) * 4, (b - T) * 4) : null;
+const t0 = performance.now();
+function frame() {
+  const T = ((performance.now() - t0) / 1000) % 6;
+  const w = wave(T, 0.5, 2.5);
+  const polo = person('polo', { x: 300, y: 820, s: 1.6, t: T, face: 0.1, expr: T > 3 && T < 4 ? 'surprised' : 'happy',
+    armR: w != null ? w : 14, bendR: 25, mouth: talk(T, [[0.6, 1.4]]), holdL: T > 4 ? note10() : '', armL: T > 4 ? 60 : 10, bendL: 60 });
+  const mae = person('mae', { x: 760, y: 820, s: 1.5, t: T, face: 0.8, side: true, walk: T * 8, expr: 'worried' });
+  document.getElementById('stage').innerHTML = DEFS + polo + mae + emote('excl', 300, 820 - 1.6 * 430, T - 3, 1.4);
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body></html>
