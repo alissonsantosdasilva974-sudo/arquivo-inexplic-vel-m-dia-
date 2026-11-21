@@ -21,3 +21,8 @@ video/audio/voice_limited.wav
 video/work/fs4/
 video/work/preview5/
 video/work/fs5/
+ep2/frames/
+ep2/renders/
+ep2/work/preview/
+ep2/audio/*.wav
+!ep2/audio/sfx_stem.wav

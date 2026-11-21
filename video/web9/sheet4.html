@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><style>@font-face{font-family:'Fredoka';font-weight:700;src:url(fonts/fredoka-latin-700-normal.woff2)}body{margin:0}</style></head><body><div id="s"></div>
+<script src="lib.js"></script><script src="words.js"></script><script src="characters_v1.js"></script><script src="characters.js"></script><script src="characters2.js"></script><script src="environments.js"></script><script src="scenes.js"></script><script src="shots.js"></script><script src="main.js"></script>
+<script>
+let s='<rect width="2400" height="1300" fill="#efe3c8"/>';
+s+=person('terno',{x:160,y:600,s:1.1,t:0.3,expr:'smug'});
+s+=person('terno',{x:440,y:600,s:1.1,t:0.3,expr:'neutral',armR:150,bendR:40,hat:null,holdR:'<g transform="translate(0 -30)">'+fedora(1,0).replace(/H2/g,'')+'</g>'});
+s+=person('polo',{x:720,y:600,s:1.1,t:0.3,expr:'happy',hat:'fedora'});
+s+=person('polo',{x:980,y:600,s:1.1,t:0.3,side:true,face:0.8,walk:1,run:true,hat:'fedora'});
+s+=person('padeiro2',{x:1250,y:600,s:1.1,t:0.3,expr:'joy',tears:1,mouth:0.8});
+s+=person('padeiro2',{x:1520,y:600,s:1.1,t:0.3,expr:'surprised',pale:1});
+s+=person('senhora',{x:1800,y:600,s:1.1,t:0.3,expr:'happy'});
+s+=person('vulto',{x:2100,y:600,s:1.1,t:0.3,expr:'neutral'});
+s+=dog(200,1150,{t:0.2,growl:1})+dog(520,1150,{t:0.2,wag:1});
+s+=`<g transform="translate(900 1000)">${wallet({open:1,n:4,labels:['PADEIRO','MOTORISTA','SENHORA','@hat'],glow:0.8})}</g>`;
+s+=`<g transform="translate(1250 1100)">${wallet({open:0,light:1})}</g>`;
+s+=`<g transform="translate(1550 1050)">${noteNamed('@hat',1,{s:1.5})}</g>`;
+s+=`<g transform="translate(1900 1120)">${suitcase({s:1})}</g>`;
+document.getElementById('s').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1300">'+DEFS+s+'</svg>';
+</script></body></html>

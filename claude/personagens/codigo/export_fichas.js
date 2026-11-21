@@ -8,6 +8,7 @@ const CHARS = [
   ['polo', {}], ['mae', {}], ['padeira', {}], ['padeira_aposentada', { id: 'padeira', old: true }], ['padeiro_novo', { id: 'padeiro2' }],
   ['motorista', {}], ['barnabe', {}], ['menino', {}], ['mulher_oculos', { id: 'mulher' }], ['moca', {}],
   ['vizinho1', { id: 'viz1' }], ['vizinho2', { id: 'viz2' }], ['vizinha3', { id: 'viz3' }],
+  ['homem_terno', { id: 'terno' }], ['senhora', {}], ['vulto', {}],
 ];
 const EXPR = [['neutra', 'neutral'], ['surpreso', 'surprised'], ['rindo', 'laugh']];
 (async () => {
@@ -52,6 +53,19 @@ const EXPR = [['neutra', 'neutral'], ['surpreso', 'surprised'], ['rindo', 'laugh
     }
     report[name] = { id, files, bbox: res.metrics };
   }
+  // props (objects) — standalone SVGs
+  const props = await p.evaluate(() => {
+    const NS = 'http://www.w3.org/2000/svg';
+    const host = document.createElementNS(NS, 'svg'); host.setAttribute('width', '1200'); host.setAttribute('height', '1200'); document.body.appendChild(host);
+    const items = { cachorro_rosnando: dog(0, 0, { t: 0.2, growl: 1 }), cachorro_feliz: dog(0, 0, { t: 0.2, wag: 1 }), carteira_fechada: wallet({}), carteira_aberta: wallet({ open: 1, n: 4, labels: ['PADEIRO', 'MOTORISTA', 'SENHORA', '@hat'], glow: 0.8 }),
+      nota_10_nome: noteNamed('PADEIRO', 1, { s: 1.6 }), nota_10_chapeu: noteNamed('@hat', 1, { s: 1.6 }), nota_10: note10(), mala: suitcase({}), chapeu_fedora: fedoraProp(0), pao: bread({}), pao_pedra: bread({ stone: 1, cracks: 1 }) };
+    const out = {};
+    for (const [k, inner] of Object.entries(items)) { host.innerHTML = DEFS + `<g id="c">${inner}</g>`; const r = host.querySelector('#c').getBBox(); const pad = 10;
+      out[k] = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="${(r.x - pad).toFixed(1)} ${(r.y - pad).toFixed(1)} ${(r.width + 2 * pad).toFixed(1)} ${(r.height + 2 * pad).toFixed(1)}" width="${Math.round(r.width + 2 * pad)}" height="${Math.round(r.height + 2 * pad)}"><title>${k}</title>${DEFS}${inner}</svg>\n`; }
+    host.remove(); return out;
+  });
+  fs.mkdirSync(path.join(ROOT, 'claude/personagens/svg/objetos'), { recursive: true });
+  for (const [k, v] of Object.entries(props)) fs.writeFileSync(path.join(ROOT, 'claude/personagens/svg/objetos', k + '.svg'), v);
   fs.writeFileSync(path.join(ROOT, 'claude/personagens/medidas.json'), JSON.stringify(report, null, 1));
   if (errs.length) console.error('PAGE ERRORS', errs);
   await b.close();

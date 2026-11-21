@@ -18,6 +18,9 @@ const CAST2 = {
   viz1:     { skin: '#c98b5e', top: '#6a9ad0', topD: '#4c7ab0', topType: 'shirt', bottom: '#5a4a3a', shoes: '#2a2228', hair: 'short', hairC: '#1d1a22', w: 1.1, seed: 9 },
   viz2:     { skin: '#f1c08f', top: '#d0704a', topD: '#a8502e', topType: 'tee', pattern: 'pStripeH', bottom: '#3a3a4a', shoes: '#2a2228', hair: 'short', hairC: '#8a5a2a', w: 1.15, seed: 10 },
   viz3:     { skin: '#8d5a34', top: '#e8b03a', topD: '#c08a1e', topType: 'dress', pattern: 'pFlowers', bottom: '#e8b03a', shoes: '#6a3a28', hair: 'cloud', hairC: '#1d1a22', blush: 1, ear: '#e86a6a', w: 1.2, seed: 11 },
+  terno:    { skin: '#e9d8c8', top: '#2c2a3a', topD: '#1c1a28', topType: 'shirt', tie: '#8a1c2c', bottom: '#2c2a3a', shoes: '#121016', hair: 'short', hairC: '#1d1a22', hatDefault: 'fedora', w: 1.06, scale: 1.1, seed: 14 },
+  senhora:  { skin: '#d9a27a', top: '#c8506a', topD: '#a63c54', topType: 'dress', pattern: 'pFlowers', bottom: '#c8506a', shoes: '#6a3a5a', hair: 'cloud', hairC: '#c8c2d4', bun: 1, blush: 1, ear: '#f2c230', w: 1.25, seed: 15 },
+  vulto:    { skin: '#4a4258', top: '#2a2436', topD: '#1c1828', topType: 'shirt', bottom: '#241f30', shoes: '#141018', hair: 'short', hairC: '#16121e', w: 1.08, seed: 16 },
   padeiro2: { skin: '#c98b5e', top: '#f6efe2', topD: '#dcd2bc', topType: 'shirt', apron: 1, bottom: '#3a3a4a', shoes: '#2a2228', hair: 'chef', hairC: '#1d1a22', w: 1.08, seed: 13 },
 };
 const shade = (c, k = 0.22) => mix(c, '#2a1a2a', k);
@@ -56,8 +59,78 @@ function head2(P, d, fx, dir, side) {
   s += `<path d="${skull}" fill="none" stroke="${OL}" stroke-width="${LW}"/>`;
   s += P.poloFace ? poloFace2(P, d, fx, side) : face2(P, d, fx, dir, side);
   s += hairFront2(P, d, dir, fx);
+  if (d.tears) s += tears2(fx, side ? 20 : 30, d.t, d.tears);
+  const hat = d.hat !== undefined ? d.hat : P.hatDefault;
+  if (hat === 'fedora') s += fedora(dir, d.hatLift || 0);
   return s;
 }
+function fedora(dir, lift) {
+  const y = H2 - 58 - lift;
+  return `<g><ellipse cx="0" cy="${y}" rx="112" ry="20" fill="#2a2430" stroke="${OL}" stroke-width="${LW}"/>` +
+    `<path d="M -64 ${y - 2} C -66 ${y - 70} -40 ${y - 84} 0 ${y - 70} C 40 ${y - 84} 66 ${y - 70} 64 ${y - 2} Z" fill="#332c3c" stroke="${OL}" stroke-width="${LW}"/>` +
+    `<path d="M -64 ${y - 16} Q 0 ${y - 6} 64 ${y - 16} L 64 ${y - 2} Q 0 ${y + 8} -64 ${y - 2} Z" fill="#8a1c2c"/>` +
+    `<path d="M -34 ${y - 58} q 20 -10 40 -2" stroke="#5a5266" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M 0 ${y - 70} q -4 18 0 34" stroke="#1e1a24" stroke-width="4" fill="none"/></g>`;
+}
+function tears2(fx, sep, t, k) {
+  let s = '';
+  for (const side of [-1, 1]) {
+    const x = fx + side * sep, y0 = H2 + 6;
+    s += `<path d="M ${f2(x - 6)} ${y0} Q ${f2(x - 10 + side * 4)} ${y0 + 40} ${f2(x - 4 + side * 8)} ${y0 + 80}" stroke="#8fd0f0" stroke-width="${f2(9 * k)}" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+    for (let i = 0; i < 3; i++) { const ph = (t * 1.6 + i / 3) % 1; s += `<ellipse cx="${f2(x + side * (10 + ph * 50))}" cy="${f2(y0 + 10 + ph * 90 + ph * ph * 60)}" rx="${f2(5 * k)}" ry="${f2(7 * k)}" fill="#8fd0f0" stroke="${OL}" stroke-width="2" opacity="${f2(1 - ph)}"/>`; }
+  }
+  return s;
+}
+
+// ---------- props for episode 2 ----------
+function noteNamed(label, glow = 0, o = {}) {
+  // R$10-style note with a name written in the corner, glowing. label: text, or '@hat' for the suited man's hat symbol, or '' for none
+  const k = o.s || 1, w = 150, h = 74;
+  let s = `<g transform="rotate(${o.rot || 0}) scale(${k})">`;
+  if (glow > 0) s += `<circle cx="${w / 2 - 26}" cy="${h / 2 - 16}" r="${f2(44 + glow * 30)}" fill="#ffe7a0" opacity="${f2(0.25 * glow)}"/>`;
+  s += `<rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="7" fill="#e8907a" stroke="${OL}" stroke-width="4.5"/>`;
+  s += `<rect x="${-w / 2 + 7}" y="${-h / 2 + 7}" width="${w - 14}" height="${h - 14}" rx="5" fill="none" stroke="#b8604c" stroke-width="2.5"/>`;
+  s += `<circle cx="-18" cy="2" r="18" fill="none" stroke="#b8604c" stroke-width="3"/><path d="M -28 2 q 10 -12 20 0" stroke="#b8604c" stroke-width="2.5" fill="none"/>`;
+  s += `<text x="${-w / 2 + 12}" y="${-h / 2 + 24}" font-family="Fredoka" font-weight="700" font-size="20" fill="#7a2e22">10</text><text x="${w / 2 - 12}" y="${h / 2 - 10}" text-anchor="end" font-family="Fredoka" font-weight="700" font-size="16" fill="#7a2e22">R$</text>`;
+  if (label === '@hat') s += `<g transform="translate(${w / 2 - 30} ${-h / 2 + 18}) scale(0.18)" opacity="${f2(0.5 + glow * 0.5)}"><ellipse cx="0" cy="40" rx="112" ry="20" fill="#2a2430"/><path d="M -64 38 C -66 -30 -40 -44 0 -30 C 40 -44 66 -30 64 38 Z" fill="#332c3c"/><path d="M -64 24 Q 0 34 64 24 L 64 38 Q 0 48 -64 38 Z" fill="#8a1c2c"/></g>`;
+  else if (label) s += `<text x="${w / 2 - 10}" y="${-h / 2 + 22}" text-anchor="end" font-family="Fredoka" font-weight="700" font-size="${o.fs || 15}" fill="${glow > 0 ? '#fff6c8' : '#7a2e22'}" stroke="${glow > 0 ? '#d08a1a' : 'none'}" stroke-width="${glow > 0 ? 3 : 0}" paint-order="stroke">${label}</text>`;
+  return s + '</g>';
+}
+function wallet(o = {}) {
+  // brown leather wallet; open 0..1 shows the notes fanned; n = notes left; light = thinning (0..1)
+  const k = o.s || 1, open = clamp(o.open || 0), n = o.n == null ? 4 : o.n, th = 1 - 0.6 * clamp(o.light || 0);
+  let s = `<g transform="rotate(${o.rot || 0}) scale(${k})">`;
+  if (open > 0.05) for (let i = 0; i < n; i++) { const a = (i - (n - 1) / 2) * 14 * open; s += `<g transform="rotate(${f2(a)} 0 40) translate(0 ${f2(-30 * open - i * 2)})">${noteNamed(o.labels ? o.labels[i] : '', o.glow || 0, { s: 0.9 })}</g>`; }
+  s += `<rect x="-90" y="-10" width="180" height="${f2(70 * th + 10)}" rx="14" fill="#7a4a2a" stroke="${OL}" stroke-width="5"/>`;
+  s += `<rect x="-80" y="0" width="160" height="${f2(50 * th)}" rx="10" fill="none" stroke="#a8703e" stroke-width="3" stroke-dasharray="7 5"/>`;
+  s += `<path d="M 90 10 h 22 a 10 10 0 0 1 0 26 h -22" fill="#6a3c20" stroke="${OL}" stroke-width="4"/><circle cx="108" cy="23" r="5" fill="#e0b040" stroke="${OL}" stroke-width="2"/>`;
+  return s + '</g>';
+}
+function suitcase(o = {}) {
+  const k = o.s || 1;
+  return `<g transform="rotate(${o.rot || 0}) scale(${k})"><path d="M -24 -70 v -16 h 48 v 16" stroke="${OL}" stroke-width="9" fill="none"/><path d="M -24 -70 v -16 h 48 v 16" stroke="#8a5a34" stroke-width="5" fill="none"/>
+  <rect x="-70" y="-70" width="140" height="96" rx="14" fill="#c8643c" stroke="${OL}" stroke-width="5"/><rect x="-70" y="-38" width="140" height="10" fill="#8a3a22"/><rect x="-46" y="-70" width="10" height="96" fill="#8a3a22"/><rect x="36" y="-70" width="10" height="96" fill="#8a3a22"/>
+  <circle cx="-30" cy="-12" r="9" fill="#f2c230" stroke="${OL}" stroke-width="2.5"/><rect x="8" y="-20" width="26" height="16" rx="3" fill="#fff6dc" stroke="${OL}" stroke-width="2.5"/></g>`;
+}
+function dog(x, y, o = {}) {
+  // small brown dog; growl 0..1 shows teeth and angry brows; wag 0..1 wags the tail; face -1/1 direction
+  const t = o.t || 0, k = (o.s || 1), dir = o.face < 0 ? -1 : 1, g = clamp(o.growl || 0), wg = clamp(o.wag || 0);
+  const tail = wg > 0 ? Math.sin(t * 22) * 28 * wg : -10 * g;
+  const bob = wg > 0 ? Math.abs(Math.sin(t * 11)) * -5 * wg : Math.sin(t * 30) * 1.5 * g;
+  let s = `<g transform="translate(${f2(x)} ${f2(y + bob)}) scale(${f2(k * dir)} ${f2(k)})">`;
+  s += `<ellipse cx="0" cy="2" rx="70" ry="10" fill="#1b1424" opacity="0.22"/>`;
+  s += `<g transform="rotate(${f2(tail)} -52 -56)"><path d="M -52 -56 Q -84 -80 -78 -110" stroke="${OL}" stroke-width="20" fill="none" stroke-linecap="round"/><path d="M -52 -56 Q -84 -80 -78 -110" stroke="#b8763e" stroke-width="11" fill="none" stroke-linecap="round"/></g>`;
+  for (const lx of [-40, -18, 22, 42]) s += `<rect x="${lx - 8}" y="-34" width="16" height="34" rx="7" fill="#a8683a" stroke="${OL}" stroke-width="4.5"/>`;
+  s += `<ellipse cx="0" cy="-48" rx="62" ry="30" fill="#b8763e" stroke="${OL}" stroke-width="${LW}"/><ellipse cx="-6" cy="-40" rx="34" ry="14" fill="#e8c49a"/>`;
+  s += `<g transform="translate(52 -82)"><path d="M -30 -10 Q -46 -40 -26 -48 Q -14 -30 -18 -8 Z" fill="#7a4626" stroke="${OL}" stroke-width="4.5"/>`;
+  s += `<ellipse cx="0" cy="0" rx="36" ry="32" fill="#b8763e" stroke="${OL}" stroke-width="${LW}"/><ellipse cx="22" cy="10" rx="20" ry="15" fill="#e8c49a" stroke="${OL}" stroke-width="4"/><ellipse cx="38" cy="4" rx="8" ry="7" fill="${OL}"/>`;
+  s += `<circle cx="6" cy="-8" r="7" fill="#fff" stroke="${OL}" stroke-width="3"/><circle cx="8" cy="-7" r="3.5" fill="${OL}"/>`;
+  if (g > 0.3) s += `<path d="M -4 -20 L 16 -12" stroke="${OL}" stroke-width="5" stroke-linecap="round"/><path d="M 14 20 L 40 18 L 38 24 L 16 26 Z" fill="#fff" stroke="${OL}" stroke-width="3"/><path d="M 18 20 l 3 5 l 3 -5 l 3 5 l 3 -5 l 3 5" stroke="${OL}" stroke-width="2" fill="none"/>`;
+  else s += `<path d="M 16 22 Q 28 30 40 20" stroke="${OL}" stroke-width="4" fill="none" stroke-linecap="round"/>` + (wg > 0.3 ? `<path d="M 26 26 q 4 14 10 0" fill="#e86a7a" stroke="${OL}" stroke-width="3"/>` : '');
+  s += `<path d="M -22 -26 Q -40 -4 -26 16 Q -14 -2 -12 -20 Z" fill="#7a4626" stroke="${OL}" stroke-width="4.5"/>`;
+  s += `<path d="M -30 22 Q 0 34 26 24" stroke="#c8443c" stroke-width="9" fill="none"/></g>`;
+  return s + '</g>';
+}
+
 
 function lidPath(cx, cy, rx, ry, lid, col) {
   // upper eyelid clipped to the eye ellipse: arc over the top of the eye, closed by the (slightly curved) lid line
@@ -229,7 +302,8 @@ function legs2(P, lA, rA, dir) {
 
 function person(id, o = {}) {
   const key = id === 'padeira' && o.old ? 'padeiraV' : id;
-  const P = CAST2[key] || CAST2.viz1;
+  let P = CAST2[key] || CAST2.viz1;
+  if (o.pale) P = Object.assign({}, P, { skin: mix(P.skin, '#e2e8ee', clamp(o.pale) * 0.85) });
   const d = Object.assign({ x: 0, y: 0, s: 1, face: 0, expr: 'neutral', mouth: 0, blink: 0, lx: 0, ly: 0, armL: 8, armR: 8, bendL: 12, bendR: 12, walk: null, tilt: 0, squash: 0, jump: 0, t: 0, holdR: '', holdL: '', shadow: true, headTilt: 0, flip: false }, o);
   if (d.mouth > 0.05) d.headTilt += Math.sin(d.t * 11) * 2.5;
   const s = d.s * (P.scale || 1);
@@ -255,7 +329,7 @@ function person(id, o = {}) {
   g += '</g>';
   g += `<g transform="translate(0 ${f2(breath)}) rotate(${f2(d.headTilt)} 0 ${H2 + 70})">${head2(P, d, fx, dir, false)}</g>`;
   g += '</g>';
-  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (d.flip ? -1 : 1) * (1 - 0.45 * (d.turn || 0)))} ${f2(s)})">${g}</g>`;
+  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (d.flip ? -1 : 1) * (1 - 0.45 * (d.turn || 0)))} ${f2(s)})"${d.fade != null ? ` opacity="${f2(d.fade)}"` : ''}>${g}</g>`;
 }
 
 function personSide2(P, d, s) {
@@ -289,5 +363,7 @@ function personSide2(P, d, s) {
   g += front.svg;
   g += `<g transform="translate(0 ${f2(Math.sin(w * 2) * 2)}) rotate(${f2(d.headTilt)} 0 ${H2 + 70})">${head2(P, Object.assign({}, d, { lx: dir }), dir * 26, dir, true)}</g>`;
   g += '</g>';
-  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (1 - 0.45 * (d.turn || 0)))} ${f2(s)})">${g}</g>`;
+  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (1 - 0.45 * (d.turn || 0)))} ${f2(s)})"${d.fade != null ? ` opacity="${f2(d.fade)}"` : ''}>${g}</g>`;
 }
+// hat held in the hand (origin = brim centre)
+function fedoraProp(rot = 0) { return `<g transform="rotate(${rot}) translate(0 ${58 - H2})">${fedora(1, 0)}</g>`; }

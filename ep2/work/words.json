@@ -1,0 +1,1658 @@
+[
+ {
+  "word": "Nessa",
+  "start": 0.0,
+  "end": 0.46,
+  "prob": 0.956
+ },
+ {
+  "word": "cidade,",
+  "start": 0.46,
+  "end": 0.96,
+  "prob": 0.999
+ },
+ {
+  "word": "quem",
+  "start": 1.22,
+  "end": 1.32,
+  "prob": 0.994
+ },
+ {
+  "word": "devolve",
+  "start": 1.32,
+  "end": 1.82,
+  "prob": 0.976
+ },
+ {
+  "word": "a",
+  "start": 1.82,
+  "end": 1.96,
+  "prob": 0.986
+ },
+ {
+  "word": "nota",
+  "start": 1.96,
+  "end": 2.22,
+  "prob": 0.999
+ },
+ {
+  "word": "vira",
+  "start": 2.22,
+  "end": 2.64,
+  "prob": 0.91
+ },
+ {
+  "word": "um",
+  "start": 2.64,
+  "end": 2.72,
+  "prob": 0.658
+ },
+ {
+  "word": "cobrador.",
+  "start": 2.72,
+  "end": 3.48,
+  "prob": 0.985
+ },
+ {
+  "word": "Paulo",
+  "start": 4.02,
+  "end": 4.54,
+  "prob": 0.529
+ },
+ {
+  "word": "estendeu",
+  "start": 4.54,
+  "end": 4.9,
+  "prob": 0.957
+ },
+ {
+  "word": "a",
+  "start": 4.9,
+  "end": 5.02,
+  "prob": 0.997
+ },
+ {
+  "word": "nota",
+  "start": 5.02,
+  "end": 5.2,
+  "prob": 0.998
+ },
+ {
+  "word": "de",
+  "start": 5.2,
+  "end": 5.32,
+  "prob": 0.999
+ },
+ {
+  "word": "10.",
+  "start": 5.32,
+  "end": 5.54,
+  "prob": 0.769
+ },
+ {
+  "word": "O",
+  "start": 6.0,
+  "end": 6.1,
+  "prob": 0.978
+ },
+ {
+  "word": "homem",
+  "start": 6.1,
+  "end": 6.3,
+  "prob": 0.719
+ },
+ {
+  "word": "de",
+  "start": 6.3,
+  "end": 6.46,
+  "prob": 0.968
+ },
+ {
+  "word": "Tevno",
+  "start": 6.46,
+  "end": 6.72,
+  "prob": 0.786
+ },
+ {
+  "word": "pegou.",
+  "start": 6.72,
+  "end": 7.02,
+  "prob": 0.987
+ },
+ {
+  "word": "Tirou",
+  "start": 7.34,
+  "end": 7.9,
+  "prob": 0.496
+ },
+ {
+  "word": "o",
+  "start": 7.9,
+  "end": 8.02,
+  "prob": 0.936
+ },
+ {
+  "word": "chapéu",
+  "start": 8.02,
+  "end": 8.36,
+  "prob": 0.978
+ },
+ {
+  "word": "e",
+  "start": 8.36,
+  "end": 8.72,
+  "prob": 0.285
+ },
+ {
+  "word": "entregou",
+  "start": 8.72,
+  "end": 9.52,
+  "prob": 0.965
+ },
+ {
+  "word": "pro",
+  "start": 9.52,
+  "end": 9.66,
+  "prob": 0.695
+ },
+ {
+  "word": "Polo",
+  "start": 9.66,
+  "end": 10.18,
+  "prob": 0.755
+ },
+ {
+  "word": "o",
+  "start": 10.18,
+  "end": 10.38,
+  "prob": 0.463
+ },
+ {
+  "word": "chapéu",
+  "start": 10.38,
+  "end": 10.88,
+  "prob": 0.981
+ },
+ {
+  "word": "e",
+  "start": 10.88,
+  "end": 10.94,
+  "prob": 0.994
+ },
+ {
+  "word": "a",
+  "start": 10.94,
+  "end": 11.02,
+  "prob": 0.96
+ },
+ {
+  "word": "carteira.",
+  "start": 11.02,
+  "end": 11.44,
+  "prob": 0.997
+ },
+ {
+  "word": "Depois",
+  "start": 11.86,
+  "end": 12.32,
+  "prob": 0.911
+ },
+ {
+  "word": "saiu",
+  "start": 12.32,
+  "end": 12.68,
+  "prob": 0.967
+ },
+ {
+  "word": "andando",
+  "start": 12.68,
+  "end": 13.06,
+  "prob": 0.995
+ },
+ {
+  "word": "devagar",
+  "start": 13.06,
+  "end": 13.48,
+  "prob": 0.932
+ },
+ {
+  "word": "pela",
+  "start": 13.48,
+  "end": 13.72,
+  "prob": 0.979
+ },
+ {
+  "word": "rua",
+  "start": 13.72,
+  "end": 13.9,
+  "prob": 0.766
+ },
+ {
+  "word": "escura.",
+  "start": 13.9,
+  "end": 14.24,
+  "prob": 0.981
+ },
+ {
+  "word": "Polo",
+  "start": 15.04,
+  "end": 15.5,
+  "prob": 0.792
+ },
+ {
+  "word": "colocou",
+  "start": 15.5,
+  "end": 15.78,
+  "prob": 0.998
+ },
+ {
+  "word": "o",
+  "start": 15.78,
+  "end": 15.88,
+  "prob": 0.97
+ },
+ {
+  "word": "chapéu",
+  "start": 15.88,
+  "end": 16.1,
+  "prob": 0.998
+ },
+ {
+  "word": "na",
+  "start": 16.1,
+  "end": 16.16,
+  "prob": 0.996
+ },
+ {
+  "word": "cabeça.",
+  "start": 16.16,
+  "end": 16.46,
+  "prob": 0.998
+ },
+ {
+  "word": "Cada",
+  "start": 17.46,
+  "end": 17.64,
+  "prob": 0.371
+ },
+ {
+  "word": "nota",
+  "start": 17.64,
+  "end": 18.0,
+  "prob": 0.996
+ },
+ {
+  "word": "da",
+  "start": 18.0,
+  "end": 18.18,
+  "prob": 0.99
+ },
+ {
+  "word": "carteira",
+  "start": 18.18,
+  "end": 18.5,
+  "prob": 0.998
+ },
+ {
+  "word": "tinha",
+  "start": 18.5,
+  "end": 18.66,
+  "prob": 0.985
+ },
+ {
+  "word": "um",
+  "start": 18.66,
+  "end": 18.78,
+  "prob": 0.991
+ },
+ {
+  "word": "nome",
+  "start": 18.78,
+  "end": 19.08,
+  "prob": 0.973
+ },
+ {
+  "word": "inscrito.",
+  "start": 19.08,
+  "end": 19.48,
+  "prob": 0.845
+ },
+ {
+  "word": "Brilhando,",
+  "start": 19.72,
+  "end": 20.2,
+  "prob": 0.945
+ },
+ {
+  "word": "bem",
+  "start": 20.4,
+  "end": 20.52,
+  "prob": 0.996
+ },
+ {
+  "word": "no",
+  "start": 20.52,
+  "end": 20.64,
+  "prob": 0.994
+ },
+ {
+  "word": "cantinho.",
+  "start": 20.64,
+  "end": 20.98,
+  "prob": 0.941
+ },
+ {
+  "word": "A",
+  "start": 21.7,
+  "end": 21.98,
+  "prob": 0.957
+ },
+ {
+  "word": "primeira",
+  "start": 21.98,
+  "end": 22.18,
+  "prob": 0.998
+ },
+ {
+  "word": "nota",
+  "start": 22.18,
+  "end": 22.48,
+  "prob": 0.998
+ },
+ {
+  "word": "dizia,",
+  "start": 22.48,
+  "end": 22.8,
+  "prob": 0.943
+ },
+ {
+  "word": "padeiro.",
+  "start": 22.98,
+  "end": 23.32,
+  "prob": 0.697
+ },
+ {
+  "word": "De",
+  "start": 23.92,
+  "end": 24.12,
+  "prob": 0.847
+ },
+ {
+  "word": "manhã,",
+  "start": 24.12,
+  "end": 24.36,
+  "prob": 0.99
+ },
+ {
+  "word": "Polo",
+  "start": 24.62,
+  "end": 24.82,
+  "prob": 0.963
+ },
+ {
+  "word": "bateu",
+  "start": 24.82,
+  "end": 25.04,
+  "prob": 0.965
+ },
+ {
+  "word": "na",
+  "start": 25.04,
+  "end": 25.14,
+  "prob": 0.979
+ },
+ {
+  "word": "padaria.",
+  "start": 25.14,
+  "end": 25.48,
+  "prob": 0.974
+ },
+ {
+  "word": "O",
+  "start": 26.08,
+  "end": 26.22,
+  "prob": 0.979
+ },
+ {
+  "word": "padeiro",
+  "start": 26.22,
+  "end": 26.46,
+  "prob": 0.979
+ },
+ {
+  "word": "abriu",
+  "start": 26.46,
+  "end": 26.74,
+  "prob": 0.98
+ },
+ {
+  "word": "a",
+  "start": 26.74,
+  "end": 26.8,
+  "prob": 0.99
+ },
+ {
+  "word": "porta",
+  "start": 26.8,
+  "end": 27.06,
+  "prob": 0.999
+ },
+ {
+  "word": "e",
+  "start": 27.06,
+  "end": 27.2,
+  "prob": 0.989
+ },
+ {
+  "word": "ficou",
+  "start": 27.2,
+  "end": 27.34,
+  "prob": 0.997
+ },
+ {
+  "word": "pálido.",
+  "start": 27.34,
+  "end": 28.16,
+  "prob": 0.958
+ },
+ {
+  "word": "Polo",
+  "start": 28.8,
+  "end": 29.18,
+  "prob": 0.939
+ },
+ {
+  "word": "entregou",
+  "start": 29.18,
+  "end": 29.6,
+  "prob": 0.989
+ },
+ {
+  "word": "a",
+  "start": 29.6,
+  "end": 29.7,
+  "prob": 0.988
+ },
+ {
+  "word": "nota.",
+  "start": 29.7,
+  "end": 29.98,
+  "prob": 0.998
+ },
+ {
+  "word": "O",
+  "start": 29.98,
+  "end": 30.64,
+  "prob": 0.258
+ },
+ {
+  "word": "padeiro",
+  "start": 30.64,
+  "end": 30.94,
+  "prob": 0.729
+ },
+ {
+  "word": "chorou",
+  "start": 30.94,
+  "end": 31.36,
+  "prob": 0.953
+ },
+ {
+  "word": "de",
+  "start": 31.36,
+  "end": 31.5,
+  "prob": 0.968
+ },
+ {
+  "word": "alívio.",
+  "start": 31.5,
+  "end": 31.88,
+  "prob": 0.957
+ },
+ {
+  "word": "Falou,",
+  "start": 32.36,
+  "end": 32.84,
+  "prob": 0.863
+ },
+ {
+  "word": "faz",
+  "start": 33.18,
+  "end": 33.38,
+  "prob": 0.159
+ },
+ {
+  "word": "trinta",
+  "start": 33.38,
+  "end": 33.96,
+  "prob": 0.582
+ },
+ {
+  "word": "anos",
+  "start": 33.96,
+  "end": 34.34,
+  "prob": 0.999
+ },
+ {
+  "word": "que",
+  "start": 34.34,
+  "end": 34.5,
+  "prob": 0.978
+ },
+ {
+  "word": "eu",
+  "start": 34.5,
+  "end": 34.6,
+  "prob": 0.951
+ },
+ {
+  "word": "tento",
+  "start": 34.6,
+  "end": 34.82,
+  "prob": 0.982
+ },
+ {
+  "word": "ir",
+  "start": 34.82,
+  "end": 34.9,
+  "prob": 0.99
+ },
+ {
+  "word": "embora.",
+  "start": 34.9,
+  "end": 35.2,
+  "prob": 0.999
+ },
+ {
+  "word": "Pegou",
+  "start": 35.8,
+  "end": 36.1,
+  "prob": 0.979
+ },
+ {
+  "word": "a",
+  "start": 36.1,
+  "end": 36.22,
+  "prob": 0.985
+ },
+ {
+  "word": "mala",
+  "start": 36.22,
+  "end": 36.4,
+  "prob": 0.981
+ },
+ {
+  "word": "e",
+  "start": 36.4,
+  "end": 36.56,
+  "prob": 0.981
+ },
+ {
+  "word": "saiu",
+  "start": 36.56,
+  "end": 36.72,
+  "prob": 0.947
+ },
+ {
+  "word": "correndo,",
+  "start": 36.72,
+  "end": 37.2,
+  "prob": 0.993
+ },
+ {
+  "word": "feliz",
+  "start": 37.36,
+  "end": 37.66,
+  "prob": 0.995
+ },
+ {
+  "word": "da",
+  "start": 37.66,
+  "end": 37.88,
+  "prob": 0.976
+ },
+ {
+  "word": "vida.",
+  "start": 37.88,
+  "end": 38.06,
+  "prob": 0.999
+ },
+ {
+  "word": "Depois",
+  "start": 39.06,
+  "end": 39.4,
+  "prob": 0.983
+ },
+ {
+  "word": "foi",
+  "start": 39.4,
+  "end": 39.68,
+  "prob": 0.63
+ },
+ {
+  "word": "pro",
+  "start": 39.68,
+  "end": 39.84,
+  "prob": 0.223
+ },
+ {
+  "word": "ponto",
+  "start": 39.84,
+  "end": 40.04,
+  "prob": 0.984
+ },
+ {
+  "word": "de",
+  "start": 40.04,
+  "end": 40.2,
+  "prob": 0.996
+ },
+ {
+  "word": "ônibus.",
+  "start": 40.2,
+  "end": 40.48,
+  "prob": 0.982
+ },
+ {
+  "word": "O",
+  "start": 41.08,
+  "end": 41.24,
+  "prob": 0.982
+ },
+ {
+  "word": "motorista",
+  "start": 41.24,
+  "end": 41.62,
+  "prob": 0.997
+ },
+ {
+  "word": "pegou",
+  "start": 41.62,
+  "end": 41.96,
+  "prob": 0.988
+ },
+ {
+  "word": "a",
+  "start": 41.96,
+  "end": 42.04,
+  "prob": 0.985
+ },
+ {
+  "word": "nota",
+  "start": 42.04,
+  "end": 42.22,
+  "prob": 0.997
+ },
+ {
+  "word": "e",
+  "start": 42.22,
+  "end": 42.36,
+  "prob": 0.985
+ },
+ {
+  "word": "riu",
+  "start": 42.36,
+  "end": 42.5,
+  "prob": 0.945
+ },
+ {
+  "word": "alto.",
+  "start": 42.5,
+  "end": 42.86,
+  "prob": 0.995
+ },
+ {
+  "word": "Soltou",
+  "start": 43.48,
+  "end": 43.96,
+  "prob": 0.879
+ },
+ {
+  "word": "o",
+  "start": 43.96,
+  "end": 44.12,
+  "prob": 0.983
+ },
+ {
+  "word": "volante,",
+  "start": 44.12,
+  "end": 44.46,
+  "prob": 0.985
+ },
+ {
+  "word": "abriu",
+  "start": 44.7,
+  "end": 45.06,
+  "prob": 0.977
+ },
+ {
+  "word": "a",
+  "start": 45.06,
+  "end": 45.12,
+  "prob": 0.998
+ },
+ {
+  "word": "porta",
+  "start": 45.12,
+  "end": 45.36,
+  "prob": 0.998
+ },
+ {
+  "word": "e",
+  "start": 45.36,
+  "end": 45.54,
+  "prob": 0.96
+ },
+ {
+  "word": "foi",
+  "start": 45.54,
+  "end": 45.66,
+  "prob": 0.998
+ },
+ {
+  "word": "embora",
+  "start": 45.66,
+  "end": 45.96,
+  "prob": 0.992
+ },
+ {
+  "word": "a",
+  "start": 45.96,
+  "end": 46.1,
+  "prob": 0.664
+ },
+ {
+  "word": "pé.",
+  "start": 46.1,
+  "end": 46.22,
+  "prob": 0.996
+ },
+ {
+  "word": "O",
+  "start": 46.88,
+  "end": 47.06,
+  "prob": 0.984
+ },
+ {
+  "word": "ônibus",
+  "start": 47.06,
+  "end": 47.28,
+  "prob": 0.998
+ },
+ {
+  "word": "seguiu",
+  "start": 47.28,
+  "end": 47.44,
+  "prob": 0.982
+ },
+ {
+  "word": "sozinho",
+  "start": 47.44,
+  "end": 47.94,
+  "prob": 0.919
+ },
+ {
+  "word": "pela",
+  "start": 47.94,
+  "end": 48.12,
+  "prob": 0.973
+ },
+ {
+  "word": "rua,",
+  "start": 48.12,
+  "end": 48.32,
+  "prob": 0.997
+ },
+ {
+  "word": "cheio",
+  "start": 48.36,
+  "end": 48.8,
+  "prob": 0.997
+ },
+ {
+  "word": "de",
+  "start": 48.8,
+  "end": 48.92,
+  "prob": 0.999
+ },
+ {
+  "word": "gente.",
+  "start": 48.92,
+  "end": 49.14,
+  "prob": 0.993
+ },
+ {
+  "word": "Na",
+  "start": 50.02,
+  "end": 50.38,
+  "prob": 0.984
+ },
+ {
+  "word": "praça,",
+  "start": 50.38,
+  "end": 50.72,
+  "prob": 0.973
+ },
+ {
+  "word": "a",
+  "start": 50.88,
+  "end": 50.88,
+  "prob": 0.996
+ },
+ {
+  "word": "senhora",
+  "start": 50.88,
+  "end": 51.06,
+  "prob": 0.954
+ },
+ {
+  "word": "recebeu",
+  "start": 51.06,
+  "end": 51.5,
+  "prob": 0.97
+ },
+ {
+  "word": "a",
+  "start": 51.5,
+  "end": 51.56,
+  "prob": 0.982
+ },
+ {
+  "word": "dela.",
+  "start": 51.56,
+  "end": 51.72,
+  "prob": 0.987
+ },
+ {
+  "word": "O",
+  "start": 52.48,
+  "end": 52.6,
+  "prob": 0.985
+ },
+ {
+  "word": "cachorro",
+  "start": 52.6,
+  "end": 52.88,
+  "prob": 0.994
+ },
+ {
+  "word": "parou",
+  "start": 52.88,
+  "end": 53.26,
+  "prob": 0.997
+ },
+ {
+  "word": "de",
+  "start": 53.26,
+  "end": 53.4,
+  "prob": 0.982
+ },
+ {
+  "word": "rosnar",
+  "start": 53.4,
+  "end": 53.78,
+  "prob": 0.932
+ },
+ {
+  "word": "e",
+  "start": 53.78,
+  "end": 53.98,
+  "prob": 0.957
+ },
+ {
+  "word": "abandonou",
+  "start": 53.98,
+  "end": 54.34,
+  "prob": 0.811
+ },
+ {
+  "word": "o",
+  "start": 54.34,
+  "end": 54.4,
+  "prob": 0.966
+ },
+ {
+  "word": "rabo.",
+  "start": 54.4,
+  "end": 54.68,
+  "prob": 0.996
+ },
+ {
+  "word": "Até",
+  "start": 55.26,
+  "end": 55.56,
+  "prob": 0.982
+ },
+ {
+  "word": "o",
+  "start": 55.56,
+  "end": 55.66,
+  "prob": 0.995
+ },
+ {
+  "word": "relógio",
+  "start": 55.66,
+  "end": 56.2,
+  "prob": 0.988
+ },
+ {
+  "word": "da",
+  "start": 56.2,
+  "end": 56.34,
+  "prob": 0.984
+ },
+ {
+  "word": "torre",
+  "start": 56.34,
+  "end": 56.58,
+  "prob": 0.918
+ },
+ {
+  "word": "voltou",
+  "start": 56.58,
+  "end": 56.98,
+  "prob": 0.985
+ },
+ {
+  "word": "a",
+  "start": 56.98,
+  "end": 57.06,
+  "prob": 0.971
+ },
+ {
+  "word": "andar.",
+  "start": 57.06,
+  "end": 57.26,
+  "prob": 0.986
+ },
+ {
+  "word": "Mas",
+  "start": 58.12,
+  "end": 58.7,
+  "prob": 0.099
+ },
+ {
+  "word": "aí,",
+  "start": 58.7,
+  "end": 58.94,
+  "prob": 0.839
+ },
+ {
+  "word": "Polo",
+  "start": 59.2,
+  "end": 59.54,
+  "prob": 0.59
+ },
+ {
+  "word": "olhou",
+  "start": 59.54,
+  "end": 59.7,
+  "prob": 0.995
+ },
+ {
+  "word": "a",
+  "start": 59.7,
+  "end": 59.82,
+  "prob": 0.831
+ },
+ {
+  "word": "carteira.",
+  "start": 59.82,
+  "end": 60.26,
+  "prob": 0.996
+ },
+ {
+  "word": "Tava",
+  "start": 60.78,
+  "end": 61.36,
+  "prob": 0.787
+ },
+ {
+  "word": "ficando",
+  "start": 61.36,
+  "end": 61.62,
+  "prob": 0.998
+ },
+ {
+  "word": "leve,",
+  "start": 61.62,
+  "end": 61.96,
+  "prob": 0.991
+ },
+ {
+  "word": "muito",
+  "start": 62.32,
+  "end": 62.64,
+  "prob": 0.926
+ },
+ {
+  "word": "leve.",
+  "start": 62.64,
+  "end": 63.02,
+  "prob": 0.998
+ },
+ {
+  "word": "Só",
+  "start": 63.68,
+  "end": 63.9,
+  "prob": 0.841
+ },
+ {
+  "word": "sobrava",
+  "start": 63.9,
+  "end": 64.3,
+  "prob": 0.984
+ },
+ {
+  "word": "uma",
+  "start": 64.3,
+  "end": 64.66,
+  "prob": 0.804
+ },
+ {
+  "word": "nota.",
+  "start": 64.66,
+  "end": 65.02,
+  "prob": 0.997
+ },
+ {
+  "word": "Ela",
+  "start": 65.98,
+  "end": 66.16,
+  "prob": 0.965
+ },
+ {
+  "word": "não",
+  "start": 66.16,
+  "end": 66.32,
+  "prob": 0.991
+ },
+ {
+  "word": "tinha",
+  "start": 66.32,
+  "end": 66.52,
+  "prob": 0.997
+ },
+ {
+  "word": "o",
+  "start": 66.52,
+  "end": 66.64,
+  "prob": 0.465
+ },
+ {
+  "word": "nome",
+  "start": 66.64,
+  "end": 66.78,
+  "prob": 0.991
+ },
+ {
+  "word": "de",
+  "start": 66.78,
+  "end": 66.92,
+  "prob": 0.981
+ },
+ {
+  "word": "ninguém",
+  "start": 66.92,
+  "end": 67.14,
+  "prob": 0.984
+ },
+ {
+  "word": "da",
+  "start": 67.14,
+  "end": 67.34,
+  "prob": 0.961
+ },
+ {
+  "word": "cidade.",
+  "start": 67.34,
+  "end": 67.68,
+  "prob": 0.996
+ },
+ {
+  "word": "Tinha",
+  "start": 68.5,
+  "end": 69.0,
+  "prob": 0.937
+ },
+ {
+  "word": "o",
+  "start": 69.0,
+  "end": 69.1,
+  "prob": 0.884
+ },
+ {
+  "word": "nome",
+  "start": 69.1,
+  "end": 69.32,
+  "prob": 0.997
+ },
+ {
+  "word": "do",
+  "start": 69.32,
+  "end": 69.58,
+  "prob": 0.983
+ },
+ {
+  "word": "homem",
+  "start": 69.58,
+  "end": 69.76,
+  "prob": 0.72
+ },
+ {
+  "word": "de",
+  "start": 69.76,
+  "end": 69.92,
+  "prob": 0.961
+ },
+ {
+  "word": "Terno.",
+  "start": 69.92,
+  "end": 70.36,
+  "prob": 0.828
+ },
+ {
+  "word": "Polo",
+  "start": 71.14,
+  "end": 71.6,
+  "prob": 0.957
+ },
+ {
+  "word": "correu",
+  "start": 71.6,
+  "end": 71.84,
+  "prob": 0.972
+ },
+ {
+  "word": "atrás",
+  "start": 71.84,
+  "end": 72.02,
+  "prob": 0.961
+ },
+ {
+  "word": "dele",
+  "start": 72.02,
+  "end": 72.26,
+  "prob": 0.981
+ },
+ {
+  "word": "pela",
+  "start": 72.26,
+  "end": 72.42,
+  "prob": 0.989
+ },
+ {
+  "word": "rua",
+  "start": 72.42,
+  "end": 72.56,
+  "prob": 0.903
+ },
+ {
+  "word": "vazia.",
+  "start": 72.56,
+  "end": 72.98,
+  "prob": 0.73
+ },
+ {
+  "word": "O",
+  "start": 73.82,
+  "end": 73.94,
+  "prob": 0.989
+ },
+ {
+  "word": "homem",
+  "start": 73.94,
+  "end": 74.06,
+  "prob": 0.998
+ },
+ {
+  "word": "esperava",
+  "start": 74.06,
+  "end": 74.46,
+  "prob": 0.99
+ },
+ {
+  "word": "parado",
+  "start": 74.46,
+  "end": 74.94,
+  "prob": 0.992
+ },
+ {
+  "word": "na",
+  "start": 74.94,
+  "end": 75.2,
+  "prob": 0.519
+ },
+ {
+  "word": "esquina.",
+  "start": 75.2,
+  "end": 75.56,
+  "prob": 0.993
+ },
+ {
+  "word": "Polo",
+  "start": 76.28,
+  "end": 76.74,
+  "prob": 0.988
+ },
+ {
+  "word": "estendeu",
+  "start": 76.74,
+  "end": 77.02,
+  "prob": 0.975
+ },
+ {
+  "word": "a",
+  "start": 77.02,
+  "end": 77.18,
+  "prob": 0.999
+ },
+ {
+  "word": "última",
+  "start": 77.18,
+  "end": 77.38,
+  "prob": 0.992
+ },
+ {
+  "word": "nota.",
+  "start": 77.38,
+  "end": 77.72,
+  "prob": 0.999
+ },
+ {
+  "word": "O",
+  "start": 78.46,
+  "end": 78.56,
+  "prob": 0.984
+ },
+ {
+  "word": "homem",
+  "start": 78.56,
+  "end": 78.7,
+  "prob": 0.998
+ },
+ {
+  "word": "sorriu",
+  "start": 78.7,
+  "end": 79.12,
+  "prob": 0.949
+ },
+ {
+  "word": "e",
+  "start": 79.12,
+  "end": 79.2,
+  "prob": 0.984
+ },
+ {
+  "word": "disse,",
+  "start": 79.2,
+  "end": 79.4,
+  "prob": 0.996
+ },
+ {
+  "word": "esperei",
+  "start": 79.92,
+  "end": 80.36,
+  "prob": 0.48
+ },
+ {
+  "word": "muito",
+  "start": 80.36,
+  "end": 80.76,
+  "prob": 0.996
+ },
+ {
+  "word": "tempo",
+  "start": 80.76,
+  "end": 81.12,
+  "prob": 0.999
+ },
+ {
+  "word": "por",
+  "start": 81.12,
+  "end": 81.32,
+  "prob": 0.996
+ },
+ {
+  "word": "você.",
+  "start": 81.32,
+  "end": 81.62,
+  "prob": 0.998
+ },
+ {
+  "word": "Ele",
+  "start": 82.42,
+  "end": 82.86,
+  "prob": 0.945
+ },
+ {
+  "word": "pegou",
+  "start": 82.86,
+  "end": 83.08,
+  "prob": 0.99
+ },
+ {
+  "word": "a",
+  "start": 83.08,
+  "end": 83.16,
+  "prob": 0.996
+ },
+ {
+  "word": "nota",
+  "start": 83.16,
+  "end": 83.46,
+  "prob": 0.998
+ },
+ {
+  "word": "e",
+  "start": 83.46,
+  "end": 84.04,
+  "prob": 0.882
+ },
+ {
+  "word": "sumiu",
+  "start": 84.04,
+  "end": 84.32,
+  "prob": 0.997
+ },
+ {
+  "word": "de",
+  "start": 84.32,
+  "end": 84.44,
+  "prob": 0.989
+ },
+ {
+  "word": "vez.",
+  "start": 84.44,
+  "end": 84.64,
+  "prob": 0.998
+ },
+ {
+  "word": "Polo",
+  "start": 85.4,
+  "end": 86.0,
+  "prob": 0.538
+ },
+ {
+  "word": "ficou",
+  "start": 86.0,
+  "end": 86.1,
+  "prob": 0.991
+ },
+ {
+  "word": "sozinho,",
+  "start": 86.1,
+  "end": 86.56,
+  "prob": 0.991
+ },
+ {
+  "word": "de",
+  "start": 86.88,
+  "end": 87.02,
+  "prob": 0.993
+ },
+ {
+  "word": "chapéu,",
+  "start": 87.02,
+  "end": 87.48,
+  "prob": 0.963
+ },
+ {
+  "word": "numa",
+  "start": 87.66,
+  "end": 87.84,
+  "prob": 0.879
+ },
+ {
+  "word": "cidade",
+  "start": 87.84,
+  "end": 88.12,
+  "prob": 0.995
+ },
+ {
+  "word": "vazia.",
+  "start": 88.12,
+  "end": 88.64,
+  "prob": 0.992
+ },
+ {
+  "word": "Aí,",
+  "start": 89.42,
+  "end": 89.64,
+  "prob": 0.948
+ },
+ {
+  "word": "ouviu",
+  "start": 89.74,
+  "end": 89.92,
+  "prob": 0.693
+ },
+ {
+  "word": "passos",
+  "start": 89.92,
+  "end": 90.34,
+  "prob": 0.977
+ },
+ {
+  "word": "na",
+  "start": 90.34,
+  "end": 90.46,
+  "prob": 0.993
+ },
+ {
+  "word": "estrada.",
+  "start": 90.46,
+  "end": 90.82,
+  "prob": 0.991
+ },
+ {
+  "word": "Alguém",
+  "start": 91.72,
+  "end": 92.02,
+  "prob": 0.99
+ },
+ {
+  "word": "chegava",
+  "start": 92.02,
+  "end": 92.42,
+  "prob": 0.994
+ },
+ {
+  "word": "com",
+  "start": 92.42,
+  "end": 92.6,
+  "prob": 0.993
+ },
+ {
+  "word": "uma",
+  "start": 92.6,
+  "end": 92.74,
+  "prob": 0.956
+ },
+ {
+  "word": "nota",
+  "start": 92.74,
+  "end": 92.92,
+  "prob": 0.997
+ },
+ {
+  "word": "de",
+  "start": 92.92,
+  "end": 93.08,
+  "prob": 0.994
+ },
+ {
+  "word": "10,",
+  "start": 93.08,
+  "end": 93.32,
+  "prob": 0.725
+ },
+ {
+  "word": "dobrada",
+  "start": 93.52,
+  "end": 93.84,
+  "prob": 0.996
+ },
+ {
+  "word": "no",
+  "start": 93.84,
+  "end": 93.96,
+  "prob": 0.97
+ },
+ {
+  "word": "bolso.",
+  "start": 93.96,
+  "end": 94.32,
+  "prob": 0.997
+ },
+ {
+  "word": "Polo",
+  "start": 95.1,
+  "end": 95.46,
+  "prob": 0.987
+ },
+ {
+  "word": "apertou",
+  "start": 95.46,
+  "end": 95.86,
+  "prob": 0.997
+ },
+ {
+  "word": "o",
+  "start": 95.86,
+  "end": 95.98,
+  "prob": 0.745
+ },
+ {
+  "word": "chapéu",
+  "start": 95.98,
+  "end": 96.44,
+  "prob": 0.998
+ },
+ {
+  "word": "e",
+  "start": 96.44,
+  "end": 96.72,
+  "prob": 0.87
+ },
+ {
+  "word": "sorriu.",
+  "start": 96.72,
+  "end": 97.06,
+  "prob": 0.973
+ },
+ {
+  "word": "Você",
+  "start": 97.96,
+  "end": 98.3,
+  "prob": 0.942
+ },
+ {
+  "word": "cobrava",
+  "start": 98.3,
+  "end": 98.72,
+  "prob": 0.837
+ },
+ {
+  "word": "a",
+  "start": 98.72,
+  "end": 98.8,
+  "prob": 0.965
+ },
+ {
+  "word": "nota",
+  "start": 98.8,
+  "end": 99.1,
+  "prob": 0.997
+ },
+ {
+  "word": "ou",
+  "start": 99.1,
+  "end": 99.48,
+  "prob": 0.896
+ },
+ {
+  "word": "avisava",
+  "start": 99.48,
+  "end": 99.86,
+  "prob": 0.986
+ },
+ {
+  "word": "a",
+  "start": 99.86,
+  "end": 99.92,
+  "prob": 0.719
+ },
+ {
+  "word": "verdade?",
+  "start": 99.92,
+  "end": 100.14,
+  "prob": 0.998
+ },
+ {
+  "word": "Comenta,",
+  "start": 100.94,
+  "end": 101.3,
+  "prob": 0.99
+ },
+ {
+  "word": "cobra",
+  "start": 101.5,
+  "end": 101.7,
+  "prob": 0.924
+ },
+ {
+  "word": "ou",
+  "start": 101.7,
+  "end": 102.08,
+  "prob": 0.944
+ },
+ {
+  "word": "avisa?",
+  "start": 102.08,
+  "end": 102.38,
+  "prob": 0.984
+ },
+ {
+  "word": "Você",
+  "start": 103.08,
+  "end": 103.3,
+  "prob": 0.977
+ },
+ {
+  "word": "decide",
+  "start": 103.3,
+  "end": 103.64,
+  "prob": 0.991
+ },
+ {
+  "word": "a",
+  "start": 103.64,
+  "end": 103.76,
+  "prob": 0.915
+ },
+ {
+  "word": "parte",
+  "start": 103.76,
+  "end": 103.9,
+  "prob": 0.917
+ },
+ {
+  "word": "3.",
+  "start": 103.9,
+  "end": 104.22,
+  "prob": 0.928
+ },
+ {
+  "word": "E",
+  "start": 104.66,
+  "end": 104.76,
+  "prob": 0.812
+ },
+ {
+  "word": "lembra?",
+  "start": 104.76,
+  "end": 105.0,
+  "prob": 0.971
+ }
+]

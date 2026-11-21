@@ -206,5 +206,53 @@
    "w": 280,
    "h": 450.8000183105469
   }
+ },
+ "homem_terno": {
+  "id": "terno",
+  "files": [
+   "homem_terno_frente.svg",
+   "homem_terno_lado.svg",
+   "homem_terno_expr_neutra.svg",
+   "homem_terno_expr_surpreso.svg",
+   "homem_terno_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -154,
+   "y": -496.87164306640625,
+   "w": 308,
+   "h": 503.4716796875
+  }
+ },
+ "senhora": {
+  "id": "senhora",
+  "files": [
+   "senhora_frente.svg",
+   "senhora_lado.svg",
+   "senhora_expr_neutra.svg",
+   "senhora_expr_surpreso.svg",
+   "senhora_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -464.8999938964844,
+   "w": 280,
+   "h": 470.9000244140625
+  }
+ },
+ "vulto": {
+  "id": "vulto",
+  "files": [
+   "vulto_frente.svg",
+   "vulto_lado.svg",
+   "vulto_expr_neutra.svg",
+   "vulto_expr_surpreso.svg",
+   "vulto_expr_rindo.svg"
+  ],
+  "bbox": {
+   "x": -140,
+   "y": -422.20001220703125,
+   "w": 280,
+   "h": 428.2000427246094
+  }
  }
 }

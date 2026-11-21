@@ -1,6 +1,6 @@
 # Personagens — "Já volto" (canal Arquivo Inexplicável)
 
-Ficha reutilizável dos personagens criados no episódio **"Já volto"**. Tudo aqui foi gerado pelo mesmo código que desenhou o episódio, então cores, proporções e traço são idênticos aos do vídeo.
+Ficha reutilizável dos personagens criados nos episódios **"Já volto"** e **"Quem devolve a nota vira o cobrador"** (parte 2). Tudo aqui foi gerado pelo mesmo código que desenhou o episódio, então cores, proporções e traço são idênticos aos do vídeo.
 
 > **Onde está salvo:** este arquivo e a pasta `claude/personagens/` estão no repositório `arquivo-inexplic-vel-m-dia-`, branch `claude/beautiful-keller-qxgio4`. Esta sessão **não tem acesso ao Projeto "Arquivo com polo" do claude.ai**. Para usar lá, envie este `.md` e os arquivos da pasta `claude/personagens/` para o conhecimento do Projeto (ou anexe-os no outro chat).
 
@@ -18,7 +18,7 @@ Ficha reutilizável dos personagens criados no episódio **"Já volto"**. Tudo a
 | `claude/personagens/svg/<nome>_expr_rindo.svg` | Busto, emoção forte: riso. |
 | `claude/personagens/codigo/` | Código para desenhar e animar (ver seção **Código**). |
 
-São **13 personagens × 5 arquivos = 65 SVGs**. Todos têm **fundo transparente** (nenhum retângulo de fundo), são vetoriais e autossuficientes (cada SVG carrega os próprios padrões de estampa/textura em `<defs>`). **Não há verde em nenhum arquivo**: verifiquei todas as cores; o vestido da mulher de óculos, que era verde no vídeo, virou azul `#4a74c0` por causa do chroma key.
+São **16 personagens × 5 arquivos = 80 SVGs**, mais **11 objetos** em `svg/objetos/`. Todos têm **fundo transparente** (nenhum retângulo de fundo), são vetoriais e autossuficientes (cada SVG carrega os próprios padrões de estampa/textura em `<defs>`). **Não há verde em nenhum arquivo**: verifiquei todas as cores; o vestido da mulher de óculos, que era verde no vídeo, virou azul `#4a74c0` por causa do chroma key.
 
 > **Diferenças em relação ao vídeo v5 do episódio:** ao montar esta ficha corrigi três coisas no rig: (1) a pálpebra agora acompanha o formato do olho (no v5 ela aparecia como um retângulo mais escuro); (2) o brilho do cabelo curto, do boné e do cabelo longo ficava um pouco acima do cabelo; (3) o vestido verde da mulher de óculos virou azul. O boné do menino também subiu, para não cobrir as sobrancelhas. Os SVGs e o código desta ficha já estão corrigidos; o MP4 do v5 ainda não.
 
@@ -279,6 +279,77 @@ O rig desenha cada personagem em "unidades" com os pés em (0,0). Em escala `s =
 **Proporções:** altura 410 u · cabeça 168 u (≈ 2.4 cabeças) · ombros 150 u (0.90 da cabeça) · mão (palma) 34×32 u · sapato ≈ 56×32 u.
 
 **Arquivos:** `svg/vizinha3_frente.svg`, `svg/vizinha3_lado.svg`, `svg/vizinha3_expr_neutra.svg`, `svg/vizinha3_expr_surpreso.svg`, `svg/vizinha3_expr_rindo.svg`
+
+### Homem de terno  (`homem_terno`, id no código: `terno`)
+
+**Papel:** Episódio 2. Recebe a nota de R$ 10 do Polo, entrega a ele o chapéu e a carteira (tornando o Polo o novo "cobrador") e some no fim, depois de pegar a última nota.
+
+| Cor | Hex |
+|---|---|
+| Pele | `#e9d8c8` (pálida, de propósito) |
+| Cabelo | curto `#1d1a22`; chapéu fedora `#332c3c` / aba `#2a2430` / fita `#8a1c2c` |
+| Roupa — terno com gravata | `#2c2a3a` (sombra `#1c1a28`); gravata `#8a1c2c` |
+| Calça | `#2c2a3a` |
+| Sapatos | `#121016` |
+| Contorno | `#1e1820` |
+
+**Proporções:** é o mais alto do elenco (`scale` 1,1): altura 451 u · cabeça 185 u (≈ 2,4 cabeças) · ombros 151 u (0,82 da cabeça) · mão (palma) 37×35 u · sapato ≈ 62×35 u.
+
+**Arquivos:** `svg/homem_terno_frente.svg`, `svg/homem_terno_lado.svg`, `svg/homem_terno_expr_neutra.svg`, `svg/homem_terno_expr_surpreso.svg`, `svg/homem_terno_expr_rindo.svg`. O chapéu já vem na cabeça; use `hat: null` para tirá-lo e `fedoraProp()` para desenhá-lo na mão.
+
+### Senhora  (`senhora`, id no código: `senhora`)
+
+**Papel:** Episódio 2. Senhora da praça, dona do cachorro; recebe a nota com o nome dela (sem nome no roteiro).
+
+| Cor | Hex |
+|---|---|
+| Pele | `#d9a27a` |
+| Cabelo | coque volumoso grisalho `#c8c2d4` |
+| Roupa — vestido florido | `#c8506a` (sombra `#a63c54`) |
+| Saia do vestido | `#c8506a` |
+| Sapatos | `#6a3a5a` |
+| Brincos | `#f2c230` |
+| Contorno | `#1e1820` |
+
+**Proporções:** altura 410 u · cabeça 168 u (≈ 2,4 cabeças) · ombros 155 u (0,92 da cabeça) · mão (palma) 34×32 u · sapato ≈ 56×32 u.
+
+**Arquivos:** `svg/senhora_frente.svg`, `svg/senhora_lado.svg`, `svg/senhora_expr_neutra.svg`, `svg/senhora_expr_surpreso.svg`, `svg/senhora_expr_rindo.svg`
+
+### Vulto  (`vulto`, id no código: `vulto`)
+
+**Papel:** Episódio 2. A pessoa que chega pela estrada no final, com uma nota de dez dobrada no bolso (gancho para a parte 3). Silhueta escura de propósito.
+
+| Cor | Hex |
+|---|---|
+| Pele | `#4a4258` |
+| Cabelo | curto `#16121e` |
+| Roupa — camisa | `#2a2436` (sombra `#1c1828`) |
+| Calça | `#241f30` |
+| Sapatos | `#141018` |
+| Contorno | `#1e1820` |
+
+**Proporções:** altura 410 u · cabeça 168 u (≈ 2,4 cabeças) · ombros 139 u (0,83 da cabeça) · mão (palma) 34×32 u · sapato ≈ 56×32 u.
+
+**Arquivos:** `svg/vulto_frente.svg`, `svg/vulto_lado.svg`, `svg/vulto_expr_neutra.svg`, `svg/vulto_expr_surpreso.svg`, `svg/vulto_expr_rindo.svg`
+
+### Objetos (`svg/objetos/`)
+
+| Arquivo | Função no código | Uso |
+|---|---|---|
+| `nota_10.svg` | `note10()` | Nota de R$ 10 simples (ep. 1). |
+| `nota_10_nome.svg` | `noteNamed('PADEIRO', brilho)` | Nota com nome brilhando no canto (ep. 2). Troque o texto. |
+| `nota_10_chapeu.svg` | `noteNamed('@hat', brilho)` | Nota com o símbolo do chapéu do homem de terno. |
+| `carteira_fechada.svg` / `carteira_aberta.svg` | `wallet({ open, n, labels, glow, light })` | Carteira; `light` 0–1 deixa ela mais fina ("ficando leve"). |
+| `chapeu_fedora.svg` | `fedoraProp()` / opção `hat: 'fedora'` | Chapéu do homem de terno; depois do ep. 2 o Polo usa. |
+| `mala.svg` | `suitcase()` | Mala do padeiro. |
+| `cachorro_rosnando.svg` / `cachorro_feliz.svg` | `dog(x, y, { growl, wag, t })` | Cachorro da senhora. |
+| `pao.svg` / `pao_pedra.svg` | `bread({ stone, cracks })` | Pão / pão duro como pedra (ep. 1). |
+
+### Continuidade entre episódios
+
+- **Polo:** a partir do episódio 2 ele usa o chapéu fedora do homem de terno (`hat: 'fedora'`).
+- **Padeiro:** o padeiro do episódio 2 é o "padeiro novo" (`padeiro2`), que assumiu a padaria quando a padeira se aposentou no episódio 1.
+- **Opções novas de `person()`:** `hat` (`'fedora'` ou `null`), `hatLift` (levanta o chapéu, em u), `pale` (0–1, deixa a pele pálida), `tears` (0–1, lágrimas escorrendo), `fade` (0–1, opacidade, para sumir).
 
 ## Código
 
