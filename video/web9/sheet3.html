@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"><style>@font-face{font-family:'Fredoka';font-weight:700;src:url(fonts/fredoka-latin-700-normal.woff2)}body{margin:0}</style></head><body><div id="s"></div>
+<script src="lib.js"></script><script src="words.js"></script><script src="characters_v1.js"></script><script src="characters.js"></script><script src="characters2.js"></script><script src="environments.js"></script><script src="scenes.js"></script><script src="shots.js"></script><script src="main.js"></script>
+<script>
+const ids=['polo','mae','padeira','motorista','barnabe','menino','mulher','moca','viz1','viz2','viz3','padeiro2'];
+const ex=['happy','worried','smug','happy','laugh','surprised','laugh','smug','neutral','happy','happy','happy'];
+let s='<rect width="2400" height="1300" fill="#efe3c8"/>';
+ids.forEach((id,i)=>{s+=person(id,{x:150+(i%7)*330,y:i<7?560:1240,s:1.15,face:(i%3-1)*0.4,expr:ex[i],t:0.3,armR:[20,150,60,10,130,90,40,150,20,60,30,80][i],bendR:30,wink:true})});
+s+=person('padeira',{x:2150,y:1240,old:true,expr:'happy',s:1.15,t:0.3});
+s+=person('mae',{x:1800,y:1240,s:1.15,side:true,walk:1.2,face:0.8,t:0.3,expr:'worried'});
+document.getElementById('s').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1300">'+DEFS+s+'</svg>';
+</script></body></html>
