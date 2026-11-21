@@ -362,7 +362,7 @@ const SHOTS = [
     const sp = clamp(spinSpeed(T) / 30);
     const whisper = T > 63.4 && T < 64.15;
     const after = T > 64.9;
-    const moca = char('moca', { x: 820, y: 990, s: 1.65, t: T, face: after ? 0.7 : 0.4, lx: after ? 1 : 0.6, ly: after ? -1 : 0, expr: after ? 'surprised' : 'smug',
+    const moca = char('moca', { x: 820, y: 990, s: 1.65, t: T, face: after ? 0.7 : (T < 63.2 ? Math.sin((T - 61.7) * 3) * 0.6 : 0.4), lx: after ? 1 : (T < 63.2 ? Math.sin((T - 61.7) * 3) : 0.6), tilt: T < 63.3 ? Math.sin((T - 61.7) * 2.5) * 4 : 0, ly: after ? -1 : 0, expr: after ? 'surprised' : 'smug',
       armR: whisper || T < 64.6 ? 150 : 40, armL: 15, mouth: talk(T, [[63.44, 64.05]]) * 0.4 });
     const crowd = char('barnabe', { x: 1880, y: 960, s: 0.75, t: T, face: -0.5, ly: -1, expr: after ? 'surprised' : 'neutral', armL: after ? 70 : 15, armR: 30 }) +
       char('menino', { x: 2060, y: 960, s: 0.75, t: T, face: -0.5, ly: -1, expr: after ? 'surprised' : 'happy', armL: after ? 160 : 15, armR: after ? 160 : 15 }) +
@@ -371,7 +371,8 @@ const SHOTS = [
     const p = E.inOut(inv(64.9, 66.6, T));
     const back = E.inOut(inv(67.9, 68.6, T));
     const cx = 1450, cy = 880 - 720 * 0.75; // clock centre in world
-    const cam = { x: lerp(-60, cx - 960, p) * (1 - back * 0.5), y: lerp(40, cy - 540, p) * (1 - back * 0.5), z: lerp(1.25, 2.7, p) - back * 0.9, r: Math.sin((T - 64.9) * 2.2) * 6 * p * (1 - back) };
+    const drift = E.inOut(inv(61.7, 64.9, T));
+    const cam = { x: lerp(lerp(-200, 40, drift), cx - 960, p) * (1 - back * 0.5), y: lerp(lerp(70, 20, drift), cy - 540, p) * (1 - back * 0.5), z: lerp(lerp(1.15, 1.35, drift), 2.7, p) - back * 0.9, r: Math.sin((T - 64.9) * 2.2) * 6 * p * (1 - back) };
     return { cam, layers: [
       ...plazaBack(T, t),
       Lr(0.7, plazaMid(T, t)),
