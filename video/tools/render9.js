@@ -5,7 +5,7 @@ const path = require('path'), fs = require('fs');
   const [out, spec, wi = '0', wc = '1'] = process.argv.slice(2);
   fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: +(process.env.VW||1920), height: +(process.env.VH||1080) }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: +(process.env.VW||1920), height: +(process.env.VH||1080) }, deviceScaleFactor: +(process.env.DSF||1) });
   const errs = []; page.on('pageerror', e => errs.push(e.message)); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
   const url = 'file://' + path.resolve(__dirname, process.env.WEBDIR ? '../'+process.env.WEBDIR+'/index.html' : '../web/index.html') + (spec === 'sheet' ? '?sheet=1' : '');
   await page.goto(url); await page.evaluate(() => document.fonts.ready);
@@ -16,11 +16,12 @@ const path = require('path'), fs = require('fs');
     else frames = spec.split(',').map(Number);
     frames = frames.filter((f, i) => i % +wc === +wi);
     for (const f of frames) {
-      const file = path.join(out, `f${String(f).padStart(5, '0')}.png`);
+      const EXT = process.env.JPG ? 'jpg' : 'png';
+      const file = path.join(out, `f${String(f).padStart(5, '0')}.${EXT}`);
       if (fs.existsSync(file) && fs.statSync(file).size > 10000) continue; // resume
       await page.evaluate(n => window.renderFrame(n), f);
-      await page.screenshot({ path: file + '.tmp.png' });
-      fs.renameSync(file + '.tmp.png', file);
+      await page.screenshot(EXT === 'jpg' ? { path: file + '.tmp.jpg', type: 'jpeg', quality: 96 } : { path: file + '.tmp.png' });
+      fs.renameSync(file + '.tmp.' + EXT, file);
     }
   }
   if (errs.length) { console.error('PAGE ERRORS:', errs.slice(0, 5)); process.exitCode = 2; }

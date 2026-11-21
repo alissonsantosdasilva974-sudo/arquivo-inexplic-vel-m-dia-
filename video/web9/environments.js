@@ -66,7 +66,9 @@ function windowBox(x, y, w, h, o = {}) {
   const glass = o.glass || '#6f8fa6', lit = o.lit || 0;
   let s = `<rect x="${x - 10}" y="${y - 10}" width="${w + 20}" height="${h + 20}" rx="6" fill="${o.frame || '#efe2c4'}" stroke="${INK}" stroke-width="3"/>`;
   s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${mix(glass, '#ffd27a', lit)}" stroke="${INK}" stroke-width="3"/>`;
+  s += `<rect x="${x}" y="${y}" width="${w}" height="12" fill="#1b1424" opacity="0.18"/><rect x="${x}" y="${y}" width="10" height="${h}" fill="#1b1424" opacity="0.12"/>`;
   s += `<path d="M ${x + w / 2} ${y} V ${y + h} M ${x} ${y + h / 2} H ${x + w}" stroke="${INK}" stroke-width="3"/>`;
+  s += `<rect x="${x - 16}" y="${y + h + 8}" width="${w + 32}" height="10" rx="3" fill="#f4ead4" stroke="${INK}" stroke-width="2.5"/>`;
   s += `<path d="M ${x + 8} ${y + h * 0.4} L ${x + w * 0.35} ${y + 8}" stroke="#ffffff" stroke-width="5" opacity="0.35"/>`;
   if (o.shutters) for (const k of [-1, 1]) { const sx = k < 0 ? x - 10 - w * 0.42 : x + w + 10; s += `<rect x="${sx}" y="${y - 10}" width="${w * 0.42}" height="${h + 20}" rx="4" fill="${o.shutters}" stroke="${INK}" stroke-width="3"/>`; for (let i = 1; i < 6; i++) s += `<path d="M ${sx + 5} ${y - 10 + (h + 20) * i / 6} h ${w * 0.42 - 10}" stroke="${INK}" stroke-width="2" opacity="0.5"/>`; }
   if (o.flowers) { s += `<rect x="${x - 16}" y="${y + h + 8}" width="${w + 32}" height="24" rx="4" fill="#a44e2c" stroke="${INK}" stroke-width="3"/>`; for (let i = 0; i < 5; i++) { const fx = x - 6 + i * (w + 12) / 4; s += `<circle cx="${fx}" cy="${y + h + 4}" r="12" fill="#7a8a4a" stroke="${INK}" stroke-width="2.5"/><circle cx="${fx + 3}" cy="${y + h - 2}" r="6" fill="${i % 2 ? '#e88aa0' : '#f2c94c'}"/>`; } }
@@ -79,7 +81,7 @@ function door(x, base, w, h, o = {}) {
   if (o.open) s += `<rect x="${x}" y="${base - h}" width="${w}" height="${h}" fill="${o.inside || '#3a2a20'}"/>`;
   const dw = w * (1 - (o.open || 0) * 0.85);
   s += `<path d="M ${x} ${base} V ${base - h + 30} Q ${x + w / 2} ${base - h - 18} ${x + w} ${base - h + 30} V ${base}" fill="none" stroke="none"/>`;
-  s += `<rect x="${x}" y="${base - h}" width="${dw}" height="${h}" rx="6" fill="${o.color || '#7a4a30'}" stroke="${INK}" stroke-width="4"/>`;
+  s += `<rect x="${x}" y="${base - h}" width="${dw}" height="${h}" rx="6" fill="${o.color || '#7a4a30'}" stroke="${INK}" stroke-width="4"/><rect x="${x}" y="${base - h}" width="${dw}" height="${h}" rx="6" fill="url(#pWoodV)"/><rect x="${x + dw - 14}" y="${base - h + 4}" width="10" height="${h - 8}" fill="#1b1424" opacity="0.15"/>`;
   s += `<rect x="${x + dw * 0.15}" y="${base - h + 20}" width="${dw * 0.7}" height="${h * 0.3}" rx="4" fill="${o.glass ? '#e9c98a' : 'none'}" stroke="${INK}" stroke-width="3" opacity="0.9"/>`;
   s += `<rect x="${x + dw * 0.15}" y="${base - h * 0.5}" width="${dw * 0.7}" height="${h * 0.38}" rx="4" fill="none" stroke="${INK}" stroke-width="3" opacity="0.5"/>`;
   s += `<circle cx="${x + dw - 16}" cy="${base - h * 0.48}" r="6" fill="#e0a83a" stroke="${INK}" stroke-width="2.5"/>`;
@@ -90,11 +92,15 @@ function door(x, base, w, h, o = {}) {
 function house(x, base, w, h, o = {}) {
   const wall = o.wall || '#e9d3a8', roof = o.roof || '#c8643c';
   let s = `<rect x="${x}" y="${base - h}" width="${w}" height="${h + 40}" fill="${wall}" stroke="${INK}" stroke-width="4"/>`;
+  s += `<rect x="${x}" y="${base - h}" width="${w}" height="${h + 40}" fill="url(#${o.brick ? 'pBrick' : 'pPlaster'})"/>`;
   s += `<rect x="${x}" y="${base - h}" width="${w}" height="${h + 40}" fill="url(#gWallShade)"/>`;
+  s += `<rect x="${x}" y="${base - 70}" width="${w}" height="70" fill="url(#gAO)"/>`;
+  s += `<rect x="${x}" y="${base - h}" width="${w}" height="34" fill="#2a2233" opacity="0.12"/>`;
   // texture specks
   const r = rng(o.seed || (x | 0)); for (let i = 0; i < 10; i++) s += `<ellipse cx="${f2(x + r() * w)}" cy="${f2(base - r() * h)}" rx="${f2(10 + r() * 20)}" ry="${f2(4 + r() * 6)}" fill="${INK}" opacity="0.05"/>`;
   if (o.flat) s += `<rect x="${x - 14}" y="${base - h - 22}" width="${w + 28}" height="26" fill="${roof}" stroke="${INK}" stroke-width="4"/>`;
   else s += `<path d="M ${x - 26} ${base - h + 4} L ${x + w / 2} ${base - h - (o.roofH || 110)} L ${x + w + 26} ${base - h + 4} Z" fill="${roof}" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>` +
+    `<path d="M ${x - 26} ${base - h + 4} L ${x + w / 2} ${base - h - (o.roofH || 110)} L ${x + w + 26} ${base - h + 4} Z" fill="url(#pTile)"/>` + `<path d="M ${x + w / 2} ${base - h - (o.roofH || 110)} L ${x + w + 26} ${base - h + 4} L ${x + w / 2 + 40} ${base - h + 4} Z" fill="#2a2233" opacity="0.12"/>` +
     `<path d="M ${x - 26} ${base - h + 4} L ${x + w + 26} ${base - h + 4}" stroke="${INK}" stroke-width="4"/>` +
     Array.from({ length: 4 }, (_, i) => `<path d="M ${x + w * (0.15 + i * 0.22)} ${base - h - 4} l 0 ${-(o.roofH || 110) * (0.5 - Math.abs(0.4 - i * 0.25)) * 0.7}" stroke="${INK}" stroke-width="2" opacity="0.25"/>`).join('');
   if (o.chimney) s += `<rect x="${x + w * 0.7}" y="${base - h - (o.roofH || 110) * 0.9}" width="34" height="70" fill="#a44e2c" stroke="${INK}" stroke-width="4"/>`;
@@ -157,7 +163,9 @@ function bench(x, base, k = 1) {
 function street(base, o = {}) {
   let s = `<rect x="-1400" y="${base}" width="4720" height="46" fill="${o.walk || '#d9c7a4'}" stroke="${INK}" stroke-width="3"/>`;
   for (let x = -1400; x < 3300; x += 90) s += `<path d="M ${x} ${base} v 46" stroke="${INK}" stroke-width="2" opacity="0.2"/>`;
+  s += `<rect x="-1400" y="${base}" width="4720" height="46" fill="url(#pPlaster)"/>`;
   s += `<rect x="-1400" y="${base + 46}" width="4720" height="16" fill="#b6a58a" stroke="${INK}" stroke-width="3"/>`;
+  s += `<rect x="-1400" y="${base + 62}" width="4720" height="800" fill="url(#pAsphalt)"/>`;
   s += `<rect x="-1400" y="${base + 62}" width="4720" height="800" fill="${o.road || '#9a8f80'}"/>`;
   const r = rng(11);
   for (let i = 0; i < 160; i++) { const x = r() * 4700 - 1400, y = base + 70 + r() * 360; s += `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(22 + r() * 12)}" ry="${f2(8 + (y - base) * 0.03)}" fill="${INK}" opacity="0.08"/>`; }
@@ -233,7 +241,9 @@ function clockTower(cx, base, o = {}) {
   s += `<rect x="${cx - 160}" y="${base - 90}" width="320" height="90" fill="#b6a58a" stroke="${INK}" stroke-width="5"/>`;
   s += `<rect x="${cx - 130}" y="${base - 130}" width="260" height="44" fill="#c9b994" stroke="${INK}" stroke-width="5"/>`;
   s += `<path d="M ${cx - 70} ${base - 130} L ${cx - 54} ${base - H + R + 40} L ${cx + 54} ${base - H + R + 40} L ${cx + 70} ${base - 130} Z" fill="#8a3a22" stroke="${INK}" stroke-width="5"/>`;
-  s += `<path d="M ${cx - 70} ${base - 130} L ${cx - 54} ${base - H + R + 40} L ${cx - 30} ${base - H + R + 40} L ${cx - 40} ${base - 130} Z" fill="#ffffff" opacity="0.12"/>`;
+  s += `<path d="M ${cx - 70} ${base - 130} L ${cx - 54} ${base - H + R + 40} L ${cx + 54} ${base - H + R + 40} L ${cx + 70} ${base - 130} Z" fill="url(#pBrick)"/>`;
+  s += `<path d="M ${cx - 70} ${base - 130} L ${cx - 54} ${base - H + R + 40} L ${cx - 30} ${base - H + R + 40} L ${cx - 40} ${base - 130} Z" fill="#ffffff" opacity="0.14"/><path d="M ${cx + 30} ${base - 130} L ${cx + 26} ${base - H + R + 40} L ${cx + 54} ${base - H + R + 40} L ${cx + 70} ${base - 130} Z" fill="#1b1424" opacity="0.18"/>`;
+  s += `<rect x="${cx - 160}" y="${base - 90}" width="320" height="90" fill="url(#pBrick)"/>`;
   for (let i = 0; i < 4; i++) s += `<rect x="${cx - 62 + i * 2}" y="${base - 200 - i * 120}" width="${124 - i * 4}" height="12" fill="#e0a83a" stroke="${INK}" stroke-width="3"/>`;
   s += `<path d="M ${cx - R - 40} ${base - H - R + 40} L ${cx} ${base - H - R - 110} L ${cx + R + 40} ${base - H - R + 40} Z" fill="#3c5a4a" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>`;
   s += `<circle cx="${cx}" cy="${base - H - R - 116}" r="14" fill="#e0a83a" stroke="${INK}" stroke-width="4"/>`;
@@ -244,6 +254,7 @@ function clockTower(cx, base, o = {}) {
 
 function plazaGround(base) {
   let s = `<rect x="-1400" y="${base}" width="4720" height="900" fill="#d6c39a"/>`;
+  s += `<rect x="-1400" y="${base}" width="4720" height="900" fill="url(#pPlaster)"/>`;
   for (let i = 0; i < 14; i++) { const y = base + Math.pow(i, 1.5) * 12; s += `<path d="M -1400 ${f2(y)} H 3300" stroke="${INK}" stroke-width="2" opacity="0.12"/>`; }
   for (let i = -20; i < 40; i++) s += `<path d="M ${960 + i * 80} ${base} L ${960 + i * 260} ${base + 900}" stroke="${INK}" stroke-width="2" opacity="0.1"/>`;
   return s;
@@ -252,6 +263,7 @@ function plazaGround(base) {
 // Bakery interior kit
 function bakeryInterior(t, o = {}) {
   let s = `<rect x="-800" y="-400" width="3600" height="1900" fill="#e6c48e"/>`;
+  s += `<rect x="-800" y="-400" width="3600" height="1900" fill="url(#pStripes)"/>`;
   s += `<rect x="-800" y="-400" width="3600" height="1900" fill="url(#gWallShade)"/>`;
   // tiled lower wall
   s += `<rect x="-800" y="640" width="3600" height="400" fill="#c9a56a"/>`;
@@ -277,12 +289,12 @@ function bakeryInterior(t, o = {}) {
   // hanging lamp
   s += `<path d="M 600 -400 V 120" stroke="${INK}" stroke-width="4"/><path d="M 550 120 L 650 120 L 620 80 L 580 80 Z" fill="#3c5a4a" stroke="${INK}" stroke-width="4"/><circle cx="600" cy="140" r="18" fill="#ffe08a"/><circle cx="600" cy="160" r="160" fill="#ffd27a" opacity="0.15"/>`;
   // floor
-  s += `<rect x="-800" y="900" width="3600" height="400" fill="#8a5a34"/>`;
+  s += `<rect x="-800" y="900" width="3600" height="400" fill="#8a5a34"/><rect x="-800" y="900" width="3600" height="400" fill="url(#pWood)"/><rect x="-800" y="900" width="3600" height="40" fill="#1b1424" opacity="0.22"/>`;
   for (let i = 0; i < 30; i++) s += `<path d="M ${-800 + i * 140} 900 L ${-1200 + i * 200} 1300" stroke="${INK}" stroke-width="2" opacity="0.15"/>`;
   return s;
 }
 function counter(x, y, w) {
-  let s = `<rect x="${x}" y="${y}" width="${w}" height="300" fill="#7a4a30" stroke="${INK}" stroke-width="5"/>`;
+  let s = `<rect x="${x}" y="${y}" width="${w}" height="300" fill="#7a4a30" stroke="${INK}" stroke-width="5"/><rect x="${x}" y="${y}" width="${w}" height="300" fill="url(#pWoodV)"/><rect x="${x}" y="${y}" width="${w}" height="26" fill="#1b1424" opacity="0.25"/>`;
   s += `<rect x="${x - 20}" y="${y - 26}" width="${w + 40}" height="30" rx="6" fill="#c9935a" stroke="${INK}" stroke-width="5"/>`;
   for (let i = 0; i < Math.floor(w / 180); i++) s += `<rect x="${x + 30 + i * 180}" y="${y + 40}" width="140" height="200" rx="8" fill="none" stroke="${INK}" stroke-width="3" opacity="0.4"/>`;
   return s;

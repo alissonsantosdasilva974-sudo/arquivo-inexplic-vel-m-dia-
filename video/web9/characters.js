@@ -112,11 +112,15 @@ function torso9(P, d) {
   let s = '';
   if (P.topType === 'hoodie') s += `<ellipse cx="0" cy="-252" rx="62" ry="22" fill="${P.topD}" stroke="${INK9}" stroke-width="4.5"/>`;
   s += `<path d="${path}" fill="${P.top}" stroke="${INK9}" stroke-width="4.5" stroke-linejoin="round"/>`;
+  s += `<path d="${path}" fill="url(#pFabric)"/>`;
   s += `<path d="M ${f2(sx * 0.35)} -244 L ${f2(hemX * 0.55)} ${hemY + 4} L ${hemX} ${hemY} L ${sx + 10} -228 Q ${sx + 8} -248 ${sx} -252 Z" fill="${P.topD}" opacity="0.55"/>`;
+  s += `<path d="M ${-sx - 4} -236 Q ${-sx * 0.5} -246 ${-sx * 0.2} -244" stroke="#ffffff" stroke-width="5" fill="none" opacity="0.25" stroke-linecap="round"/>`;
   if (P.topType === 'hoodie') {
-    s += `<path d="M -40 -164 L 40 -164 L 50 -126 L -50 -126 Z" fill="${P.topD}" stroke="${INK9}" stroke-width="4" stroke-linejoin="round"/>`;
+    s += `<path d="M -40 -164 L 40 -164 L 50 -126 L -50 -126 Z" fill="${P.topD}" stroke="${INK9}" stroke-width="4" stroke-linejoin="round"/><path d="M -35 -158 L 35 -158 L 43 -131 L -43 -131 Z" fill="none" stroke="#8a6a10" stroke-width="1.8" stroke-dasharray="5 4" opacity="0.7"/>`;
+    s += `<path d="M -30 -232 Q -20 -210 -34 -186 M 28 -228 Q 36 -206 26 -182 M -44 -176 Q -30 -168 -20 -178" stroke="${P.topD}" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.9"/>`;
     s += `<path d="M -16 -246 L -18 -198 M 16 -246 L 18 -198" stroke="#f6efe2" stroke-width="4" stroke-linecap="round"/><circle cx="-18" cy="-196" r="4" fill="#f6efe2" stroke="${INK9}" stroke-width="2"/><circle cx="18" cy="-196" r="4" fill="#f6efe2" stroke="${INK9}" stroke-width="2"/>`;
     s += `<path d="M ${-hx} -120 Q 0 -110 ${hx} -120 L ${hx} -108 Q 0 -98 ${-hx} -108 Z" fill="${P.topD}" stroke="${INK9}" stroke-width="4"/>`;
+    for (let i = -4; i <= 4; i++) s += `<path d="M ${i * 12} -116 v 8" stroke="#8a6a10" stroke-width="1.6" opacity="0.55"/>`;
   }
   if (P.topType === 'apron') s += `<path d="M -40 -200 L 40 -200 L 60 -70 Q 0 -60 -60 -70 Z" fill="#fffaf0" stroke="${INK9}" stroke-width="4"/><rect x="-22" y="-150" width="44" height="26" rx="6" fill="#efe6d2" stroke="${INK9}" stroke-width="3"/><path d="M -40 -200 L -30 -250 M 40 -200 L 30 -250" stroke="#fffaf0" stroke-width="6"/>`;
   if (P.topType === 'shawl') s += `<path d="M ${-sx - 12} -246 Q 0 -196 ${sx + 12} -246 L ${sx + 20} -200 Q 0 -150 ${-sx - 20} -200 Z" fill="${P.topD}" stroke="${INK9}" stroke-width="4"/>`;
@@ -143,7 +147,8 @@ function person(id, o = {}) {
     const L = P.topType === 'dress' || P.topType === 'apron' || P.topType === 'shawl' ? 60 : 98;
     const top = -12 - L;
     return `<g transform="rotate(${f2(a)} ${x} ${top})"><path d="M ${x} ${top} L ${x} -14" stroke="${INK9}" stroke-width="26" stroke-linecap="round"/><path d="M ${x} ${top} L ${x} -14" stroke="${P.pants}" stroke-width="18" stroke-linecap="round"/>` +
-      `<path d="M ${x - 14 + dir * 4} -2 Q ${x - 14} -24 ${x + dir * 6} -22 Q ${x + dir * 30} -18 ${x + dir * 30} -4 Q ${x + dir * 26} 4 ${x} 4 Q ${x - 16} 4 ${x - 14 + dir * 4} -2 Z" fill="${P.shoes}" stroke="${INK9}" stroke-width="4"/></g>`;
+      `<path d="M ${x + 4} ${top + 8} L ${x + 4} -24" stroke="${mix(P.pants, '#1b1424', 0.3)}" stroke-width="3" opacity="0.6"/>` +
+      `<path d="M ${x - 14 + dir * 4} -2 Q ${x - 14} -24 ${x + dir * 6} -22 Q ${x + dir * 30} -18 ${x + dir * 30} -4 Q ${x + dir * 26} 4 ${x} 4 Q ${x - 16} 4 ${x - 14 + dir * 4} -2 Z" fill="${P.shoes}" stroke="${INK9}" stroke-width="4"/><path d="M ${x - 4} -16 Q ${x + dir * 8} -20 ${x + dir * 18} -14" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.35" stroke-linecap="round"/></g>`;
   };
   g += leg(-20, lA, -1) + leg(20, rA, 1);
   // arms (behind when hanging)
@@ -152,7 +157,8 @@ function person(id, o = {}) {
     const p = `M ${side * 50} -238 L ${f2(L.ex)} ${f2(L.ey)} L ${f2(L.hx)} ${f2(L.hy)}`;
     const hand = P.hands || P.skin;
     return { svg: `<path d="${p}" stroke="${INK9}" stroke-width="27" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${p}" stroke="${P.top}" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` +
-      `<circle cx="${f2(L.hx)}" cy="${f2(L.hy)}" r="13" fill="${hand}" stroke="${INK9}" stroke-width="4"/>`, ...L };
+      `<path d="M ${f2(L.ex - 5)} ${f2(L.ey - 3)} l 8 4" stroke="${P.topD}" stroke-width="3" stroke-linecap="round"/>` +
+      `<circle cx="${f2(L.hx)}" cy="${f2(L.hy)}" r="13" fill="${hand}" stroke="${INK9}" stroke-width="4"/><circle cx="${f2(L.hx - 4)}" cy="${f2(L.hy - 5)}" r="3.5" fill="#ffffff" opacity="${P.hands ? 0.25 : 0.3}"/>`, ...L };
   };
   const aL = armSvg(-1, d.armL, d.bendL), aR = armSvg(1, d.armR, d.bendR);
   g += `<g transform="translate(0 ${f2(breath * 0.4)})">`;
@@ -166,8 +172,9 @@ function person(id, o = {}) {
   // head
   g += `<g transform="translate(0 ${f2(breath)}) rotate(${f2(d.headTilt)} 0 ${HY + 60})">`;
   g += hairBack(P, dir);
-  g += `<circle cx="0" cy="${HY}" r="${HR}" fill="${P.skin}" stroke="${INK9}" stroke-width="5"/>`;
-  g += `<path d="M ${f2(-HR * 0.62)} ${HY + HR * 0.55} A ${HR} ${HR} 0 0 0 ${f2(HR * 0.82)} ${HY + HR * 0.3}" stroke="#c8784e" stroke-width="10" fill="none" opacity="0.18"/>`;
+  g += `<circle cx="0" cy="${HY}" r="${HR}" fill="${mix(P.skin, '#a85a4a', 0.28)}"/>`;
+  g += `<g clip-path="url(#clipHead)"><circle cx="-12" cy="${HY - 12}" r="${HR}" fill="${P.skin}"/><ellipse cx="-30" cy="${HY - 40}" rx="26" ry="16" fill="#ffffff" opacity="0.22" transform="rotate(-30 -30 ${HY - 40})"/><circle cx="0" cy="${HY}" r="${HR}" fill="url(#pSkin)"/></g>`;
+  g += `<circle cx="0" cy="${HY}" r="${HR}" fill="none" stroke="${INK9}" stroke-width="5"/>`;
   g += face9(d, P, fx);
   g += hairFront(P, d, dir, fx);
   g += '</g></g>';
