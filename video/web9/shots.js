@@ -49,7 +49,7 @@ const SHOTS = [
     const waveA = wave(T, 7.76, 8.65, 165, 20);
     const polo = turned ? P_('polo', { x: px, y: 900, s: 0.62, t: T, face: -0.55, lx: -1, armR: waveA != null ? waveA : 14, bendR: 25, expr: 'happy', mouth: talk(T, [[7.76, 8.3]]) })
       : P_('polo', { x: px, y: 900, s: 0.62, t: T, face: 0.8, side: true, walk: T * 13, expr: 'happy' });
-    return { cam: frameG(lerp(720, 1560, E.inOut(inv(6.8, 7.95, T))), 900, 2.15, 1420), layers: [
+    return { cam: frameG(px, 900, 2.15, 1420), layers: [
       Lr(0.9, bakeryInterior(T, { hour: 270, min: 0, doorOpen: E.out(inv(7.25, 7.8, T)), clockX: 1150, clockY: 170 })), Lr(1, polo)] };
   } },
   // 3 — he only went to buy bread (side-view walk)
