@@ -339,7 +339,7 @@ const SHOTS = [
     const polo = P_('polo', { x: 470, y: 905, s: 0.7, t: T, face: point ? -0.5 : 0.05, expr: T < 86.9 ? 'smug' : 'happy', lx: point ? -1 : 0,
       armR: waveA != null ? waveA : lerp(25, 80, shrug), bendR: waveA != null ? 25 : lerp(50, 80, shrug), armL: point ? 95 : lerp(12, 80, shrug), bendL: point ? 5 : lerp(12, 80, shrug), holdR: waveA == null ? bread({ s: 0.45, stone: 1, cracks: 1, rot: -20 }) : '' });
     const sign = hangSign(285, 745, 'JÁ VOLTO', Math.sin(T * 1.5) * 2 + pulse(T, 88.6, 0.3) * 6, { w: 176, h: 62, fs: 28, flip, text2: 'VOLTO' });
-    return { cam: push(frameG(395, 905, 2.15, 1420), t, 6.1, 0.1), layers: [
+    return { cam: push(frameG(365, 905, 1.8, 1430), t, 6.1, 0.1), layers: [
       Lr(0.04, sky('#c86a7a', '#f6b07a', { sun: 560, sunX: 1650, sunC: '#ffe0a8', sunR: 110, id: 'e' })), Lr(0.1, clouds(T, '#f8c0a8', 0.85, 5, 40)), Lr(0.3, farTown('#9a5a6a', 760, 5) + haze('#f6b07a', 400, 900, 0.5)),
       Lr(1, bakeryFacade(-200, 900, { t: T, sign: false, night: true }) + sign + polo + lamp(640, 905, 0.9, 1) + dust(T, 0, 400, 800, 500, 16, 9, '#ffe7a0')),
     ], tint: ['#f08a8a', 0.08] };
