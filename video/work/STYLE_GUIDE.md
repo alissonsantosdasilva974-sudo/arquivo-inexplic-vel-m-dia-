@@ -48,3 +48,7 @@ Camadas com fator de parallax: céu 0.1 · morros 0.25 · fachadas 0.5 · ação
 
 ## Câmera e animação
 Câmera = função do frame (x, y, zoom, rot). Easing cúbico/back para gestos; antecipação → ação → assentamento. Idle: respiração (escala 1–2%), piscar a cada ~3 s, leve balanço. Saltos do relógio com overshoot. O maior movimento (push + giro) fica reservado para a cena 17.
+
+## Revisão 2 (pedido do usuário)
+- Personagens deixaram de ser corpos escuros: cada um tem tom de pele no rosto/mãos e roupa com cor própria (Polo `#3c8a86`/pele `#e0ac69`, padeira `#d46a6a`, mãe `#8a5a9a`, motorista `#3c5a8a`, Barnabé `#8a5a34`, menino `#4f7a9a`, mulher `#4f8a5e`, moça `#e07a96`). Contorno tinta e sombreamento em gradiente suave mantidos.
+- Legendas queimadas: Inter Display Black 66 px, branco com contorno tinta, palavra atual em amarelo `#ffd23f`, centralizadas em y=990. Texto do roteiro com tempos do alinhamento por palavra (`tools/captions.py` → `web/words.js`).

@@ -4,6 +4,8 @@ const DEFS = `<defs>
  <linearGradient id="gBodyB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#55465e"/><stop offset="0.6" stop-color="#40334a"/><stop offset="1" stop-color="#2c2236"/></linearGradient>
  <linearGradient id="gWallShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.10"/><stop offset="1" stop-color="#2a2233" stop-opacity="0.18"/></linearGradient>
  <radialGradient id="gFace" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#fff" stop-opacity="0.5"/><stop offset="1" stop-color="#c9a56a" stop-opacity="0.25"/></radialGradient>
+ <clipPath id="clipBody"><path d="M -70 -22 C -84 -120 -62 -226 0 -226 C 62 -226 84 -120 70 -22 C 64 2 -64 2 -70 -22 Z"/></clipPath>
+ <linearGradient id="gShade" x1="0" y1="0" x2="1" y2="0.4"><stop offset="0" stop-color="#fff" stop-opacity="0.22"/><stop offset="0.5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#2a2233" stop-opacity="0.32"/></linearGradient>
  <radialGradient id="gVig" cx="0.5" cy="0.5" r="0.75"><stop offset="0.55" stop-color="#1b1424" stop-opacity="0"/><stop offset="1" stop-color="#1b1424" stop-opacity="0.55"/></radialGradient>
 </defs>`;
 
@@ -14,6 +16,21 @@ function compose(shot, t, T) {
   if (r.over) s += r.over;
   if (r.tint) s += `<rect width="1920" height="1080" fill="${r.tint[0]}" opacity="${f2(r.tint[1])}" style="mix-blend-mode:multiply"/>`;
   return s;
+}
+
+function captionSVG(T) {
+  const c = CAPTIONS.find(c => T >= c.s && T < c.e);
+  if (!c) return '';
+  const ap = E.back(clamp((T - c.s) / 0.14));
+  let ai = -1; c.words.forEach((w, k) => { if (T >= w.s - 0.03) ai = k; });
+  if (ai >= 0 && T > c.words[ai].e + 0.35) ai = -1;
+  const spans = c.words.map((w, k) => {
+    const active = k === ai;
+    return `<tspan fill="${active ? '#ffd23f' : '#ffffff'}">${esc(w.w)}</tspan>`;
+  }).join(' ');
+  return `<g transform="translate(960 990) scale(${(0.86 + 0.14 * ap).toFixed(3)})" opacity="${clamp(ap * 1.5).toFixed(3)}">
+   <text x="4" y="6" text-anchor="middle" font-family="Inter Display, Inter, sans-serif" font-weight="900" font-size="66" fill="#1b1424" opacity="0.45" stroke="#1b1424" stroke-width="14" stroke-linejoin="round" word-spacing="14">${c.words.map(w => esc(w.w)).join(' ')}</text>
+   <text x="0" y="0" text-anchor="middle" font-family="Inter Display, Inter, sans-serif" font-weight="900" font-size="66" stroke="#2a2233" stroke-width="13" stroke-linejoin="round" paint-order="stroke" letter-spacing="0.5" word-spacing="14">${spans}</text></g>`;
 }
 
 function shotAt(T) {
@@ -35,7 +52,7 @@ function renderFrame(f) {
   // fade at very end / start
   let fade = 0;
   // no fade-in: frame 0 must already show the hook
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">${DEFS}${body}<rect width="1920" height="1080" fill="url(#gVig)"/>${fade > 0 ? `<rect width="1920" height="1080" fill="#000" opacity="${fade.toFixed(3)}"/>` : ''}</svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">${DEFS}${body}<rect width="1920" height="1080" fill="url(#gVig)"/>${window.NOCAP ? '' : captionSVG(T)}${fade > 0 ? `<rect width="1920" height="1080" fill="#000" opacity="${fade.toFixed(3)}"/>` : ''}</svg>`;
   document.getElementById('stage').innerHTML = svg;
   return i;
 }

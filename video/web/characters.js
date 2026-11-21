@@ -1,20 +1,20 @@
 // Character rig. Local coords: feet centre at (0,0), head top near y=-225. Faces toward `face` (-1 left .. 1 right).
 const CH = {
-  polo: { scale: 1, body: 'gBodyA', seed: 1 },
-  padeira: { scale: 1.08, body: 'gBodyB', seed: 2 },
-  mae: { scale: 1.05, body: 'gBodyB', seed: 3 },
-  motorista: { scale: 1.05, body: 'gBodyA', seed: 4 },
-  barnabe: { scale: 1.02, body: 'gBodyB', seed: 5 },
-  menino: { scale: 0.72, body: 'gBodyA', seed: 6 },
-  mulher: { scale: 1, body: 'gBodyB', seed: 7 },
-  moca: { scale: 0.96, body: 'gBodyA', seed: 8 },
-  viz1: { scale: 0.98, body: 'gBodyB', seed: 9 },
-  viz2: { scale: 1.04, body: 'gBodyA', seed: 10 },
-  viz3: { scale: 0.92, body: 'gBodyB', seed: 11 },
+  polo: { scale: 1, seed: 1, skin: '#e0ac69', cloth: '#3c8a86' },
+  padeira: { scale: 1.08, seed: 2, skin: '#f1c27d', cloth: '#d46a6a' },
+  mae: { scale: 1.05, seed: 3, skin: '#c68642', cloth: '#8a5a9a' },
+  motorista: { scale: 1.05, seed: 4, skin: '#f3c9a0', cloth: '#3c5a8a' },
+  barnabe: { scale: 1.02, seed: 5, skin: '#eab88a', cloth: '#8a5a34' },
+  menino: { scale: 0.72, seed: 6, skin: '#8d5524', cloth: '#4f7a9a' },
+  mulher: { scale: 1, seed: 7, skin: '#e0ac69', cloth: '#4f8a5e' },
+  moca: { scale: 0.96, seed: 8, skin: '#f3c9a0', cloth: '#e07a96' },
+  viz1: { scale: 0.98, seed: 9, skin: '#c68642', cloth: '#c8a03a' },
+  viz2: { scale: 1.04, seed: 10, skin: '#f1c27d', cloth: '#6a5a80' },
+  viz3: { scale: 0.92, seed: 11, skin: '#8d5524', cloth: '#c8643c' },
   gato: { scale: 1, seed: 12 },
 };
 
-function arm(side, ang, len, bodyFill) {
+function arm(side, ang, len, bodyFill, skin) {
   // side -1 left, 1 right; ang deg, 0 = hanging down, 90 = horizontal outward, 170 = up
   const sx = side * 56, sy = -108;
   const a = ang * Math.PI / 180;
@@ -25,7 +25,7 @@ function arm(side, ang, len, bodyFill) {
   return {
     svg: `<path d="${path}" stroke="${INK}" stroke-width="26" fill="none" stroke-linecap="round"/>` +
       `<path d="${path}" stroke="${bodyFill}" stroke-width="16" fill="none" stroke-linecap="round"/>` +
-      `<circle cx="${f2(hx)}" cy="${f2(hy)}" r="14" fill="#3f3450" stroke="${INK}" stroke-width="4"/>`,
+      `<circle cx="${f2(hx)}" cy="${f2(hy)}" r="14" fill="${skin}" stroke="${INK}" stroke-width="4"/>`,
     hx, hy
   };
 }
@@ -167,7 +167,7 @@ function char(id, o = {}) {
     fl = Math.sin(d.walk) * 20; fr = -fl;
     liftL = Math.max(0, Math.sin(d.walk)) * 10; liftR = Math.max(0, -Math.sin(d.walk)) * 10;
   }
-  const bodyFill = '#3b3147';
+  const bodyFill = d.old ? '#7a6a9a' : P.cloth, skin = P.skin;
   const sq = 1 + d.squash, sqx = 1 - d.squash * 0.6;
   let g = '';
   if (d.shadow) g += `<ellipse cx="0" cy="2" rx="${f2(78 - d.jump * 0.15)}" ry="14" fill="#1b1424" opacity="${f2(0.28 - d.jump * 0.001)}"/>`;
@@ -176,12 +176,14 @@ function char(id, o = {}) {
   g += `<ellipse cx="${f2(30 + fr)}" cy="${f2(-6 - liftR)}" rx="28" ry="13" fill="#2f2640" stroke="${INK}" stroke-width="4"/>`;
   g += `<g transform="rotate(${f2(d.tilt)} 0 -10) scale(${f2(sqx * (2 - breath))} ${f2(sq * breath)})">`;
   g += behind(d, dir);
-  const aL = arm(-1, d.armL, 74, bodyFill), aR = arm(1, d.armR, 74, bodyFill);
+  const aL = arm(-1, d.armL, 74, bodyFill, skin), aR = arm(1, d.armR, 74, bodyFill, skin);
   // arms that point downward/behind are drawn behind the body
   const backL = d.armL < 25, backR = d.armR < 25;
   if (backL) g += aL.svg; if (backR) g += aR.svg;
-  g += `<path d="${BODY}" fill="url(#${P.body})" stroke="${INK}" stroke-width="5"/>`;
-  g += `<path d="M ${dir * 52} -190 C ${dir * 70} -150 ${dir * 72} -90 ${dir * 62} -40" stroke="#6a5a80" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.55"/>`;
+  g += `<path d="${BODY}" fill="${bodyFill}"/>`;
+  g += `<g clip-path="url(#clipBody)"><rect x="-100" y="-240" width="200" height="${id === 'menino' ? 150 : 142}" fill="${skin}"/><path d="M -100 -98 Q 0 ${id === 'padeira' || id === 'mulher' || id === 'moca' ? -66 : -82} 100 -98" fill="${skin}" stroke="${INK}" stroke-width="4"/><path d="${BODY}" fill="url(#gShade)"/></g>`;
+  g += `<path d="${BODY}" fill="none" stroke="${INK}" stroke-width="5"/>`;
+  g += `<path d="M ${dir * 52} -190 C ${dir * 70} -150 ${dir * 72} -90 ${dir * 62} -40" stroke="#ffffff" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.28"/>`;
   g += eyes(d, ex) + mouth(d, ex) + accessories(d, ex, dir);
   if (!backL) g += aL.svg; if (!backR) g += aR.svg;
   if (d.holdR) g += `<g transform="translate(${f2(aR.hx)} ${f2(aR.hy)})">${d.holdR}</g>`;
