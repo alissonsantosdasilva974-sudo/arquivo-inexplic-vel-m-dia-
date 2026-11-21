@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>@font-face{font-family:'Fredoka';font-weight:700;src:url(fonts/fredoka-latin-700-normal.woff2)}html,body{margin:0;background:#000}#stage{width:1080px;height:1920px;overflow:hidden}</style></head><body><div id="stage"></div>
+<script src="lib.js"></script><script src="words.js"></script><script src="characters_v1.js"></script><script src="characters.js"></script><script src="environments.js"></script><script src="scenes.js"></script><script src="shots.js"></script><script src="main.js"></script>
+<script>
+document.fonts.ready.then(()=>{});
+window.renderCover = () => {
+  const T = 30, t = 1;
+  const cam = frameG(400, 905, 1.65, 1640);
+  const polo = person('polo', { x: 470, y: 905, s: 0.72, t: 0.4, face: 0.1, expr: 'happy', armR: 165, bendR: 20, armL: 60, bendL: 60, holdL: bread({ s: 0.5, stone: 1, cracks: 1 }) });
+  const layers = [...backA(t, ['#f2b06a', '#f8e2b8']), Lr(1, bakeryFacade(-200, 900, { t, sign: false }) + hangSign(285, 745, 'JÁ VOLTO', -4, { w: 176, h: 62, fs: 28 }) + polo + emote('sparkle', 470, 905 - 0.72 * 430, 0.6, 0.9))];
+  let body = ''; for (const L of layers) body += `<g transform="${layerT(cam, L.d)}">${L.svg}</g>`;
+  const title = (txt, y, size, fill) => `<text x="540" y="${y}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${size}" fill="${fill}" stroke="#211c26" stroke-width="22" stroke-linejoin="round" paint-order="stroke">${txt}</text>`;
+  const clock = `<g transform="translate(905 715) rotate(10) scale(0.3)">${clockFace(0, 0, 300, 300, 0, { day: '9 DIAS' })}</g>`;
+  const head = `<g transform="rotate(-4 540 300)">${title('QUEM DIZ', 250, 120, '#ffffff')}${title('"JÁ VOLTO"', 390, 150, '#ffd23f')}${title('NUNCA VOLTA!', 520, 120, '#ff7a45')}</g>`;
+  document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${body}<rect width="1080" height="1920" fill="url(#gGlow)"/><rect width="1080" height="1920" fill="url(#gVig)"/><image href="paper.png" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>${clock}${head}</svg>`;
+};
+</script></body></html>

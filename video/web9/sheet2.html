@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"><style>@font-face{font-family:'Fredoka';font-weight:700;src:url(fonts/fredoka-latin-700-normal.woff2)}body{margin:0}</style></head><body><div id="s"></div>
+<script src="lib.js"></script><script src="characters_v1.js"></script><script src="characters.js"></script>
+<script>
+let s='<rect width="1920" height="1080" fill="#efe3c8"/>';
+for(let i=0;i<6;i++) s+=person('polo',{x:150+i*300,y:480,s:1.0,face:0.8,side:true,walk:i*Math.PI/3,t:0.3,expr:'happy'});
+s+=person('mae',{x:150,y:1020,s:1,face:0.8,side:true,walk:1,run:true,t:0.3,expr:'surprised'});
+s+=person('mae',{x:450,y:1020,s:1,face:-0.8,side:true,walk:2.5,t:0.3,expr:'worried'});
+s+=person('polo',{x:750,y:1020,s:1,face:-0.8,side:true,walk:0.5,t:0.3,holdR:bread({s:0.5})});
+['sweat','excl','q','vein','heart','sparkle','shock','zzz'].forEach((e,i)=>{s+=person('viz2',{x:1000+ (i%4)*240,y:i<4?560:1060,s:0.6,t:0.3}); s+=emote(e,1000+(i%4)*240+40,(i<4?560:1060)-240,0.6,1)});
+document.getElementById('s').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><defs><clipPath id="clipHead"><circle cx="0" cy="-322" r="78"/></clipPath></defs>'+s+'</svg>';
+</script></body></html>

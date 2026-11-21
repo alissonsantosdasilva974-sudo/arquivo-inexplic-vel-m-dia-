@@ -329,3 +329,46 @@ function ripple(x, y, p, c = '#fbf4e4') {
   for (let i = 0; i < 3; i++) { const q = clamp(p * 1.4 - i * 0.18); if (q <= 0 || q >= 1) continue; s += `<path d="M ${x} ${y - 40 - q * 50} A ${40 + q * 50} ${40 + q * 50} 0 0 1 ${x + 40 + q * 50} ${y}" stroke="${c}" stroke-width="${f2(8 * (1 - q))}" fill="none" stroke-linecap="round" opacity="${f2(1 - q)}"/>`; }
   return s;
 }
+
+function pigeon(x, y, t, seed = 1, k = 1, fly = null) {
+  const r = rng(seed); const ph = r() * 6;
+  let dx = 0, dy = 0, wing = 0;
+  if (fly != null && t > fly) { const a = t - fly; dx = a * 260 * (seed % 2 ? 1 : -1); dy = -a * 220 - a * a * 40; wing = Math.sin(a * 40) * 40; }
+  const peck = fly != null && t > fly ? 0 : Math.max(0, Math.sin(t * 5 + ph)) * 10;
+  const dir = seed % 2 ? 1 : -1;
+  return `<g transform="translate(${f2(x + dx)} ${f2(y + dy)}) scale(${f2(k * dir)} ${f2(k)})">
+   <ellipse cx="0" cy="-18" rx="22" ry="14" fill="#8a8f9e" stroke="${INK}" stroke-width="3"/>
+   <path d="M -6 -26 Q -26 ${f2(-30 - wing)} -30 -14 Q -14 -12 -6 -18 Z" fill="#6e7384" stroke="${INK}" stroke-width="3"/>
+   <path d="M -20 -16 L -32 -22 L -30 -10 Z" fill="#5a5f70" stroke="${INK}" stroke-width="2.5"/>
+   <g transform="rotate(${f2(peck * 3)} 14 -24)"><circle cx="18" cy="-30" r="9" fill="#7a8090" stroke="${INK}" stroke-width="3"/><circle cx="21" cy="-32" r="2" fill="${INK}"/><path d="M 26 -30 l 7 2 l -7 2 Z" fill="#e0a83a"/></g>
+   ${fly != null && t > fly ? '' : `<path d="M -2 -6 v 6 M 6 -6 v 6" stroke="#e07a5a" stroke-width="3"/>`}</g>`;
+}
+function walkers(t, y, k, seed, n = 4, span = 3000) {
+  const r = rng(seed); let s = '';
+  const ids = ['viz1', 'viz2', 'viz3', 'moca', 'motorista', 'mulher'];
+  for (let i = 0; i < n; i++) {
+    const sp = (40 + r() * 50) * (r() < 0.5 ? 1 : -1), x0 = r() * span - 600;
+    const x = ((x0 + t * sp) % span + span) % span - 600;
+    s += person(ids[i % ids.length], { x, y, s: k, t, face: sp > 0 ? 0.8 : -0.8, side: true, walk: t * 9 + i, shadow: true });
+  }
+  return s;
+}
+function leaves(x0, x1, y, seed = 4, n = 30) {
+  const r = rng(seed); let s = '';
+  for (let i = 0; i < n; i++) { const x = x0 + r() * (x1 - x0), yy = y - r() * 14, c = ['#d0704a', '#e0a83a', '#a85a3a', '#c8b04a'][i % 4]; s += `<path transform="translate(${f2(x)} ${f2(yy)}) rotate(${f2(r() * 360)})" d="M -10 0 Q 0 -8 10 0 Q 0 8 -10 0 Z" fill="${c}" stroke="${INK}" stroke-width="2"/>`; }
+  return s;
+}
+function banner(x, y, w, text, t) {
+  const sag = 26;
+  let s = `<path d="M ${x} ${y} Q ${x + w / 2} ${y + sag * 2} ${x + w} ${y}" stroke="${INK}" stroke-width="3" fill="none"/>`;
+  s += `<path d="M ${x} ${y + 6} Q ${x + w / 2} ${y + sag * 2 + 6} ${x + w} ${y + 6} L ${x + w} ${y + 62} Q ${x + w / 2} ${y + sag * 2 + 62} ${x} ${y + 62} Z" fill="#fff4dc" stroke="${INK}" stroke-width="4"/>`;
+  s += `<path id="bnr${x}" d="M ${x + 20} ${y + 48} Q ${x + w / 2} ${y + sag * 2 + 48} ${x + w - 20} ${y + 48}" fill="none"/>`;
+  s += `<text font-family="Fredoka" font-weight="700" font-size="30" fill="#d0503a" letter-spacing="0.5"><textPath href="#bnr${x}" startOffset="50%" text-anchor="middle">${text}</textPath></text>`;
+  for (let i = 0; i < 9; i++) { const u = (i + 0.5) / 9, bx = x + w * u, by = y + 4 * sag * u * (1 - u) * 2 + 64; s += `<path d="M ${f2(bx - 14)} ${f2(by)} L ${f2(bx + 14)} ${f2(by)} L ${f2(bx)} ${f2(by + 28 + Math.sin(t * 3 + i) * 2)} Z" fill="${['#e86a6a', '#f2c230', '#5ab0d8', '#7ab06a'][i % 4]}" stroke="${INK}" stroke-width="2.5"/>`; }
+  return s;
+}
+function cake(x, y, t) {
+  let s = `<rect x="${x - 50}" y="${y - 54}" width="100" height="54" rx="8" fill="#f6e0c8" stroke="${INK}" stroke-width="4"/><path d="M ${x - 50} ${y - 40} q 12 14 25 0 q 12 14 25 0 q 12 14 25 0 q 12 14 25 0" fill="#e88aa8" stroke="${INK}" stroke-width="3"/>`;
+  for (const k of [-24, 0, 24]) { const fl = 1 + Math.sin(t * 20 + k) * 0.2; s += `<rect x="${x + k - 4}" y="${y - 84}" width="8" height="30" fill="#5ab0d8" stroke="${INK}" stroke-width="2"/><ellipse cx="${x + k}" cy="${y - 92}" rx="${f2(5 * fl)}" ry="${f2(9 * fl)}" fill="#ffb03a"/>`; }
+  return s + `<rect x="${x - 64}" y="${y - 4}" width="128" height="10" rx="5" fill="#e8e0d8" stroke="${INK}" stroke-width="3"/>`;
+}

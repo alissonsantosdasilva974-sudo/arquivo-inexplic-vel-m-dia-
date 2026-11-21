@@ -41,7 +41,8 @@ function captionSVG(T) {
   const ap = E.back(clamp((T - c.s) / 0.12));
   let ai = -1; c.words.forEach((w, k) => { if (T >= w.s - 0.03) ai = k; });
   if (ai >= 0 && T > c.words[ai].e + 0.3) ai = -1;
-  const spans = c.words.map((w, k) => `<tspan fill="${k === ai ? '#ffd23f' : '#ffffff'}">${esc(w.w)}</tspan>`).join(' ');
+  const KEY = /^(nunca|volta!|pão\.|era\.|máscara,|enlouquecido\.|pedra,|aposentada\.|Nove|dias|VOLTO|relógio|enorme|duas|horas\.|inteiro!|voltei!)$/;
+  const spans = c.words.map((w, k) => `<tspan fill="${k === ai ? '#ffd23f' : (KEY.test(w.w) ? '#ff7a45' : '#ffffff')}">${esc(w.w)}</tspan>`).join(' ');
   const plain = c.words.map(w => esc(w.w)).join(' ');
   const fs = 92;
   return `<g transform="translate(540 1530) scale(${(0.8 + 0.2 * ap).toFixed(3)})" opacity="${clamp(ap * 1.6).toFixed(3)}">

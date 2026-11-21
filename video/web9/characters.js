@@ -10,6 +10,7 @@ const CAST = {
   mae:      { skin: '#c98b5e', top: '#8a5aa6', topD: '#6e4590', topType: 'dress', pants: '#5a3a6a', shoes: '#3a2a30', hair: 'bun', hairC: '#3a2418', blush: 1, wide: 1.15, seed: 3 },
   motorista:{ skin: '#f3cfae', top: '#3c5a8a', topD: '#2d4670', topType: 'shirt', pants: '#2a3550', shoes: '#1d1a22', hair: 'driverCap', stache: '#5a3a2a', wide: 1.15, seed: 4 },
   barnabe:  { skin: '#eab88a', top: '#8a6a3a', topD: '#6e5228', topType: 'vest', pants: '#5a5a6a', shoes: '#3a2a20', hair: 'whiteSides', stache: '#f4f1ea', hat: 'straw', cane: 1, seed: 5 },
+  padeiro2: { skin: '#c98b5e', top: '#f6efe2', topD: '#ddd2bc', topType: 'apron', pants: '#3a3a4a', shoes: '#2a2228', hair: 'chef', seed: 13 },
   menino:   { skin: '#8d5a34', top: '#e86a4a', topD: '#c8503a', topType: 'tee', pants: '#3d5a9e', shoes: '#f4f1ea', hair: 'cap', hairC: '#2a1a14', scale: 0.72, seed: 6 },
   mulher:   { skin: '#e0ac79', top: '#4f9a72', topD: '#3a7a58', topType: 'dress', pants: '#3a5a48', shoes: '#5a2a2a', hair: 'curly', hairC: '#6a3a24', glasses: '#c8643c', blush: 1, wide: 1.15, seed: 7 },
   moca:     { skin: '#f5d0b0', top: '#e88aa8', topD: '#cc6a8a', topType: 'tee', pants: '#5a7ab8', shoes: '#f4f1ea', hair: 'long', hairC: '#7a4a2a', bow: '#f2c230', blush: 1, scale: 0.95, seed: 8 },
@@ -28,7 +29,7 @@ function limb(x1, y1, a, b, l1, l2, side) {
 }
 
 function face9(d, P, fx) {
-  const ey = HY - 10, sep = 31, er = 19;
+  const ey = HY - 10, sep = d.sep || 31, er = 19;
   const bl = Math.max(d.blink, autoBlink(d.t, P.seed));
   const e = d.expr;
   let s = '';
@@ -141,6 +142,8 @@ function person(id, o = {}) {
   if (d.walk != null) { bob = -Math.abs(Math.sin(d.walk)) * 10; lA = Math.sin(d.walk) * 24; rA = -lA; }
   let g = '';
   if (d.shadow) g += `<ellipse cx="0" cy="2" rx="${f2(70 * (1 - d.jump / 400))}" ry="13" fill="#1b1424" opacity="0.22"/>`;
+  if (d.mouth > 0.05) d.headTilt += Math.sin(d.t * 11) * 2.5;
+  if (d.side) return personSide(P, d, s, g);
   g += `<g transform="translate(0 ${f2(bob - d.jump)}) rotate(${f2(d.tilt)} 0 -100)">`;
   // legs
   const leg = (x, a, side) => {
@@ -179,4 +182,66 @@ function person(id, o = {}) {
   g += hairFront(P, d, dir, fx);
   g += '</g></g>';
   return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (d.flip ? -1 : 1))} ${f2(s)})">${g}</g>`;
+}
+
+// 3/4 side view used for walking/running: knees bend, arms swing, face turned toward travel direction.
+function personSide(P, d, s, g) {
+  const dir = d.face >= 0 ? 1 : -1;
+  const w = d.walk != null ? d.walk : 0, run = d.run ? 1.6 : 1;
+  const bob = d.walk != null ? -Math.abs(Math.sin(w)) * 12 * run : 0;
+  const dress = P.topType === 'dress' || P.topType === 'apron' || P.topType === 'shawl';
+  const hipY = dress ? -76 : -110, th = dress ? 34 : 52, sh = dress ? 30 : 48;
+  const legSvg = (ph, back) => {
+    const a = Math.sin(ph) * 32 * run, knee = Math.max(0, -Math.cos(ph)) * 48 * run;
+    const A = a * Math.PI / 180, K = (a - knee) * Math.PI / 180;
+    const kx = dir * Math.sin(A) * th, ky = hipY + Math.cos(A) * th;
+    const fx = kx + dir * Math.sin(K) * sh, fy = ky + Math.cos(K) * sh;
+    const col = back ? mix(P.pants, '#1b1424', 0.25) : P.pants;
+    const pth = `M 0 ${hipY} L ${f2(kx)} ${f2(ky)} L ${f2(fx)} ${f2(fy)}`;
+    return `<path d="${pth}" stroke="${INK9}" stroke-width="26" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${pth}" stroke="${col}" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` +
+      `<path d="M ${f2(fx - dir * 12)} ${f2(fy + 6)} Q ${f2(fx - dir * 12)} ${f2(fy - 12)} ${f2(fx + dir * 6)} ${f2(fy - 10)} Q ${f2(fx + dir * 30)} ${f2(fy - 6)} ${f2(fx + dir * 30)} ${f2(fy + 6)} Q ${f2(fx + dir * 26)} ${f2(fy + 14)} ${f2(fx)} ${f2(fy + 14)} Z" fill="${back ? mix(P.shoes, '#000000', 0.2) : P.shoes}" stroke="${INK9}" stroke-width="4"/>`;
+  };
+  const armSvg = (ph, back, override) => {
+    const a = override != null ? override : -Math.sin(ph) * 30 * run, el = 25 + (d.run ? 50 : 0);
+    const A = a * Math.PI / 180, B = (a + el) * Math.PI / 180;
+    const sx = dir * 6, sy = -236;
+    const ex = sx + dir * Math.sin(A) * 60, ey = sy + Math.cos(A) * 60;
+    const hx = ex + dir * Math.sin(B) * 54, hy = ey + Math.cos(B) * 54;
+    const col = back ? P.topD : P.top;
+    const pth = `M ${sx} ${sy} L ${f2(ex)} ${f2(ey)} L ${f2(hx)} ${f2(hy)}`;
+    return { svg: `<path d="${pth}" stroke="${INK9}" stroke-width="27" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${pth}" stroke="${col}" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${f2(hx)}" cy="${f2(hy)}" r="13" fill="${P.hands || P.skin}" stroke="${INK9}" stroke-width="4"/>`, hx, hy };
+  };
+  g += `<g transform="translate(0 ${f2(bob - d.jump)}) rotate(${f2(d.tilt + (d.run ? dir * 7 : dir * 2))} 0 -60)">`;
+  const back = armSvg(w + Math.PI, true, d.armBack), front = armSvg(w, false, d.armFront);
+  g += back.svg + legSvg(w + Math.PI, true) + legSvg(w, false);
+  const T = torso9(P, d);
+  g += `<g transform="scale(0.74 1)">${T.svg}</g>`;
+  g += front.svg;
+  if (d.holdR) g += `<g transform="translate(${f2(front.hx)} ${f2(front.hy)})">${d.holdR}</g>`;
+  g += `<g transform="translate(0 ${f2(Math.sin(w * 2) * 2)}) rotate(${f2(d.headTilt)} 0 ${HY + 60})">`;
+  g += hairBack(P, dir);
+  g += `<circle cx="0" cy="${HY}" r="${HR}" fill="${mix(P.skin, '#a85a4a', 0.28)}"/>`;
+  g += `<g clip-path="url(#clipHead)"><circle cx="${-dir * 12}" cy="${HY - 12}" r="${HR}" fill="${P.skin}"/><circle cx="0" cy="${HY}" r="${HR}" fill="url(#pSkin)"/></g>`;
+  g += `<circle cx="0" cy="${HY}" r="${HR}" fill="none" stroke="${INK9}" stroke-width="5"/>`;
+  g += face9(Object.assign({}, d, { face: dir * 1.2, sep: 20, lx: dir }), P, dir * 27);
+  g += hairFront(P, d, dir, dir * 27);
+  g += '</g></g>';
+  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s)} ${f2(s)})">${g}</g>`;
+}
+
+// Emotion symbols (reference style). x,y = head top in world units; age = seconds since trigger.
+function emote(type, x, y, age, k = 1) {
+  if (age < 0 || age > 2.2) return '';
+  const pop = E.back(clamp(age / 0.18)), fade = 1 - clamp((age - 1.8) / 0.4);
+  const b = Math.sin(age * 8) * 3;
+  let s = '';
+  if (type === 'sweat') s = `<path d="M 0 ${-30 + age * 18} q -14 22 0 30 q 14 -8 0 -30 Z" fill="#8fd0f0" stroke="${INK9}" stroke-width="3"/><path d="M -3 ${-6 + age * 18} q -3 6 1 9" stroke="#fff" stroke-width="2.5" fill="none"/>`;
+  else if (type === 'excl') s = `<g transform="translate(0 ${b})"><path d="M -8 -70 L 8 -70 L 4 -22 L -4 -22 Z" fill="#ff5a3c" stroke="${INK9}" stroke-width="4" stroke-linejoin="round"/><circle cx="0" cy="-6" r="8" fill="#ff5a3c" stroke="${INK9}" stroke-width="4"/></g>`;
+  else if (type === 'q') s = `<g transform="translate(0 ${b})"><text y="0" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="74" fill="#ffffff" stroke="${INK9}" stroke-width="10" paint-order="stroke">?</text></g>`;
+  else if (type === 'vein') s = `<g transform="rotate(${b * 3}) scale(${1 + Math.sin(age * 14) * 0.08})"><path d="M -18 -6 Q -6 -6 -6 -18 M 6 -18 Q 6 -6 18 -6 M 18 6 Q 6 6 6 18 M -6 18 Q -6 6 -18 6" stroke="#e8343c" stroke-width="7" fill="none" stroke-linecap="round"/></g>`;
+  else if (type === 'heart') s = `<g transform="translate(0 ${-age * 30})"><path d="M 0 0 C -24 -18 -14 -40 0 -26 C 14 -40 24 -18 0 0 Z" fill="#ff6a8a" stroke="${INK9}" stroke-width="3.5"/></g>`;
+  else if (type === 'sparkle') { for (let i = 0; i < 3; i++) { const a = i * 2.1 + age * 2, r = 50 + i * 10; s += `<path transform="translate(${f2(Math.cos(a) * r)} ${f2(Math.sin(a) * r * 0.5 - 20)}) scale(${f2(0.6 + 0.4 * Math.abs(Math.sin(age * 6 + i)))})" d="M 0 -16 L 4 -4 L 16 0 L 4 4 L 0 16 L -4 4 L -16 0 L -4 -4 Z" fill="#ffd23f" stroke="${INK9}" stroke-width="2.5"/>`; } }
+  else if (type === 'shock') { for (let i = 0; i < 7; i++) { const a = -Math.PI * (0.1 + i * 0.13); s += `<path d="M ${f2(Math.cos(a) * 95)} ${f2(Math.sin(a) * 95 + 80)} L ${f2(Math.cos(a) * 125)} ${f2(Math.sin(a) * 125 + 80)}" stroke="${INK9}" stroke-width="6" stroke-linecap="round"/>`; } }
+  else if (type === 'zzz') s = `<text x="${age * 10}" y="${-age * 20}" font-family="Fredoka" font-weight="700" font-size="40" fill="#ffffff" stroke="${INK9}" stroke-width="7" paint-order="stroke">z z</text>`;
+  return `<g transform="translate(${f2(x)} ${f2(y)}) scale(${f2(pop * k)})" opacity="${f2(fade)}">${s}</g>`;
 }
