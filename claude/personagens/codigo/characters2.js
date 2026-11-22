@@ -6,7 +6,7 @@ const LW = 6;                  // outline width
 const H2 = -320, HR2 = 84;     // head centre / radius
 
 const CAST2 = {
-  polo:     { skin: '#f4c4a1', top: '#ffc928', topD: '#e0a514', topType: 'hoodie', bottom: '#4a6fa8', jeans: 1, shoes: '#f6f4ee', sneakers: 1, hands: '#1d1a22', hair: 'bald', poloFace: 1, stubble: 1, w: 1.0, seed: 1 },
+  polo:     { skin: '#f4c4a1', top: '#ffc928', topD: '#e0a514', topType: 'hoodie', bottom: '#4a6fa8', jeans: 1, shoes: '#f6f4ee', sneakers: 1, hands: '#1d1a22', hair: 'bald', poloFace: 1, stubble: 0, w: 1.0, seed: 1 },
   padeira:  { skin: '#f1c08f', top: '#e0787a', topD: '#c05a5e', topType: 'dress', pattern: 'pDots', apron: 1, bottom: '#e0787a', shoes: '#7a3a2a', hair: 'chef', hairC: '#5a3424', blush: 1, ear: '#f2c230', w: 1.28, seed: 2 },
   padeiraV: { skin: '#f1c08f', top: '#9b84c8', topD: '#7a62aa', topType: 'dress', pattern: 'pFlowers', bottom: '#9b84c8', shoes: '#8a5a8a', hair: 'cloud', hairC: '#e8e4f2', bun: 1, glasses: '#c9a24a', blush: 1, ear: '#f2c230', w: 1.3, seed: 2 },
   mae:      { skin: '#c98b5e', top: '#7b52b8', topD: '#5e3c98', topType: 'dress', pattern: 'pFlowers', bottom: '#7b52b8', shoes: '#e07a9a', hair: 'cloud', hairC: '#3a2018', bun: 1, blush: 1, ear: '#f2c230', w: 1.22, seed: 3 },

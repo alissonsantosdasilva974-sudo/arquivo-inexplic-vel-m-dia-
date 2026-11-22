@@ -58,13 +58,13 @@ O rig desenha cada personagem em "unidades" com os pés em (0,0). Em escala `s =
 
 **Arquivos:** `svg/polo_frente.svg`, `svg/polo_lado.svg`, `svg/polo_expr_neutra.svg`, `svg/polo_expr_surpreso.svg`, `svg/polo_expr_rindo.svg`
 
-**Conformidade com a ficha do Projeto** (atualizado no episódio 2 v2: o Polo agora segue a ficha):
+**Conformidade com a ficha do Projeto** (atualizado no episódio 2 v2; regra atual do usuário: **Polo sem barba**):
 
 | Ficha do Projeto | Polo atual |
 |---|---|
 | Careca, cabeça redonda | Igual. |
 | Sobrancelhas grossas | Igual (traço de 10 u). |
-| Barba rala | Igual: pontilhado fino e sombra leve no queixo e no maxilar. |
+| Barba rala | **Diferente, por decisão do usuário: o Polo NÃO tem barba.** A opção existe no código (`stubble: 1` em `CAST2.polo`), mas fica desligada (`stubble: 0`). |
 | Moletom amarelo `#FFC928` com bolso | Igual: `#FFC928` (sombra `#E0A514`), bolso canguru com costura e cordões brancos. |
 | Calça jeans | Igual: `#4A6FA8` com textura de sarja e costura laranja. |
 | Tênis branco | Igual: `#F6F4EE` com sola cinza e cadarço. |
