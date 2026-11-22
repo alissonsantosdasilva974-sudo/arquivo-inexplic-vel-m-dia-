@@ -37,3 +37,7 @@ ep2/frames_body/
 ep2/frames_ovl/
 pilot/frames_ref/
 *_verify/
+
+# simple-workflow plugin artifacts (local-only; delete entries to share via git)
+.simple-workflow/
+.simple-workflow
