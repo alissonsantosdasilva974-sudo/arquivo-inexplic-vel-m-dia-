@@ -68,6 +68,20 @@ for k in range(4): add(89.75 + k * 0.42, step(0.12), 'passos na estrada' if k ==
 add(93.0, shimmer(1.0, 0.05), 'brilho', 'nota dobrada no bolso')
 add(96.5, chime(1568, 0.07), 'plim', 'Polo sorri')
 add(104.55, whoosh(0.6, 0.1), 'whoosh', 'loop para o início')
+import re as _re
+_src = open('ep2/web/shots.js').read()
+_cuts = [float(x) for x in _re.findall(r'\{ t0: ([0-9.]+), draw', _src)]
+_xf = set(float(x) for x in _re.findall(r'\{ t0: ([0-9.]+), xf:', _src))
+for i, c in enumerate(_cuts):
+    if c > 0.5 and c not in _xf: add(c - 0.08, whoosh(0.22, 0.07), 'whoosh de corte' if i == 1 else None, 'borrão de movimento em cada corte')
+def impact(amp=0.32):
+    n = int(0.5 * SR); t = np.arange(n) / SR; f = 90 * np.exp(-t * 6) + 40
+    return amp * np.exp(-t * 7) * np.sin(2*np.pi*np.cumsum(f)/SR) + whoosh(0.5, 0.05)
+for c, why in [(2.4, 'revelação do homem de terno'), (68.55, 'revelação: nota com a marca do homem'), (84.0, 'homem some')]: add(c, impact(), 'impacto', why)
+def click(amp=0.18):
+    n = int(0.05 * SR); t = np.arange(n) / SR; return amp * np.exp(-t * 160) * (np.sin(2*np.pi*1800*t) + 0.4 * rng.standard_normal(n))
+add(19.6, click(), 'clique', 'placar de notas aparece')
+for c in [29.5, 41.9, 51.05, 83.2]: add(c, click() + chime(1175, 0.05)[:int(0.05 * SR)], 'clique do placar', 'placar perde uma nota')
 pk = np.abs(out).max(); print('peak', round(pk, 3))
 with wave.open('ep2/audio/sfx_stem.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes((np.clip(out, -1, 1) * 32767).astype('<i2').tobytes())
 with open('ep2/work/SOUND_PLAN.md', 'w') as f:

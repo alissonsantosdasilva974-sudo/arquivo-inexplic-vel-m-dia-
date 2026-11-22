@@ -80,7 +80,7 @@ function renderFrame(f) {
    <rect width="1080" height="1920" fill="url(#gVig)"/>
    <image href="paper.png" x="0" y="0" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>
    <image href="noise.png" x="${(f * 37) % 7 - 7}" y="${(f * 53) % 9 - 9}" width="1096" height="1936" opacity="0.07" style="mix-blend-mode:overlay"/>
-   ${over}${captionSVG(T)}${badge()}</svg>`;
+   ${over}${captionSVG(T)}${badge()}${typeof HUD === 'function' ? HUD(T) : ''}</svg>`;
   document.getElementById('stage').innerHTML = svg;
   return i;
 }

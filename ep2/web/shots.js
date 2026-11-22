@@ -312,3 +312,21 @@ function driverEp2(t, T, cam) {
   return { cam, layers: [Lr(0.4, bg), Lr(1, `<rect x="470" y="210" width="1030" height="700" fill="#3a4650"/><rect x="760" y="300" width="420" height="600" rx="30" fill="#4a3434" stroke="${INK}" stroke-width="4"/>` + drv + panel)],
     over: comic(T, 42.36, 'HA HA HA!', 540, 520, { size: 110, life: 1.0, fill: '#ffd23f' }) };
 }
+
+// ---------- HUD: wallet note counter (placar) 4 → 3 → 2 → 1 → 0 ----------
+const NOTE_DROPS = [29.5, 41.9, 51.05, 83.2];   // baker, driver, lady, the man
+function HUD(T) {
+  if (T < 19.6 || T > 86.2) return '';
+  let n = 4; for (const d of NOTE_DROPS) if (T >= d) n--;
+  const last = NOTE_DROPS.filter(d => T >= d).pop();
+  const since = last != null ? T - last : 99;
+  const app = E.back(clamp((T - 19.6) / 0.3)) * (1 - clamp((T - 85.7) / 0.5));
+  const pop = since < 0.6 ? 1 + 0.35 * Math.sin(clamp(since / 0.6) * Math.PI) : 1;
+  const col = n <= 1 ? '#ff6a45' : '#ffffff';
+  let s = `<g transform="translate(905 214) scale(${f2(app * pop)})" opacity="${f2(app)}">`;
+  s += `<rect x="-118" y="-46" width="236" height="92" rx="46" fill="#1e1820" opacity="0.72"/>`;
+  s += `<g transform="translate(-58 6) scale(0.42)">${wallet({ s: 1, light: 1 - n / 4 })}</g>`;
+  s += `<text x="40" y="22" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="62" fill="${col}" stroke="#1e1820" stroke-width="10" paint-order="stroke">×${n}</text></g>`;
+  if (since < 1.0) { const q = since; s += `<text x="${f2(960)}" y="${f2(300 + q * 70)}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="54" fill="#ff6a45" stroke="#1e1820" stroke-width="10" paint-order="stroke" opacity="${f2(1 - q)}">-1</text>`; }
+  return s;
+}

@@ -18,10 +18,12 @@ Repositório de produção das animações verticais (TikTok/Reels/Shorts) do ca
 | Episódio | Pasta | Status |
 |---|---|---|
 | 1 — "Já volto" | `video/` (motor em `video/web9/`) | v5 entregue (`video/out/ja_volto_v5_tiktok*.mp4`). **Usa o Polo antigo** (moletom `#F2C230`, sapato preto, sem jeans). Re-renderizar se quiser a série uniforme. |
-| 2 — "Quem devolve a nota vira o cobrador" (parte 2) | `ep2/` | v2 entregue (`ep2/out/cobrador_ep2_tiktok*.mp4`). **O MP4 ainda mostra barba no Polo** — código já corrigido, falta re-renderizar. |
+| 2 — "Quem devolve a nota vira o cobrador" (parte 2) | `ep2/` | v3: Polo sem barba, placar de notas (HUD em `shots.js`), música com ducking, "whoosh" nos cortes e capa centralizada (`ep2/out/cobrador_ep2_tiktok*.mp4`). |
 | 3 | — | O usuário vai decidir pelos comentários (COBRA ou AVISA). |
 
-Pendências: re-renderizar o ep. 2 sem barba; aplicar as dicas do vídeo "como viralizar" (ver `claude/estrategia-viral.md`, quando existir).
+**Estratégia:** `claude/estrategia-viral.md` tem a análise do vídeo "8 etapas pra viralizar" e um **checklist obrigatório** para todo episódio (roteiro e produção). Os pontos principais: gancho sem explicação, placar ou contador, voto só se mudar a história (e mostrar o resultado no episódio seguinte), música a −20 dB da voz subindo nas pausas (`ep2/duck_music.py`), "whoosh" nos cortes e capa com título e Polo no quadrado central.
+
+**Ep. 3:** precisa mostrar o resultado do voto COBRA ou AVISA da parte 2.
 
 ## Ficha de personagens (reutilizável)
 
@@ -35,7 +37,7 @@ Pendências: re-renderizar o ep. 2 sem barba; aplicar as dicas do vídeo "como v
 4. Legendas: salvar o roteiro do usuário em `epN/work/transcript.txt` e rodar `python3 video/tools/align_captions.py epN/work/words.json epN/work/transcript.txt epN/web/words.js`.
 5. Cenas: escrever `epN/web/shots.js` (lista `SHOTS` com `t0` e `draw(t, T)`). Um corte a cada 2–3 s, gancho no primeiro segundo e final que emenda no começo (loop).
 6. Prévia: renderizar um quadro por cena com `WEBDIR=../epN/web VW=1080 VH=1920 node video/tools/render9.js epN/work/preview <quadros>` e montar uma folha de prévias. Conferir enquadramento, mãos e objetos.
-7. Som: efeitos sintetizados (modelo em `ep2/sfx_ep2.py`) e trilha (`ep2/music_ep2.py`), com a trilha cerca de 18 dB abaixo da voz. Mixar com e sem música (comandos em `ep2/` e no histórico do git); alvo de −14 LUFS e pico de no máximo −1 dBFS.
+7. Som: efeitos sintetizados (modelo em `ep2/sfx_ep2.py`, com "whoosh" automático em cada corte lido do `shots.js`) e trilha (`ep2/music_ep2.py` → `ep2/duck_music.py`, que deixa a trilha 20 dB abaixo da voz e a faz subir nas pausas). Mixar com e sem música (comandos em `ep2/` e no histórico do git); alvo de −14 LUFS e pico de no máximo −1 dBFS.
 8. Render 4K: `epN/render_all.sh` (4 processos, JPEG, retomável). Codificação: `epN/encode.sh` (TikTok em duas passadas a 3,2 Mbps, versão sem música e versão HQ em `epN/renders/`).
 9. Verificação: duração = narração, quadros, sem quadros pretos (`blackdetect`) nem trechos congelados (`freezedetect`), loudness. Revisar o vídeo inteiro a 1 quadro por segundo.
 10. Capa: `epN/web/cover.html` → `epN/out/capa_epN.png`.

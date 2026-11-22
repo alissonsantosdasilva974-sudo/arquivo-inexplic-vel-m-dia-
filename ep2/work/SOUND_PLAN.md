@@ -5,26 +5,35 @@ Narração original como trilha mestre (limitador de pico leve, −1,5 dBFS, com
 | Início (s) | Duração (s) | Som | Propósito |
 |---|---|---|---|
 | 0.00 | 1.20 | brilho | nota brilhando (gancho) |
+| 1.14 | 0.22 | whoosh de corte | borrão de movimento em cada corte |
 | 1.20 | 14.00 | vento noturno | rua escura |
+| 2.40 | 0.50 | impacto | revelação do homem de terno |
 | 11.94 | 0.09 | passos lentos | homem de terno vai embora |
 | 16.10 | 1.20 | plim | Polo põe o chapéu |
 | 17.30 | 0.50 | swish | carteira abre |
+| 19.60 | 0.05 | clique | placar de notas aparece |
 | 19.60 | 1.40 | brilho | nomes brilhando nas notas |
 | 24.82 | 0.12 | toc toc | Polo bate na padaria |
 | 26.10 | 0.60 | porta rangendo | padeiro abre a porta |
+| 29.50 | 0.05 | clique do placar | placar perde uma nota |
 | 36.52 | 0.09 | passos correndo | padeiro foge com a mala |
 | 36.60 | 0.60 | asas | pombos voam |
 | 38.84 | 0.09 | passos | Polo vai ao ponto |
+| 41.90 | 0.05 | clique do placar | placar perde uma nota |
 | 43.60 | 0.12 | toque no volante | motorista solta o volante |
 | 44.70 | 0.50 | chiado pneumático | porta do ônibus abre |
 | 45.24 | 0.09 | passos | motorista vai embora a pé |
 | 46.50 | 3.20 | motor | ônibus segue sozinho |
+| 51.05 | 0.05 | clique do placar | placar perde uma nota |
 | 52.20 | 1.00 | rosnado | cachorro rosna |
 | 56.60 | 0.06 | tique-taque | relógio volta a andar |
 | 56.60 | 0.60 | asas | pombos voam do relógio |
+| 68.55 | 0.50 | impacto | revelação: nota com a marca do homem |
 | 68.60 | 1.20 | revelação | nota do homem de terno |
 | 70.88 | 0.09 | passos correndo | Polo corre atrás dele |
 | 73.40 | 12.00 | vento noturno | esquina |
+| 83.20 | 0.05 | clique do placar | placar perde uma nota |
+| 84.00 | 0.50 | impacto | homem some |
 | 84.00 | 1.00 | brilho | homem some |
 | 85.20 | 4.00 | vento | cidade vazia |
 | 89.75 | 0.09 | passos na estrada | alguém chega |
