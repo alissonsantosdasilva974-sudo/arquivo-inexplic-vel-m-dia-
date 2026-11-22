@@ -22,7 +22,7 @@ Repositório de produção das animações verticais (TikTok/Reels/Shorts) do ca
 | 1 — "Já volto" | `video/` (motor em `video/web9/`) | v5 entregue (`video/out/ja_volto_v5_tiktok*.mp4`). **Usa o Polo antigo** (moletom `#F2C230`, sapato preto, sem jeans). Re-renderizar se quiser a série uniforme. |
 | 2 — "Quem devolve a nota vira o cobrador" (parte 2) | `ep2/` | v3: Polo sem barba, placar de notas (HUD em `shots.js`), música com ducking, "whoosh" nos cortes e capa centralizada (`ep2/out/cobrador_ep2_tiktok*.mp4`). |
 | 3 | — | O usuário vai decidir pelos comentários (COBRA ou AVISA). |
-| Piloto da cidade v3 | `pilot/` (kit em `video/web9/city2.js`) | Cena-piloto entregue (`pilot/out/piloto_cidade.mp4`): descida de drone, rua da padaria em 5 camadas, rua em perspectiva com quarteirões, carros, fios e pedestres, de dia e de noite. **Aguardando aprovação do usuário para aplicar no ep. 2 e na ficha.** |
+| Piloto da cidade v3 | `pilot/` (kit em `video/web9/city2.js`) | Cena-piloto entregue (`pilot/out/piloto_cidade.mp4`): descida de drone, rua da padaria em 5 camadas, rua em perspectiva com quarteirões, carros, fios e pedestres, de dia e de noite. Estilo de cidade escolhido pelo usuário: **misto** (casas e lojas baixas na rua, prédios de 5 a 10 andares atrás). O usuário pediu **ajustes antes de aplicar**; aguardando quais. |
 
 **Estratégia:** `claude/estrategia-viral.md` tem a análise do vídeo "8 etapas pra viralizar" e um **checklist obrigatório** para todo episódio (roteiro e produção). Os pontos principais: gancho sem explicação, placar ou contador, voto só se mudar a história (e mostrar o resultado no episódio seguinte), música a −20 dB da voz subindo nas pausas (`ep2/duck_music.py`), "whoosh" nos cortes e capa com título e Polo no quadrado central.
 
