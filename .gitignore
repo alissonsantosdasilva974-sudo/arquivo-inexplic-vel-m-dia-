@@ -41,3 +41,11 @@ pilot/frames_ref/
 # simple-workflow plugin artifacts (local-only; delete entries to share via git)
 .simple-workflow/
 .simple-workflow
+ep3/frames/
+ep3/frames_ref/
+ep3/frames_body/
+ep3/frames_ovl/
+ep3/renders/
+ep3/work/preview/
+ep3/audio/*.wav
+!ep3/audio/sfx_stem.wav
