@@ -15,6 +15,14 @@ Repositório de produção das animações verticais (TikTok/Reels/Shorts) do ca
 - Fazer commit e push de tudo na branch `claude/beautiful-keller-qxgio4` (pedido do usuário para continuar em outras janelas).
 - Respostas ao usuário em **português**.
 
+## PADRÃO DO CANAL (aprovado em 22/11/2026)
+
+**A animação do ep. 2 v4 é o padrão oficial do canal a partir de agora.** Todo episódio novo parte de `padrao/` (motor, cidade v3, Polo oficial, scripts de som, render e codificação). Detalhes e passo a passo: `padrao/LEIAME.md`. Para começar:
+
+```bash
+bash padrao/novo_episodio.sh N nome_curto caminho/narracao.wav
+```
+
 ## Estado atual
 
 | Episódio | Pasta | Status |
@@ -34,18 +42,18 @@ Repositório de produção das animações verticais (TikTok/Reels/Shorts) do ca
 
 ## Como fazer um episódio novo (receita)
 
-1. Criar `epN/` copiando `ep2/web/` (motor + personagens + cidade) e os scripts `ep2/render_all.sh` e `ep2/encode.sh` (trocar `ep2` e o número de quadros).
+1. Criar `epN/` com `bash padrao/novo_episodio.sh N nome_curto narracao.wav`. Isso copia `padrao/web/` e os scripts (`render_all.sh`, `encode.sh`, `mix.sh`, `sfx.py`, `music.py`, `duck_music.py`) e preenche `ep.conf` com a duração e os quadros.
 2. Áudio: copiar a narração para `epN/input/voiceover_original.wav` (somente leitura). Medir com `ffprobe` e `ebur128`. Quadros = round(duração × 30).
 3. Transcrição: faster-whisper `small` (pt) com `word_timestamps`. Passar o áudio como array numpy (o PyAV instalado quebra com caminho de arquivo). Se o começo não sair, transcrever os primeiros segundos à parte.
 4. Legendas: salvar o roteiro do usuário em `epN/work/transcript.txt` e rodar `python3 video/tools/align_captions.py epN/work/words.json epN/work/transcript.txt epN/web/words.js`.
 5. Cenas: escrever `epN/web/shots.js` (lista `SHOTS` com `t0` e `draw(t, T)`). Um corte a cada 2–3 s, gancho no primeiro segundo e final que emenda no começo (loop).
 6. Prévia: renderizar um quadro por cena com `WEBDIR=../epN/web VW=1080 VH=1920 node video/tools/render9.js epN/work/preview <quadros>` e montar uma folha de prévias. Conferir enquadramento, mãos e objetos.
-7. Som: efeitos sintetizados (modelo em `ep2/sfx_ep2.py`, com "whoosh" automático em cada corte lido do `shots.js`) e trilha (`ep2/music_ep2.py` → `ep2/duck_music.py`, que deixa a trilha 20 dB abaixo da voz e a faz subir nas pausas). Mixar com e sem música (comandos em `ep2/` e no histórico do git); alvo de −14 LUFS e pico de no máximo −1 dBFS.
+7. Som: editar a seção CUES do `epN/sfx.py` (biblioteca de efeitos, com "whoosh" automático em cada corte lido do `shots.js`) e rodar `python3 epN/sfx.py`, depois `python3 epN/music.py`, depois `bash epN/mix.sh`. O `mix.sh` aplica o limitador na voz, roda o `duck_music.py` (trilha 20 dB abaixo da voz, subindo nas pausas) e gera as mixagens com e sem música a −14 LUFS, com pico de no máximo −1 dBFS.
 8. Render 4K: `epN/render_all.sh`, com 4 processos, JPEG e `NOBLUR=1`. No fim ele roda duas etapas. `video/tools/verify_frames.py` compara cada quadro 4K com uma referência 1x e refaz os quadros em branco ou com elementos faltando; isso é necessário porque cenas pesadas fazem o Chromium falhar de vez em quando. Depois, `video/tools/post_blur.py` aplica o desfoque das transições nas imagens e recoloca nítida a camada de legendas, selo e placar, renderizada à parte com `LAYER=overlay`. Não use filtros SVG pesados nem `mix-blend-mode` em objetos repetidos. Codificação: `epN/encode.sh` (TikTok em duas passadas a 3,2 Mbps, versão sem música e versão HQ em `epN/renders/`).
 9. Verificação: duração = narração, quadros, sem quadros pretos (`blackdetect`) nem trechos congelados (`freezedetect`), loudness. Revisar o vídeo inteiro a 1 quadro por segundo.
 10. Capa: `epN/web/cover.html` → `epN/out/capa_epN.png`.
 
-## Mapa do motor (`ep2/web/`, igual a `video/web9/` + cidade)
+## Mapa do motor (`padrao/web/` = `ep2/web/`, igual a `video/web9/` + cidade)
 
 - `lib.js`: easing, `kf`, `mix`, `rng`, câmera `layerT` (camadas com parallax).
 - `characters2.js`: `person(id, opções)`, com vista de frente, `side: true`, `back: true`, expressões, mãos (`fist`, `open`, `point`), `hat`, `pale`, `tears` e `fade`. Também `CAST2` (elenco), objetos (`wallet`, `noteNamed`, `suitcase`, `dog`, `fedoraProp`), `povHands` e `steeringWheel`.
