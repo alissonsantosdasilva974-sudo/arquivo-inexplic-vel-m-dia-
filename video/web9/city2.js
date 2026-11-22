@@ -86,6 +86,12 @@ function street3D(t, o = {}) {
   for (const mc of (o.movingCars || [])) items.push({ D: mc.D, draw: () => { const b = P3(c, mc.X, 0, mc.D); return carRear(b.x, b.y, b.k * 0.62, mc.col, night, { brake: mc.brake }); } });
   for (const pp of (o.people || [])) items.push({ D: pp.D, draw: () => { const b = P3(c, pp.X, 0, pp.D); return person(pp.id, Object.assign({ x: b.x, y: b.y, s: (pp.s || 0.44) * b.k }, pp.o)); } });
   if (!closed) { const rp = rng((o.seed || 7) + 9); for (let i = 0; i < (o.crowd == null ? 14 : o.crowd); i++) { const g = rp() < 0.5 ? -1 : 1, D0 = 300 + rp() * 5000, sp = (rp() < 0.5 ? 1 : -1) * (60 + rp() * 60), id = ['viz1', 'viz2', 'viz3', 'moca', 'mulher', 'motorista', 'senhora', 'menino'][i % 8]; const D = ((D0 + t * sp) % 5400 + 5400) % 5400 + 200, X = g * (R + 50 + rp() * 100); items.push({ D, draw: () => { const b = P3(c, X, 0, D); return person(id, { x: b.x, y: b.y, s: 0.44 * b.k, t, back: sp > 0, walk: t * 8 + i, face: 0 }); } }); } }
+  if (!closed && (o.crowd == null || o.crowd > 0)) {
+    const D0 = (o.crossD || 900) + 110, ids = ['moca', 'viz2', 'senhora'];
+    for (let i = 0; i < 3; i++) { const ph = ((t * 0.12 + i / 3) % 1), X = lerp(-R - 60, R + 60, ph) * (i % 2 ? -1 : 1); items.push({ D: D0 + i * 30, draw: () => { const b = P3(c, X, 0, D0 + i * 30); return person(ids[i], { x: b.x, y: b.y, s: 0.44 * b.k, t, side: true, face: i % 2 ? -0.8 : 0.8, walk: t * 8 + i }); } }); }
+    const rq = rng((o.seed || 7) + 13);
+    for (let i = 0; i < 6; i++) { const g = rq() < 0.5 ? -1 : 1, D = 600 + rq() * 3500, X = g * (W - 50), id = ['viz1', 'mulher', 'viz3', 'menino', 'barnabe', 'moca'][i]; items.push({ D, draw: () => { const b = P3(c, X, 0, D); return person(id, { x: b.x, y: b.y, s: 0.44 * b.k, t, face: g > 0 ? 0.9 : -0.9, lx: g, expr: 'happy' }); } }); }
+  }
   // painter: far→near, buildings and items merged by D
   s += drawBack();
   const all = blds.map(b => ({ D: b.D, b })).concat(items.map(it => ({ D: it.D, it }))).sort((a, b) => b.D - a.D);
@@ -217,7 +223,7 @@ function sideStreet(T, t, o = {}) {
   let main = (o.main ? o.main(T) : cityRow(T, { seed: o.seed || 5, night, closed, signs: o.signs, bunting: !night && !closed, shops: 0.75 }));
   main += wiresSide(-1400 + 260, 3400, base + 40, 560, t);
   if (!closed) main += carSide(-200, base + 130, '#3c6aa8', { s: 0.75, night }) + carSide(1500, base + 130, '#e8e4dc', { s: 0.75, night }) + carSide(2650, base + 130, '#c8443c', { s: 0.75, night });
-  main += bancaSide(2000, base + 40) + orelhao(1180, base + 40) + lixeira(820, base + 40) + streetSign(-560, base + 40, o.streetName || 'R. DO RELÓGIO');
+  main += bancaSide(2000, base + 40) + orelhao(1180, base + 40) + lixeira(1420, base + 40) + streetSign(-560, base + 40, o.streetName || 'R. DO RELÓGIO');
   if (o.movingCar != null) main += carSide(o.movingCar, base + 260, '#f2c230', { s: 0.8, dir: 1, wheel: T * 600, night });
   main += (o.extra || '');
   L.push(Lr(1, main));

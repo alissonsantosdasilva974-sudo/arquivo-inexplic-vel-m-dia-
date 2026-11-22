@@ -22,6 +22,7 @@ Repositório de produção das animações verticais (TikTok/Reels/Shorts) do ca
 | 1 — "Já volto" | `video/` (motor em `video/web9/`) | v5 entregue (`video/out/ja_volto_v5_tiktok*.mp4`). **Usa o Polo antigo** (moletom `#F2C230`, sapato preto, sem jeans). Re-renderizar se quiser a série uniforme. |
 | 2 — "Quem devolve a nota vira o cobrador" (parte 2) | `ep2/` | v3: Polo sem barba, placar de notas (HUD em `shots.js`), música com ducking, "whoosh" nos cortes e capa centralizada (`ep2/out/cobrador_ep2_tiktok*.mp4`). |
 | 3 | — | O usuário vai decidir pelos comentários (COBRA ou AVISA). |
+| Piloto da cidade v3 | `pilot/` (kit em `video/web9/city2.js`) | Cena-piloto entregue (`pilot/out/piloto_cidade.mp4`): descida de drone, rua da padaria em 5 camadas, rua em perspectiva com quarteirões, carros, fios e pedestres, de dia e de noite. **Aguardando aprovação do usuário para aplicar no ep. 2 e na ficha.** |
 
 **Estratégia:** `claude/estrategia-viral.md` tem a análise do vídeo "8 etapas pra viralizar" e um **checklist obrigatório** para todo episódio (roteiro e produção). Os pontos principais: gancho sem explicação, placar ou contador, voto só se mudar a história (e mostrar o resultado no episódio seguinte), música a −20 dB da voz subindo nas pausas (`ep2/duck_music.py`), "whoosh" nos cortes e capa com título e Polo no quadrado central.
 
@@ -40,7 +41,7 @@ Repositório de produção das animações verticais (TikTok/Reels/Shorts) do ca
 5. Cenas: escrever `epN/web/shots.js` (lista `SHOTS` com `t0` e `draw(t, T)`). Um corte a cada 2–3 s, gancho no primeiro segundo e final que emenda no começo (loop).
 6. Prévia: renderizar um quadro por cena com `WEBDIR=../epN/web VW=1080 VH=1920 node video/tools/render9.js epN/work/preview <quadros>` e montar uma folha de prévias. Conferir enquadramento, mãos e objetos.
 7. Som: efeitos sintetizados (modelo em `ep2/sfx_ep2.py`, com "whoosh" automático em cada corte lido do `shots.js`) e trilha (`ep2/music_ep2.py` → `ep2/duck_music.py`, que deixa a trilha 20 dB abaixo da voz e a faz subir nas pausas). Mixar com e sem música (comandos em `ep2/` e no histórico do git); alvo de −14 LUFS e pico de no máximo −1 dBFS.
-8. Render 4K: `epN/render_all.sh` (4 processos, JPEG, retomável; no fim roda `video/tools/fix_bars.py`, que acha e refaz quadros com a faixa preta aleatória do Chromium nas transições com desfoque). Codificação: `epN/encode.sh` (TikTok em duas passadas a 3,2 Mbps, versão sem música e versão HQ em `epN/renders/`).
+8. Render 4K: `epN/render_all.sh` (4 processos, JPEG, retomável; no fim roda `video/tools/fix_bars.py` e `video/tools/fix_cuts.py`: o Chromium às vezes desenha blocos pretos ou coloridos nos quadros de transição com desfoque; os scripts renderizam esses quadros de novo, um de cada vez, até dois renders saírem iguais). Codificação: `epN/encode.sh` (TikTok em duas passadas a 3,2 Mbps, versão sem música e versão HQ em `epN/renders/`).
 9. Verificação: duração = narração, quadros, sem quadros pretos (`blackdetect`) nem trechos congelados (`freezedetect`), loudness. Revisar o vídeo inteiro a 1 quadro por segundo.
 10. Capa: `epN/web/cover.html` → `epN/out/capa_epN.png`.
 
