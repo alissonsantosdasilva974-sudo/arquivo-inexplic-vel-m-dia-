@@ -30,3 +30,5 @@ ep2/work/fs/
 pilot/frames/
 pilot/work/*
 !pilot/work/st_sheet.jpg
+pilot/frames/
+pilot/work/
