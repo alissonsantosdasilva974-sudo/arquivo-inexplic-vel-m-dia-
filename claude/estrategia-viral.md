@@ -10,7 +10,7 @@ Fonte: transcrição (capturas de tela, de 0:02 a 7:30) de um vídeo do YouTube 
 
 | # | Regra do vídeo | Situação no canal | Ação |
 |---|---|---|---|
-| 1 | **Premissa:** o personagem quer algo que o público também quer, e isso cabe em 4 palavras. | Ep. 1: "comprar pão e voltar". Ep. 2: o desejo do Polo não fica claro (ele vira cobrador sem querer). | **Para os roteiros:** dar ao Polo um desejo fixo da série, por exemplo **"Polo quer voltar pra casa"** ou **"Polo quer sair da cidade"**. Cada episódio aproxima ou afasta isso. Sugestão a validar com o usuário. |
+| 1 | **Premissa:** o personagem quer algo que o público também quer, e isso cabe em 4 palavras. | Ep. 1: "comprar pão e voltar". Ep. 2: o desejo do Polo não fica claro (ele vira cobrador sem querer). | **Aprovado pelo usuário:** a premissa da série é **"Polo quer voltar pra casa"**. Cada episódio aproxima ou afasta o Polo disso. Leitura dos episódios: no ep. 1 ele sai pra comprar pão e não consegue voltar; no ep. 2 vira o cobrador e fica preso à cidade. |
 | 2 | **3 primeiros segundos:** abrir com a coisa mais estranha, bonita ou absurda do episódio, sem explicar nada; a primeira frase tem que deixar uma pergunta na cabeça de quem ouve. | O visual já faz isso (relógio enlouquecido no ep. 1, nota brilhando sobre a cidade no ep. 2). As frases de abertura ("Nesta cidade, quem…") são afirmações, mas intrigantes. | **Para os roteiros:** começar com uma frase que gere pergunta (ex.: "Nessa cidade, ninguém devolve troco. E tem um motivo."). Não altero a narração por conta própria (regra do usuário). |
 | 3 | **Meio:** uma frase, uma imagem, uma piada; cada frase ganha imagem nova. | Feito (um corte a cada 2–3 s). | Mantido. |
 | 4 | **Placar ou contador:** o cérebro gosta de ver números mudando. | Ep. 1 tem o "N DIAS" no relógio. Ep. 2 não tinha. | **Aplicado no ep. 2:** placar de notas na carteira (4 → 3 → 2 → 1 → 0), que cai a cada entrega, com som. |
@@ -28,7 +28,7 @@ Fonte: transcrição (capturas de tela, de 0:02 a 7:30) de um vídeo do YouTube 
 ## Checklist para todo episódio novo (usar em outras janelas)
 
 **Roteiro** (passar para o usuário antes de gravar):
-- [ ] Desejo do Polo neste episódio em 4 palavras, e é algo que o público também quer.
+- [ ] Premissa "Polo quer voltar pra casa": o que, neste episódio, o aproxima ou o afasta de casa?
 - [ ] Primeira frase gera uma pergunta, sem explicação.
 - [ ] Virada no meio.
 - [ ] Final é quase vitória com gancho.

@@ -4,6 +4,8 @@ Repositório de produção das animações verticais (TikTok/Reels/Shorts) do ca
 
 ## Regras do usuário (sempre valem)
 
+- **Premissa da série (aprovada pelo usuário): "Polo quer voltar pra casa."** Todo episódio deve aproximar ou afastar o Polo desse objetivo. Ao sugerir ou revisar roteiros, deixe claro o que, no episódio, o leva para perto ou para longe de casa.
+
 - **Polo NÃO tem barba.** Careca, cabeça redonda, sobrancelhas grossas, moletom amarelo `#FFC928` com bolso canguru, calça jeans, tênis branco, luvas pretas com polegar, nota de R$ 10 no bolso (`pocketNote: true`). Desde o ep. 2 usa o chapéu fedora (`hat: 'fedora'`).
 - **Sem verde** em nenhum personagem ou objeto (o usuário usa chroma key).
 - Narração do usuário é a trilha mestre: não mudar velocidade, tom nem pausas. Limitador leve de pico (−1,5 dBFS) é **autorizado**.
