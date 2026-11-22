@@ -22,14 +22,16 @@ SHOTS.push(
   // C — perspective street, morning: crowd, a car driving off, Polo from behind in the foreground
   { t0: 7.0, draw(t, T) {
     const cam = cam3(640, 560, 500, 0);
-    const people = [{ id: 'polo', X: -530, D: lerp(60, 300, t / 3.5), s: 0.44, o: { t: T, back: true, walk: T * 9, hat: 'fedora' } }];
-    return { cam: push(focus(660, 820, 1.25), t, 3.5, 0.05), layers: [...skyDay(t), Lr(1, street3D(T, { cam, seed: 7, people, movingCars: [{ X: 170, D: 900 + t * 520, col: '#c8443c' }], crowd: 18 }))] };
+    const people = [{ id: 'polo', X: -505, D: lerp(20, 170, t / 3.5), s: 0.44, o: { t: T, back: true, walk: T * 9, hat: 'fedora' } }];
+    const pp = P3(cam, -505, 0, lerp(20, 170, t / 3.5));
+    return { cam: push(focus(pp.x + 110, pp.y - 120, 1.9, 1150), t, 3.5, 0.04), layers: [...skyDay(t), Lr(1, street3D(T, { cam, seed: 7, people, movingCars: [{ X: 170, D: 900 + t * 520, col: '#c8443c' }], crowd: 18 }))] };
   } },
   // D — the same street at night: the man in the suit waits under a lamp
   { t0: 10.5, xf: 0.5, draw(t, T) {
     const cam = cam3(640, 560, 500, 0);
-    const people = [{ id: 'terno', X: 520, D: 1800, s: 0.48, o: { t: T, face: -0.3, expr: 'smug', hat: 'fedora' } }, { id: 'polo', X: -530, D: 80, s: 0.44, o: { t: T, back: true, hat: 'fedora' } }];
-    return { cam: lerpCam(focus(640, 820, 1.25), focus(1070, 690, 2.4), E.inOut(clamp(t / 3))), layers: [...skyNight(t), Lr(1, street3D(T, { cam, seed: 7, night: 1, people, crowd: 0 }))], tint: ['#3a4a8a', 0.15] };
+    const people = [{ id: 'terno', X: 520, D: 1800, s: 0.48, o: { t: T, face: -0.3, expr: 'smug', hat: 'fedora' } }, { id: 'polo', X: -505, D: 60, s: 0.44, o: { t: T, back: true, hat: 'fedora' } }];
+    const pp = P3(cam, -505, 0, 60), pm = P3(cam, 520, 0, 1800);
+    return { cam: lerpCam(focus(pp.x + 110, pp.y - 120, 1.9, 1150), focus(pm.x, pm.y - 60, 4.2, 1000), E.inOut(clamp(t / 3))), layers: [...skyNight(t), Lr(1, street3D(T, { cam, seed: 7, night: 1, people, crowd: 0 }))], tint: ['#3a4a8a', 0.15] };
   } },
   // E — the bakery street at night, side view, 5 layers
   { t0: 13.5, xf: 0.4, draw(t, T) {

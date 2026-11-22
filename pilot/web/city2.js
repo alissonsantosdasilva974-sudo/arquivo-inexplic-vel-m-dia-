@@ -12,6 +12,8 @@ const CARC = ['#c8443c', '#3c6aa8', '#f2c230', '#e8e4dc', '#2a2a34', '#e07a3a', 
 
 // ---------- projection ----------
 function cam3(h = 640, vy = 560, f = 500, x = 0) { return { h, vy, f, x }; }
+const VS = 1.75;   // building height scale: one floor ≈ 1.45× a person
+function P3v(c, X, Y, D) { return P3(c, X, Y * VS, D); }
 function P3(c, X, Y, D) { const z = 1 + Math.max(D, -c.f * 0.9) / c.f; return { x: 960 + (X - c.x) / z, y: c.vy + (c.h - Y) / z, k: 1 / z }; }
 const Q3 = (a, b, c, d, fill, ex = '') => `<path d="M ${f2(a.x)} ${f2(a.y)} L ${f2(b.x)} ${f2(b.y)} L ${f2(c.x)} ${f2(c.y)} L ${f2(d.x)} ${f2(d.y)} Z" fill="${fill}" ${ex}/>`;
 const hazeC = (col, D, Dmax, sky, amt = 0.65) => mix(col, sky, clamp(D / Dmax) * amt);
@@ -101,7 +103,7 @@ function street3D(t, o = {}) {
   const items = [];
   const pole = [];
   for (const g of [-1, 1]) for (let D = -200; D < Dmax; D += 720) pole.push({ g, D });
-  for (const p of pole) items.push({ D: p.D, draw: () => { const b = P3(c, p.g * (R + 40), 0, p.D), tp = P3(c, p.g * (R + 40), 520, p.D); return poleP(b.x, b.y, tp.y, b.k, night); } });
+  for (const p of pole) items.push({ D: p.D, draw: () => { const b = P3(c, p.g * (R + 30), 0, p.D), tp = P3(c, p.g * (R + 30), 620, p.D); return poleP(b.x, b.y, tp.y, b.k, night); } });
   for (const g of [-1, 1]) for (let D = 200 + (g > 0 ? 360 : 0); D < Dmax; D += 720) items.push({ D, draw: () => { const b = P3(c, g * (R + 120), 0, D); return treeP(b.x, b.y, b.k * 0.62, t, night, Math.floor(D) + g); } });
   { const rc = rng((o.seed || 7) + 5); for (const g of [-1, 1]) for (let D = 100; D < Dmax; D += 420 + rc() * 600) if (rc() < 0.75) { const col = CARC[Math.floor(rc() * CARC.length)], type = CAR_TYPES[Math.floor(rc() * CAR_TYPES.length)], fr = rc() < 0.5; items.push({ D, draw: () => { const b = P3(c, g * (R - 110), 0, D); return carView(b.x, b.y, b.k * 0.62, col, night, { type, front: fr }); } }); } }
   if (o.traffic !== false && !closed) { const rt = rng((o.seed || 7) + 31); for (let i = 0; i < (o.traffic || 7); i++) { const away = i % 2 === 0, col = CARC[Math.floor(rt() * CARC.length)], type = CAR_TYPES[Math.floor(rt() * CAR_TYPES.length)], sp = 380 + rt() * 260, D0 = rt() * 7000; const D = away ? ((D0 + t * sp) % 7200) + 150 : 7350 - ((D0 + t * sp) % 7200); items.push({ D, draw: () => { const b = P3(c, away ? 175 : -175, 0, D); return carView(b.x, b.y, b.k * 0.62, col, night, { type, front: !away }); } }); } }
@@ -124,7 +126,7 @@ function street3D(t, o = {}) {
     s += building3D(c, e.b, R, W, night, closed, sky, Dmax, t);
   }
   // wires between successive poles (drawn after, they sit above the street)
-  for (const g of [-1, 1]) { const ps = pole.filter(p => p.g === g).sort((a, b) => a.D - b.D); for (let i = 0; i < ps.length - 1; i++) for (const dy of [0, 26]) { const a = P3(c, g * (R + 40), 500 - dy, ps[i].D), b = P3(c, g * (R + 40), 500 - dy, ps[i + 1].D), m = P3(c, g * (R + 40), 470 - dy, (ps[i].D + ps[i + 1].D) / 2); s += `<path d="M ${f2(a.x)} ${f2(a.y)} Q ${f2(m.x)} ${f2(m.y + 30 * m.k)} ${f2(b.x)} ${f2(b.y)}" stroke="#2a2630" stroke-width="${f2(2.4 * a.k + 0.6)}" fill="none" opacity="0.85"/>`; } }
+  for (const g of [-1, 1]) { const ps = pole.filter(p => p.g === g).sort((a, b) => a.D - b.D); for (let i = 0; i < ps.length - 1; i++) for (const dy of [0, 26]) { const a = P3(c, g * (R + 30), 600 - dy, ps[i].D), b = P3(c, g * (R + 30), 600 - dy, ps[i + 1].D), m = P3(c, g * (R + 30), 570 - dy, (ps[i].D + ps[i + 1].D) / 2); s += `<path d="M ${f2(a.x)} ${f2(a.y)} Q ${f2(m.x)} ${f2(m.y + 30 * m.k)} ${f2(b.x)} ${f2(b.y)}" stroke="#2a2630" stroke-width="${f2(2.4 * a.k + 0.6)}" fill="none" opacity="0.85"/>`; } }
   for (let D = 400; D < Dmax; D += 1440) { const a = P3(c, -(R + 40), 500, D), b = P3(c, R + 40, 480, D + 300), m = P3(c, 0, 430, D + 150); s += `<path d="M ${f2(a.x)} ${f2(a.y)} Q ${f2(m.x)} ${f2(m.y)} ${f2(b.x)} ${f2(b.y)}" stroke="#2a2630" stroke-width="${f2(2.2 * a.k + 0.6)}" fill="none" opacity="0.8"/>`; }
   // atmospheric haze toward the vanishing point
   const vp = P3(c, 0, 0, Dmax);
@@ -138,75 +140,75 @@ function building3D(c, b, R, W, night, closed, sky, Dmax, t) {
   const base = night ? mix(b.wall, '#262848', 0.55) : mix(b.wall, '#5a5070', lit ? 0 : 0.22);
   const wall = hazeC(base, D0, Dmax, sky, night ? 0.4 : 0.6);
   const endW = hazeC(shade(base, 0.14), D0, Dmax, sky, night ? 0.4 : 0.6);
-  const k0 = P3(c, X, 0, D0).k;
+  const k0 = P3v(c, X, 0, D0).k;
   let s = '';
   // cast shadow of left-hand buildings onto the street (day)
-  if (!night && g < 0) { const L = Math.min(R + 200, H * 0.5); s += Q3(P3(c, X, 0, D0 + 40), P3(c, X, 0, D1), P3(c, -R - 16 + Math.max(0, 200 - L) * 0 + L * 0.4 - 60, 0, D1 + 80), P3(c, -R - 16 + L * 0.4 - 60, 0, D0 + 120), '#2a2440', 'opacity="0.16"'); }
+  if (!night && g < 0) { const L = Math.min(R + 200, H * 0.5); s += Q3(P3v(c, X, 0, D0 + 40), P3v(c, X, 0, D1), P3v(c, -R - 16 + Math.max(0, 200 - L) * 0 + L * 0.4 - 60, 0, D1 + 80), P3v(c, -R - 16 + L * 0.4 - 60, 0, D0 + 120), '#2a2440', 'opacity="0.16"'); }
   // roof (visible when camera is above)
-  if (c.h > H) { s += Q3(P3(c, X, H, D0), P3(c, X2, H, D0), P3(c, X2, H, D1), P3(c, X, H, D1), hazeC(night ? '#3a3448' : ['#a89a90', '#c8643c', '#8a8a96', '#b89a7a'][b.seed % 4], D0, Dmax, sky, 0.6), sw3(k0, 3));
+  if (c.h > H) { s += Q3(P3v(c, X, H, D0), P3v(c, X2, H, D0), P3v(c, X2, H, D1), P3v(c, X, H, D1), hazeC(night ? '#3a3448' : ['#a89a90', '#c8643c', '#8a8a96', '#b89a7a'][b.seed % 4], D0, Dmax, sky, 0.6), sw3(k0, 3));
     const rr = rng(b.seed + 3);
     if (b.tank) { const tx = X + g * b.depth * (0.3 + rr() * 0.4), td = D0 + b.len * (0.3 + rr() * 0.4); s += box3D(c, tx - 60, tx + 60, td - 60, td + 60, H, H + 130, hazeC('#5a8ac8', D0, Dmax, sky, 0.6), k0); }
-    if (b.ant) { const a = P3(c, X + g * 80, H, D0 + 80), tp = P3(c, X + g * 80, H + 260, D0 + 80); s += `<path d="M ${f2(a.x)} ${f2(a.y)} L ${f2(tp.x)} ${f2(tp.y)} M ${f2(tp.x - 30 * a.k)} ${f2(tp.y + 40 * a.k)} L ${f2(tp.x + 30 * a.k)} ${f2(tp.y + 40 * a.k)}" stroke="#3a3440" stroke-width="${f2(4 * a.k + 0.6)}"/>`; }
+    if (b.ant) { const a = P3v(c, X + g * 80, H, D0 + 80), tp = P3v(c, X + g * 80, H + 260, D0 + 80); s += `<path d="M ${f2(a.x)} ${f2(a.y)} L ${f2(tp.x)} ${f2(tp.y)} M ${f2(tp.x - 30 * a.k)} ${f2(tp.y + 40 * a.k)} L ${f2(tp.x + 30 * a.k)} ${f2(tp.y + 40 * a.k)}" stroke="#3a3440" stroke-width="${f2(4 * a.k + 0.6)}"/>`; }
   }
   // end face (facing the camera)
-  if (D0 > -c.f * 0.6) s += Q3(P3(c, X, 0, D0), P3(c, X2, 0, D0), P3(c, X2, H, D0), P3(c, X, H, D0), endW, sw3(k0));
+  if (D0 > -c.f * 0.6) s += Q3(P3v(c, X, 0, D0), P3v(c, X2, 0, D0), P3v(c, X2, H, D0), P3v(c, X, H, D0), endW, sw3(k0));
   // street face
-  s += Q3(P3(c, X, 0, D0), P3(c, X, 0, D1), P3(c, X, H, D1), P3(c, X, H, D0), wall, sw3(k0));
+  s += Q3(P3v(c, X, 0, D0), P3v(c, X, 0, D1), P3v(c, X, H, D1), P3v(c, X, H, D0), wall, sw3(k0));
   // platibanda band + cornice
-  s += Q3(P3(c, X, H - 50, D0), P3(c, X, H - 50, D1), P3(c, X, H, D1), P3(c, X, H, D0), hazeC(shade(base, 0.2), D0, Dmax, sky, 0.6), sw3(k0, 2.5));
-  for (let f = 1; f < b.fl; f++) { const y = f * 150; s += Q3(P3(c, X, y - 6, D0), P3(c, X, y - 6, D1), P3(c, X, y + 6, D1), P3(c, X, y + 6, D0), hazeC(shade(base, 0.25), D0, Dmax, sky, 0.6), ''); }
+  s += Q3(P3v(c, X, H - 50, D0), P3v(c, X, H - 50, D1), P3v(c, X, H, D1), P3v(c, X, H, D0), hazeC(shade(base, 0.2), D0, Dmax, sky, 0.6), sw3(k0, 2.5));
+  for (let f = 1; f < b.fl; f++) { const y = f * 150; s += Q3(P3v(c, X, y - 6, D0), P3v(c, X, y - 6, D1), P3v(c, X, y + 6, D1), P3v(c, X, y + 6, D0), hazeC(shade(base, 0.25), D0, Dmax, sky, 0.6), ''); }
   // windows
   const nw = Math.max(1, Math.floor(b.len / 170)), rr = rng(b.seed);
   for (let f = (b.shop ? 1 : 0); f < b.fl; f++) for (let i = 0; i < nw; i++) {
     const d0 = D0 + (b.len / nw) * i + 36, d1 = d0 + b.len / nw - 72, y0 = f * 150 + 34, y1 = y0 + 86;
     const isLit = night && !closed && rr() < 0.55;
-    const k = P3(c, X, 0, d0).k;
-    s += Q3(P3(c, X, y0 - 8, d0 - 8), P3(c, X, y0 - 8, d1 + 8), P3(c, X, y1 + 8, d1 + 8), P3(c, X, y1 + 8, d0 - 8), hazeC('#f4ead4', d0, Dmax, sky, 0.6), sw3(k, 2.5));
-    s += Q3(P3(c, X, y0, d0), P3(c, X, y0, d1), P3(c, X, y1, d1), P3(c, X, y1, d0), closed ? shade(base, 0.35) : (isLit ? '#ffd27a' : hazeC(night ? '#2a3050' : '#7a9ab0', d0, Dmax, sky, 0.5)), sw3(k, 2.2));
-    s += Q3(P3(c, X, y0 + 43, d0), P3(c, X, y0 + 43, d1), P3(c, X, y0 + 46, d1), P3(c, X, y0 + 46, d0), INK, 'opacity="0.5"');
-    s += Q3(P3(c, X, y1 + 8, d0 - 14), P3(c, X, y1 + 8, d1 + 14), P3(c, X - g * 26, y1 + 2, d1 + 14), P3(c, X - g * 26, y1 + 2, d0 - 14), hazeC('#f4ead4', d0, Dmax, sky, 0.6), sw3(k, 1.8));
-    if (b.seed % 2 === 0 && k > 0.12) for (const [u0, u1] of [[d0 - 36, d0 - 8], [d1 + 8, d1 + 36]]) s += Q3(P3(c, X, y0 - 6, u0), P3(c, X, y0 - 6, u1), P3(c, X, y1 + 6, u1), P3(c, X, y1 + 6, u0), hazeC(['#3c6aa8', '#a8503a', '#8a5aa8', '#4a4458'][b.seed % 4], d0, Dmax, sky, 0.6), sw3(k, 1.6));
-    if (!closed && rr() < 0.25 && k > 0.15) { for (let q = 0; q < 3; q++) { const pm = P3(c, X - g * 14, y1 + 18, d0 + (d1 - d0) * (q + 0.5) / 3); s += `<circle cx="${f2(pm.x)}" cy="${f2(pm.y)}" r="${f2(14 * k)}" fill="${['#e86a6a', '#f2c230', '#ee8aaa'][q]}" stroke="${INK}" stroke-width="${f2(1.5 * k + 0.3)}"/>`; } }
-    if (!closed && rr() < 0.12 && k > 0.18) { const m = P3(c, X, y0 + 50, (d0 + d1) / 2); s += `<circle cx="${f2(m.x)}" cy="${f2(m.y - 8 * k)}" r="${f2(16 * k)}" fill="${['#f1c08f', '#c98b5e', '#8d5a34'][b.seed % 3]}" stroke="${INK}" stroke-width="${f2(2 * k + 0.3)}"/><path d="M ${f2(m.x - 18 * k)} ${f2(m.y + 30 * k)} Q ${f2(m.x)} ${f2(m.y + 4 * k)} ${f2(m.x + 18 * k)} ${f2(m.y + 30 * k)} Z" fill="${CARC[b.seed % CARC.length]}"/>`; }
-    if (f >= 1 && b.fl >= 3 && rr() < 0.2) { const a1 = P3(c, X - g * 50, y0 - 8, d0 - 20), a2 = P3(c, X - g * 50, y0 - 8, d1 + 20), a3 = P3(c, X - g * 50, y0 + 30, d1 + 20), a4 = P3(c, X - g * 50, y0 + 30, d0 - 20); s += Q3(P3(c, X, y0 - 8, d0 - 20), P3(c, X, y0 - 8, d1 + 20), a2, a1, hazeC('#c8c0b4', d0, Dmax, sky, 0.6), sw3(k, 2)); for (let q = 0; q <= 5; q++) { const u = d0 - 20 + (d1 - d0 + 40) * q / 5, pa = P3(c, X - g * 50, y0 - 8, u), pb = P3(c, X - g * 50, y0 + 30, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="#4a4458" stroke-width="${f2(2.5 * k + 0.4)}"/>`; } s += `<path d="M ${f2(a4.x)} ${f2(a4.y)} L ${f2(a3.x)} ${f2(a3.y)}" stroke="#4a4458" stroke-width="${f2(3.5 * k + 0.5)}"/>`; }
-    if (!closed && !isLit && rr() < 0.3) s += Q3(P3(c, X, y0, d0), P3(c, X, y0, (d0 + d1) / 2), P3(c, X, y1, (d0 + d1) / 2), P3(c, X, y1, d0), hazeC(shade(b.awn, 0.1), d0, Dmax, sky, 0.6), sw3(k, 2));
-    if (isLit && rr() < 0.25) { const m = P3(c, X, y0 + 20, (d0 + d1) / 2); s += `<ellipse cx="${f2(m.x)}" cy="${f2(m.y + 30 * k)}" rx="${f2(14 * k)}" ry="${f2(26 * k)}" fill="#2a2030" opacity="0.6"/>`; }
+    const k = P3v(c, X, 0, d0).k;
+    s += Q3(P3v(c, X, y0 - 8, d0 - 8), P3v(c, X, y0 - 8, d1 + 8), P3v(c, X, y1 + 8, d1 + 8), P3v(c, X, y1 + 8, d0 - 8), hazeC('#f4ead4', d0, Dmax, sky, 0.6), sw3(k, 2.5));
+    s += Q3(P3v(c, X, y0, d0), P3v(c, X, y0, d1), P3v(c, X, y1, d1), P3v(c, X, y1, d0), closed ? shade(base, 0.35) : (isLit ? '#ffd27a' : hazeC(night ? '#2a3050' : '#7a9ab0', d0, Dmax, sky, 0.5)), sw3(k, 2.2));
+    s += Q3(P3v(c, X, y0 + 43, d0), P3v(c, X, y0 + 43, d1), P3v(c, X, y0 + 46, d1), P3v(c, X, y0 + 46, d0), INK, 'opacity="0.5"');
+    s += Q3(P3v(c, X, y1 + 8, d0 - 14), P3v(c, X, y1 + 8, d1 + 14), P3v(c, X - g * 26, y1 + 2, d1 + 14), P3v(c, X - g * 26, y1 + 2, d0 - 14), hazeC('#f4ead4', d0, Dmax, sky, 0.6), sw3(k, 1.8));
+    if (b.seed % 2 === 0 && k > 0.12) for (const [u0, u1] of [[d0 - 36, d0 - 8], [d1 + 8, d1 + 36]]) s += Q3(P3v(c, X, y0 - 6, u0), P3v(c, X, y0 - 6, u1), P3v(c, X, y1 + 6, u1), P3v(c, X, y1 + 6, u0), hazeC(['#3c6aa8', '#a8503a', '#8a5aa8', '#4a4458'][b.seed % 4], d0, Dmax, sky, 0.6), sw3(k, 1.6));
+    if (!closed && rr() < 0.25 && k > 0.15) { for (let q = 0; q < 3; q++) { const pm = P3v(c, X - g * 14, y1 + 18, d0 + (d1 - d0) * (q + 0.5) / 3); s += `<circle cx="${f2(pm.x)}" cy="${f2(pm.y)}" r="${f2(14 * k)}" fill="${['#e86a6a', '#f2c230', '#ee8aaa'][q]}" stroke="${INK}" stroke-width="${f2(1.5 * k + 0.3)}"/>`; } }
+    if (!closed && rr() < 0.12 && k > 0.18) { const m = P3v(c, X, y0 + 50, (d0 + d1) / 2); s += `<circle cx="${f2(m.x)}" cy="${f2(m.y - 8 * k)}" r="${f2(16 * k)}" fill="${['#f1c08f', '#c98b5e', '#8d5a34'][b.seed % 3]}" stroke="${INK}" stroke-width="${f2(2 * k + 0.3)}"/><path d="M ${f2(m.x - 18 * k)} ${f2(m.y + 30 * k)} Q ${f2(m.x)} ${f2(m.y + 4 * k)} ${f2(m.x + 18 * k)} ${f2(m.y + 30 * k)} Z" fill="${CARC[b.seed % CARC.length]}"/>`; }
+    if (f >= 1 && b.fl >= 3 && rr() < 0.2) { const a1 = P3v(c, X - g * 50, y0 - 8, d0 - 20), a2 = P3v(c, X - g * 50, y0 - 8, d1 + 20), a3 = P3v(c, X - g * 50, y0 + 30, d1 + 20), a4 = P3v(c, X - g * 50, y0 + 30, d0 - 20); s += Q3(P3v(c, X, y0 - 8, d0 - 20), P3v(c, X, y0 - 8, d1 + 20), a2, a1, hazeC('#c8c0b4', d0, Dmax, sky, 0.6), sw3(k, 2)); for (let q = 0; q <= 5; q++) { const u = d0 - 20 + (d1 - d0 + 40) * q / 5, pa = P3v(c, X - g * 50, y0 - 8, u), pb = P3v(c, X - g * 50, y0 + 30, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="#4a4458" stroke-width="${f2(2.5 * k + 0.4)}"/>`; } s += `<path d="M ${f2(a4.x)} ${f2(a4.y)} L ${f2(a3.x)} ${f2(a3.y)}" stroke="#4a4458" stroke-width="${f2(3.5 * k + 0.5)}"/>`; }
+    if (!closed && !isLit && rr() < 0.3) s += Q3(P3v(c, X, y0, d0), P3v(c, X, y0, (d0 + d1) / 2), P3v(c, X, y1, (d0 + d1) / 2), P3v(c, X, y1, d0), hazeC(shade(b.awn, 0.1), d0, Dmax, sky, 0.6), sw3(k, 2));
+    if (isLit && rr() < 0.25) { const m = P3v(c, X, y0 + 20, (d0 + d1) / 2); s += `<ellipse cx="${f2(m.x)}" cy="${f2(m.y + 30 * k)}" rx="${f2(14 * k)}" ry="${f2(26 * k)}" fill="#2a2030" opacity="0.6"/>`; }
     if (f >= 1 && rr() < 0.18) s += box3D(c, X + g * 0, X - g * 60, d0 + 10, d0 + 90, y0 - 50, y0 - 6, hazeC('#e8e4dc', d0, Dmax, sky, 0.6), k);           // AC unit
-    if (f >= 1 && rr() < 0.15) { const a = P3(c, X - g * 80, y1 + 10, d0), bq = P3(c, X - g * 80, y1 + 10, d1); s += `<path d="M ${f2(a.x)} ${f2(a.y)} L ${f2(bq.x)} ${f2(bq.y)}" stroke="#4a4458" stroke-width="${f2(5 * k + 0.6)}"/>`; for (let q = 0; q < 4; q++) { const u = d0 + (d1 - d0) * (q + 0.5) / 4, pa = P3(c, X - g * 80, y1 + 10, u), pb = P3(c, X - g * 80, y1 - 26, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="${['#e86a6a', '#5ab0d8', '#f2c230', '#f4f0e4'][q]}" stroke-width="${f2(14 * k)}"/>`; } }   // varal
+    if (f >= 1 && rr() < 0.15) { const a = P3v(c, X - g * 80, y1 + 10, d0), bq = P3v(c, X - g * 80, y1 + 10, d1); s += `<path d="M ${f2(a.x)} ${f2(a.y)} L ${f2(bq.x)} ${f2(bq.y)}" stroke="#4a4458" stroke-width="${f2(5 * k + 0.6)}"/>`; for (let q = 0; q < 4; q++) { const u = d0 + (d1 - d0) * (q + 0.5) / 4, pa = P3v(c, X - g * 80, y1 + 10, u), pb = P3v(c, X - g * 80, y1 - 26, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="${['#e86a6a', '#5ab0d8', '#f2c230', '#f4f0e4'][q]}" stroke-width="${f2(14 * k)}"/>`; } }   // varal
   }
   // pilasters at the building's ends + facade tile base
-  for (const u of [D0, D1 - 30]) { const kk = P3(c, X, 0, u).k; s += Q3(P3(c, X, 0, u), P3(c, X, 0, u + 30), P3(c, X, H - 50, u + 30), P3(c, X, H - 50, u), hazeC(lite(base, 0.15), u, Dmax, sky, 0.6), sw3(kk, 2)); }
-  s += Q3(P3(c, X, 0, D0), P3(c, X, 0, D1), P3(c, X, 14, D1), P3(c, X, 14, D0), hazeC(shade(base, 0.4), D0, Dmax, sky, 0.6), '');
+  for (const u of [D0, D1 - 30]) { const kk = P3v(c, X, 0, u).k; s += Q3(P3v(c, X, 0, u), P3v(c, X, 0, u + 30), P3v(c, X, H - 50, u + 30), P3v(c, X, H - 50, u), hazeC(lite(base, 0.15), u, Dmax, sky, 0.6), sw3(kk, 2)); }
+  s += Q3(P3v(c, X, 0, D0), P3v(c, X, 0, D1), P3v(c, X, 14, D1), P3v(c, X, 14, D0), hazeC(shade(base, 0.4), D0, Dmax, sky, 0.6), '');
   // cornice brackets under the platibanda
-  for (let u = D0 + 40; u < D1 - 20; u += 70) { const kk = P3(c, X, 0, u).k; if (kk < 0.2) break; s += Q3(P3(c, X, H - 62, u), P3(c, X, H - 62, u + 18), P3(c, X, H - 50, u + 18), P3(c, X, H - 50, u), hazeC(shade(base, 0.3), u, Dmax, sky, 0.6), ''); }
+  for (let u = D0 + 40; u < D1 - 20; u += 70) { const kk = P3v(c, X, 0, u).k; if (kk < 0.2) break; s += Q3(P3v(c, X, H - 62, u), P3v(c, X, H - 62, u + 18), P3v(c, X, H - 50, u + 18), P3v(c, X, H - 50, u), hazeC(shade(base, 0.3), u, Dmax, sky, 0.6), ''); }
   // clay-tile roof edge on low houses
-  if (b.fl <= 3 && (b.seed % 3 === 0)) { const kk = P3(c, X, 0, D0).k; s += Q3(P3(c, X, H, D0), P3(c, X, H, D1), P3(c, X - g * 120, H + 70, D1), P3(c, X - g * 120, H + 70, D0), hazeC('#c8643c', D0, Dmax, sky, 0.6), sw3(kk, 3)); for (let u = D0; u < D1; u += 40) { const pa = P3(c, X, H, u), pb = P3(c, X - g * 120, H + 70, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="#8a3a22" stroke-width="${f2(2 * kk + 0.4)}" opacity="0.6"/>`; } }
+  if (b.fl <= 3 && (b.seed % 3 === 0)) { const kk = P3v(c, X, 0, D0).k; s += Q3(P3v(c, X, H, D0), P3v(c, X, H, D1), P3v(c, X - g * 120, H + 70, D1), P3v(c, X - g * 120, H + 70, D0), hazeC('#c8643c', D0, Dmax, sky, 0.6), sw3(kk, 3)); for (let u = D0; u < D1; u += 40) { const pa = P3v(c, X, H, u), pb = P3v(c, X - g * 120, H + 70, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="#8a3a22" stroke-width="${f2(2 * kk + 0.4)}" opacity="0.6"/>`; } }
   // posters / graffiti low on the wall
-  if (!b.shop && rr() < 0.6) { const u = D0 + b.len * 0.6, kk = P3(c, X, 0, u).k; s += Q3(P3(c, X, 30, u), P3(c, X, 30, u + 70), P3(c, X, 120, u + 70), P3(c, X, 120, u), hazeC(['#f2c230', '#e86a6a', '#5ab0d8', '#f4f0e4'][b.seed % 4], u, Dmax, sky, 0.6), sw3(kk, 1.5)); }
+  if (!b.shop && rr() < 0.6) { const u = D0 + b.len * 0.6, kk = P3v(c, X, 0, u).k; s += Q3(P3v(c, X, 30, u), P3v(c, X, 30, u + 70), P3v(c, X, 120, u + 70), P3v(c, X, 120, u), hazeC(['#f2c230', '#e86a6a', '#5ab0d8', '#f4f0e4'][b.seed % 4], u, Dmax, sky, 0.6), sw3(kk, 1.5)); }
   // door for residential buildings
-  if (!b.shop) { const u0 = D0 + b.len * 0.18, u1 = u0 + 110, kk = P3(c, X, 0, u0).k; s += Q3(P3(c, X, 0, u0 - 10), P3(c, X, 0, u1 + 10), P3(c, X, 230, u1 + 10), P3(c, X, 230, u0 - 10), hazeC('#f4ead4', u0, Dmax, sky, 0.6), sw3(kk, 2.5)); s += Q3(P3(c, X, 0, u0), P3(c, X, 0, u1), P3(c, X, 220, u1), P3(c, X, 220, u0), hazeC(shade(b.awn, 0.45), u0, Dmax, sky, 0.6), sw3(kk, 2.5)); }
+  if (!b.shop) { const u0 = D0 + b.len * 0.18, u1 = u0 + 110, kk = P3v(c, X, 0, u0).k; s += Q3(P3v(c, X, 0, u0 - 10), P3v(c, X, 0, u1 + 10), P3v(c, X, 230, u1 + 10), P3v(c, X, 230, u0 - 10), hazeC('#f4ead4', u0, Dmax, sky, 0.6), sw3(kk, 2.5)); s += Q3(P3v(c, X, 0, u0), P3v(c, X, 0, u1), P3v(c, X, 220, u1), P3v(c, X, 220, u0), hazeC(shade(b.awn, 0.45), u0, Dmax, sky, 0.6), sw3(kk, 2.5)); }
   // stains / weathering
-  for (let i = 0; i < 3; i++) { const u = D0 + rr() * b.len, v = rr() * H * 0.8, k = P3(c, X, 0, u).k; s += Q3(P3(c, X, v, u), P3(c, X, v, u + 90), P3(c, X, v + 60, u + 90), P3(c, X, v + 60, u), INK, 'opacity="0.05"'); }
+  for (let i = 0; i < 3; i++) { const u = D0 + rr() * b.len, v = rr() * H * 0.8, k = P3v(c, X, 0, u).k; s += Q3(P3v(c, X, v, u), P3v(c, X, v, u + 90), P3v(c, X, v + 60, u + 90), P3v(c, X, v + 60, u), INK, 'opacity="0.05"'); }
   // ground floor shop: window, door, awning, sign
   if (b.shop) {
-    const d0 = D0 + 30, d1 = D1 - 30, k = P3(c, X, 0, d0).k;
-    s += Q3(P3(c, X, 14, d0), P3(c, X, 14, d0 + (d1 - d0) * 0.68), P3(c, X, 118, d0 + (d1 - d0) * 0.68), P3(c, X, 118, d0), closed ? '#5a5260' : (night ? '#ffd890' : hazeC('#cfe0e6', d0, Dmax, sky, 0.5)), sw3(k, 3));
-    if (closed) for (let q = 1; q < 8; q++) s += Q3(P3(c, X, 14 + q * 13, d0), P3(c, X, 14 + q * 13, d0 + (d1 - d0) * 0.68), P3(c, X, 16 + q * 13, d0 + (d1 - d0) * 0.68), P3(c, X, 16 + q * 13, d0), INK, 'opacity="0.5"');
-    s += Q3(P3(c, X, 0, d0 + (d1 - d0) * 0.74), P3(c, X, 0, d1), P3(c, X, 128, d1), P3(c, X, 128, d0 + (d1 - d0) * 0.74), hazeC(shade(b.awn, 0.35), d0, Dmax, sky, 0.6), sw3(k, 3));
-    if (!closed) { const nst = Math.max(2, Math.floor((d1 - d0) / 70)); for (let q = 0; q < nst; q++) { const u0 = d0 + (d1 - d0) * q / nst, u1 = d0 + (d1 - d0) * (q + 1) / nst; s += Q3(P3(c, X, 142, u0), P3(c, X, 142, u1), P3(c, X - g * 110, 112, u1), P3(c, X - g * 110, 112, u0), hazeC(q % 2 ? '#f4ead4' : b.awn, u0, Dmax, sky, 0.6), sw3(k, 2)); } }
-    const sa = P3(c, X, 150, d0), sb = P3(c, X, 150, d1), sc = P3(c, X, 196, d1), sd = P3(c, X, 196, d0);
+    const d0 = D0 + 30, d1 = D1 - 30, k = P3v(c, X, 0, d0).k;
+    s += Q3(P3v(c, X, 14, d0), P3v(c, X, 14, d0 + (d1 - d0) * 0.68), P3v(c, X, 118, d0 + (d1 - d0) * 0.68), P3v(c, X, 118, d0), closed ? '#5a5260' : (night ? '#ffd890' : hazeC('#cfe0e6', d0, Dmax, sky, 0.5)), sw3(k, 3));
+    if (closed) for (let q = 1; q < 8; q++) s += Q3(P3v(c, X, 14 + q * 13, d0), P3v(c, X, 14 + q * 13, d0 + (d1 - d0) * 0.68), P3v(c, X, 16 + q * 13, d0 + (d1 - d0) * 0.68), P3v(c, X, 16 + q * 13, d0), INK, 'opacity="0.5"');
+    s += Q3(P3v(c, X, 0, d0 + (d1 - d0) * 0.74), P3v(c, X, 0, d1), P3v(c, X, 128, d1), P3v(c, X, 128, d0 + (d1 - d0) * 0.74), hazeC(shade(b.awn, 0.35), d0, Dmax, sky, 0.6), sw3(k, 3));
+    if (!closed) { const nst = Math.max(2, Math.floor((d1 - d0) / 70)); for (let q = 0; q < nst; q++) { const u0 = d0 + (d1 - d0) * q / nst, u1 = d0 + (d1 - d0) * (q + 1) / nst; s += Q3(P3v(c, X, 150, u0), P3v(c, X, 150, u1), P3v(c, X - g * 80, 128, u1), P3v(c, X - g * 80, 128, u0), hazeC(q % 2 ? '#f4ead4' : b.awn, u0, Dmax, sky, 0.6), sw3(k, 2)); } }
+    const sa = P3v(c, X, 150, d0), sb = P3v(c, X, 150, d1), sc = P3v(c, X, 196, d1), sd = P3v(c, X, 196, d0);
     s += Q3(sa, sb, sc, sd, night ? '#2a2a40' : hazeC('#3c4a5a', d0, Dmax, sky, 0.5), sw3(k, 2.5));
-    if (k > 0.22) { const m = P3(c, X, 173, (d0 + d1) / 2), len = Math.hypot(sb.x - sa.x, sb.y - sa.y), ang = Math.atan2(sb.y - sa.y, sb.x - sa.x) * 180 / Math.PI, fs = Math.min(Math.abs(sd.y - sa.y) * 0.7, len / (b.sign.length * 0.62)); s += `<text transform="translate(${f2(m.x)} ${f2(m.y)}) rotate(${f2(ang)}) scale(1 ${f2(Math.max(0.3, Math.cos(ang * Math.PI / 180) * 0.4 + 0.6))})" text-anchor="middle" dominant-baseline="middle" font-family="Fredoka" font-weight="700" font-size="${f2(fs)}" fill="${night && !closed ? '#ffe7a0' : '#f4e6c8'}">${b.sign}</text>`; }
+    if (k > 0.22) { const m = P3v(c, X, 173, (d0 + d1) / 2), len = Math.hypot(sb.x - sa.x, sb.y - sa.y), ang = Math.atan2(sb.y - sa.y, sb.x - sa.x) * 180 / Math.PI, fs = Math.min(Math.abs(sd.y - sa.y) * 0.7, len / (b.sign.length * 0.62)); s += `<text transform="translate(${f2(m.x)} ${f2(m.y)}) rotate(${f2(ang)}) scale(1 ${f2(Math.max(0.3, Math.cos(ang * Math.PI / 180) * 0.4 + 0.6))})" text-anchor="middle" dominant-baseline="middle" font-family="Fredoka" font-weight="700" font-size="${f2(fs)}" fill="${night && !closed ? '#ffe7a0' : '#f4e6c8'}">${b.sign}</text>`; }
   }
-  if (b.shop && b.seed % 4 === 1) { const u = D0 + 20, kk = P3(c, X, 0, u).k; if (kk > 0.12) { s += Q3(P3(c, X, 230, u), P3(c, X - g * 90, 230, u), P3(c, X - g * 90, 460, u), P3(c, X, 460, u), night ? '#ff6a8a' : hazeC(b.awn, u, Dmax, sky, 0.6), sw3(kk, 2.5)); if (night) { const m = P3(c, X - g * 45, 345, u); s += `<circle cx="${f2(m.x)}" cy="${f2(m.y)}" r="${f2(140 * kk)}" fill="#ff6a8a" opacity="0.18"/>`; } } }
+  if (b.shop && b.seed % 4 === 1) { const u = D0 + 20, kk = P3v(c, X, 0, u).k; if (kk > 0.12) { s += Q3(P3v(c, X, 230, u), P3v(c, X - g * 90, 230, u), P3v(c, X - g * 90, 460, u), P3v(c, X, 460, u), night ? '#ff6a8a' : hazeC(b.awn, u, Dmax, sky, 0.6), sw3(kk, 2.5)); if (night) { const m = P3v(c, X - g * 45, 345, u); s += `<circle cx="${f2(m.x)}" cy="${f2(m.y)}" r="${f2(140 * kk)}" fill="#ff6a8a" opacity="0.18"/>`; } } }
   return s;
 }
 function box3D(c, x0, x1, d0, d1, y0, y1, col, k) {
   const L = Math.min(x0, x1), Rr = Math.max(x0, x1);
   const faceX = Math.abs(L) < Math.abs(Rr) ? L : Rr;  // the face toward the street centre
-  let s = Q3(P3(c, L, y0, d0), P3(c, Rr, y0, d0), P3(c, Rr, y1, d0), P3(c, L, y1, d0), shade(col, 0.15), sw3(k, 2.5));
-  s += Q3(P3(c, faceX, y0, d0), P3(c, faceX, y0, d1), P3(c, faceX, y1, d1), P3(c, faceX, y1, d0), col, sw3(k, 2.5));
-  if (c.h > y1) s += Q3(P3(c, L, y1, d0), P3(c, Rr, y1, d0), P3(c, Rr, y1, d1), P3(c, L, y1, d1), lite(col, 0.2), sw3(k, 2.5));
+  let s = Q3(P3v(c, L, y0, d0), P3v(c, Rr, y0, d0), P3v(c, Rr, y1, d0), P3v(c, L, y1, d0), shade(col, 0.15), sw3(k, 2.5));
+  s += Q3(P3v(c, faceX, y0, d0), P3v(c, faceX, y0, d1), P3v(c, faceX, y1, d1), P3v(c, faceX, y1, d0), col, sw3(k, 2.5));
+  if (c.h > y1) s += Q3(P3v(c, L, y1, d0), P3v(c, Rr, y1, d0), P3v(c, Rr, y1, d1), P3v(c, L, y1, d1), lite(col, 0.2), sw3(k, 2.5));
   return s;
 }
 
@@ -266,7 +268,7 @@ function sideStreet(T, t, o = {}) {
   if (!closed) main += carSide(-200, base + 130, '#3c6aa8', { s: 0.75, night }) + carSide(1500, base + 130, '#e8e4dc', { s: 0.75, night }) + carSide(2650, base + 130, '#c8443c', { s: 0.75, night });
   main += bancaSide(2000, base + 40) + orelhao(1180, base + 40) + lixeira(1420, base + 40) + streetSign(-560, base + 40, o.streetName || 'R. DO RELÓGIO');
   if (o.movingCar != null) main += carSide(o.movingCar, base + 260, '#f2c230', { s: 0.8, dir: 1, wheel: T * 600, night });
-  if (!closed) { const rn = rng((o.seed || 5) + 77); for (let i = 0; i < 9; i++) { const x = -1200 + i * 520 + rn() * 200; if (o.avoidX != null && Math.abs(x - o.avoidX) < 480) continue; main += person(NPC_IDS[(i * 7 + 3) % 24], { x, y: base + 34, s: 0.5, t, face: rn() < 0.5 ? -0.7 : 0.7, expr: 'happy', mouth: Math.max(0, Math.sin(t * 8 + i)) * 0.4, armR: 20 + Math.sin(t * 2 + i) * 15, bendR: 40 }); } main += walkers(T, base + 44, 0.5, (o.seed || 5) + 3, 6, 4200); }
+  if (!closed) { const rn = rng((o.seed || 5) + 77); for (let i = 0; i < 9; i++) { const x = -1200 + i * 520 + rn() * 200; if (o.avoidX != null && Math.abs(x - o.avoidX) < 480) continue; main += person(NPC_IDS[(i * 7 + 3) % 24], { x, y: base + 34, s: 0.62, t, face: rn() < 0.5 ? -0.7 : 0.7, expr: 'happy', mouth: Math.max(0, Math.sin(t * 8 + i)) * 0.4, armR: 20 + Math.sin(t * 2 + i) * 15, bendR: 40 }); } main += walkers(T, base + 44, 0.62, (o.seed || 5) + 3, 5, 4200); }
   main += (o.extra || '');
   L.push(Lr(1, main));
   // foreground: blurred pole, car roof, plant
@@ -277,14 +279,14 @@ function sideStreet(T, t, o = {}) {
 }
 
 function backBlock(c, b, night, closed, sky, Dmax) {
-  const g = b.g, Xa = g * b.X0, Xb = g * b.X1, D0 = b.D, D1 = b.D + b.len, H = b.H, k = P3(c, Xa, 0, D0).k;
+  const g = b.g, Xa = g * b.X0, Xb = g * b.X1, D0 = b.D, D1 = b.D + b.len, H = b.H, k = P3v(c, Xa, 0, D0).k;
   const wall = hazeC(night ? mix(b.wall, '#262848', 0.55) : b.wall, D0, Dmax, sky, 0.7);
   let s = '';
-  s += Q3(P3(c, Xa, 0, D0), P3(c, Xb, 0, D0), P3(c, Xb, H, D0), P3(c, Xa, H, D0), shade(wall, 0.15), sw3(k, 3));
-  s += Q3(P3(c, Xa, 0, D0), P3(c, Xa, 0, D1), P3(c, Xa, H, D1), P3(c, Xa, H, D0), wall, sw3(k, 3));
-  s += Q3(P3(c, Xa, H, D0), P3(c, Xb, H, D0), P3(c, Xb, H, D1), P3(c, Xa, H, D1), hazeC(night ? '#3a3448' : b.roof, D0, Dmax, sky, 0.7), sw3(k, 3));
+  s += Q3(P3v(c, Xa, 0, D0), P3v(c, Xb, 0, D0), P3v(c, Xb, H, D0), P3v(c, Xa, H, D0), shade(wall, 0.15), sw3(k, 3));
+  s += Q3(P3v(c, Xa, 0, D0), P3v(c, Xa, 0, D1), P3v(c, Xa, H, D1), P3v(c, Xa, H, D0), wall, sw3(k, 3));
+  s += Q3(P3v(c, Xa, H, D0), P3v(c, Xb, H, D0), P3v(c, Xb, H, D1), P3v(c, Xa, H, D1), hazeC(night ? '#3a3448' : b.roof, D0, Dmax, sky, 0.7), sw3(k, 3));
   const rr = rng(b.seed), fl = Math.round(H / 150), nw = Math.max(1, Math.floor(b.len / 200));
-  for (let f = 0; f < fl; f++) for (let i = 0; i < nw; i++) { const d0 = D0 + (b.len / nw) * i + 40, d1 = d0 + b.len / nw - 80, y0 = f * 150 + 40; const lit = night && !closed && rr() < 0.5; s += Q3(P3(c, Xa, y0, d0), P3(c, Xa, y0, d1), P3(c, Xa, y0 + 80, d1), P3(c, Xa, y0 + 80, d0), lit ? '#ffd27a' : hazeC(night ? '#2a3050' : '#8aa4b8', d0, Dmax, sky, 0.6), ''); }
+  for (let f = 0; f < fl; f++) for (let i = 0; i < nw; i++) { const d0 = D0 + (b.len / nw) * i + 40, d1 = d0 + b.len / nw - 80, y0 = f * 150 + 40; const lit = night && !closed && rr() < 0.5; s += Q3(P3v(c, Xa, y0, d0), P3v(c, Xa, y0, d1), P3v(c, Xa, y0 + 80, d1), P3v(c, Xa, y0 + 80, d0), lit ? '#ffd27a' : hazeC(night ? '#2a3050' : '#8aa4b8', d0, Dmax, sky, 0.6), ''); }
   if (b.tank) { const tx = Xa + g * 200, td = D0 + b.len * 0.4; s += box3D(c, tx - 60, tx + 60, td - 60, td + 60, H, H + 120, hazeC('#5a8ac8', D0, Dmax, sky, 0.6), k); }
   return s;
 }
