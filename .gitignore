@@ -32,3 +32,8 @@ pilot/work/*
 !pilot/work/st_sheet.jpg
 pilot/frames/
 pilot/work/
+ep2/frames_ref/
+ep2/frames_body/
+ep2/frames_ovl/
+pilot/frames_ref/
+*_verify/
