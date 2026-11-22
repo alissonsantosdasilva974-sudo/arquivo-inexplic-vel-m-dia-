@@ -181,15 +181,22 @@ function bus(x, base, o = {}) {
   s += `<rect x="0" y="-150" width="${L}" height="34" fill="#3c7a7a" stroke="${INK}" stroke-width="3"/>`;
   s += `<rect x="20" y="-${Hh - 12}" width="${L - 130}" height="8" rx="4" fill="#f4e6c8" opacity="0.6"/>`;
   // windows
-  const nw = 5;
+  const nw = 3;
   for (let i = 0; i < nw; i++) {
     const wx = 30 + i * 128;
     s += `<rect x="${wx}" y="-${Hh - 40}" width="110" height="100" rx="10" fill="#bfd6dc" stroke="${INK}" stroke-width="4"/>`;
     if (o.passengers && o.passengers[i]) s += `<svg x="${wx}" y="-${Hh - 40}" width="110" height="100" overflow="hidden"><g transform="${o.pT || 'translate(55 150) scale(0.5)'}">${o.passengers[i]}</g></svg>`;
     s += `<path d="M ${wx + 10} -${Hh - 120} L ${wx + 60} -${Hh - 50}" stroke="#fff" stroke-width="6" opacity="0.35"/>`;
   }
+  // folding front door (o.door 0..1 opens)
+  { const dx = 420, dw = 110, dt = -(Hh - 40), db = -42, op = clamp(o.door || 0);
+    s += `<rect x="${dx}" y="${dt}" width="${dw}" height="${db - dt}" rx="6" fill="#2a2630" stroke="${INK}" stroke-width="4"/>`;
+    if (op > 0.02) s += `<rect x="${dx + 8}" y="${dt + 10}" width="${dw - 16}" height="${db - dt - 14}" fill="#4a4250"/><rect x="${dx + 10}" y="${db - 30}" width="${dw - 20}" height="12" fill="#8a8690" stroke="${INK}" stroke-width="2"/>`;
+    const pw = dw / 2 * (1 - op * 0.82);
+    for (const side of [0, 1]) { const px = side ? dx + dw - pw : dx; s += `<rect x="${f2(px)}" y="${dt}" width="${f2(pw)}" height="${db - dt}" rx="5" fill="#bfd6dc" stroke="${INK}" stroke-width="4"/><path d="M ${f2(px + pw / 2)} ${dt} V ${db}" stroke="${INK}" stroke-width="3" opacity="${f2(1 - op)}"/><rect x="${f2(px)}" y="${(dt + db) / 2 - 6}" width="${f2(pw)}" height="12" fill="#e0a83a" stroke="${INK}" stroke-width="2"/>`; } }
   // driver window
   s += `<path d="M ${L - 140} -${Hh - 40} L ${L - 60} -${Hh - 40} Q ${L - 10} -${Hh - 60} ${L - 8} -${Hh - 110} L ${L - 8} -${Hh - 140} L ${L - 140} -${Hh - 140} Z" fill="#bfd6dc" stroke="${INK}" stroke-width="4"/>`;
+  if (o.emptySeat) s += `<rect x="${L - 120}" y="-${Hh - 80}" width="60" height="70" rx="10" fill="#6a4a3a" stroke="${INK}" stroke-width="3"/><circle cx="${L - 50}" cy="-${Hh - 120}" r="24" fill="none" stroke="#2a2a34" stroke-width="8"/>`;
   if (o.driver) s += `<svg x="${L - 140}" y="-${Hh - 40}" width="132" height="100" overflow="hidden"><g transform="${o.dT || 'translate(66 150) scale(0.5)'}">${o.driver}</g></svg>`;
   // destination sign
   s += `<rect x="${L - 250}" y="-${Hh + 0}" width="170" height="36" rx="6" fill="#2a2233" stroke="${INK}" stroke-width="3" transform="translate(0 6)"/>`;

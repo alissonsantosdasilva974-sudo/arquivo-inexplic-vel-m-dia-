@@ -13,12 +13,13 @@ Ficha reutilizável dos personagens criados nos episódios **"Já volto"** e **"
 | `claude/personagens/medidas.json` | Caixa delimitadora medida de cada personagem (vista de frente, unidades do rig). |
 | `claude/personagens/svg/<nome>_frente.svg` | Corpo inteiro, de frente, expressão neutra. |
 | `claude/personagens/svg/<nome>_lado.svg` | Corpo inteiro, vista lateral (3/4), voltado para a direita. |
+| `claude/personagens/svg/<nome>_costas.svg` | Corpo inteiro, de costas (para planos por cima do ombro). |
 | `claude/personagens/svg/<nome>_expr_neutra.svg` | Busto, expressão neutra. |
 | `claude/personagens/svg/<nome>_expr_surpreso.svg` | Busto, emoção forte: surpresa/susto. |
 | `claude/personagens/svg/<nome>_expr_rindo.svg` | Busto, emoção forte: riso. |
 | `claude/personagens/codigo/` | Código para desenhar e animar (ver seção **Código**). |
 
-São **16 personagens × 5 arquivos = 80 SVGs**, mais **11 objetos** em `svg/objetos/`. Todos têm **fundo transparente** (nenhum retângulo de fundo), são vetoriais e autossuficientes (cada SVG carrega os próprios padrões de estampa/textura em `<defs>`). **Não há verde em nenhum arquivo**: verifiquei todas as cores; o vestido da mulher de óculos, que era verde no vídeo, virou azul `#4a74c0` por causa do chroma key.
+São **16 personagens × 6 arquivos = 96 SVGs**, mais **11 objetos** em `svg/objetos/`. Todos têm **fundo transparente** (nenhum retângulo de fundo), são vetoriais e autossuficientes (cada SVG carrega os próprios padrões de estampa/textura em `<defs>`). **Não há verde em nenhum arquivo**: verifiquei todas as cores; o vestido da mulher de óculos, que era verde no vídeo, virou azul `#4a74c0` por causa do chroma key.
 
 > **Diferenças em relação ao vídeo v5 do episódio:** ao montar esta ficha corrigi três coisas no rig: (1) a pálpebra agora acompanha o formato do olho (no v5 ela aparecia como um retângulo mais escuro); (2) o brilho do cabelo curto, do boné e do cabelo longo ficava um pouco acima do cabelo; (3) o vestido verde da mulher de óculos virou azul. O boné do menino também subiu, para não cobrir as sobrancelhas. Os SVGs e o código desta ficha já estão corrigidos; o MP4 do v5 ainda não.
 
@@ -47,9 +48,9 @@ O rig desenha cada personagem em "unidades" com os pés em (0,0). Em escala `s =
 |---|---|
 | Pele | `#f4c4a1` |
 | Cabelo | careca (sem cabelo) |
-| Roupa — moletom com capuz, bolso canguru e cordões | `#f2c230` (sombra `#d29a12`) |
-| Calça/bermuda | `#3d5a9e` |
-| Sapatos | `#26222c` |
+| Roupa — moletom com capuz, bolso canguru e cordões | `#ffc928` (sombra `#e0a514`) |
+| Calça/bermuda | `#4a6fa8` (jeans, textura `pDenim` + costura `#e0a050`) |
+| Sapatos | `#f6f4ee` (tênis branco, sola `#b8b4ac`) |
 | Mãos (luvas) | `#1d1a22` |
 | Contorno | `#1e1820` |
 
@@ -57,18 +58,20 @@ O rig desenha cada personagem em "unidades" com os pés em (0,0). Em escala `s =
 
 **Arquivos:** `svg/polo_frente.svg`, `svg/polo_lado.svg`, `svg/polo_expr_neutra.svg`, `svg/polo_expr_surpreso.svg`, `svg/polo_expr_rindo.svg`
 
-**Diferenças entre o meu Polo e a ficha do Projeto** (não alterei nada, conforme pedido):
+**Conformidade com a ficha do Projeto** (atualizado no episódio 2 v2: o Polo agora segue a ficha):
 
-| Ficha do Projeto | Polo deste episódio |
+| Ficha do Projeto | Polo atual |
 |---|---|
 | Careca, cabeça redonda | Igual. |
-| Sobrancelhas **grossas** | Sobrancelhas **finas** (traço de 5 u). |
-| **Barba rala** | **Sem barba.** |
-| Moletom amarelo **`#FFC928`** com bolso | Moletom amarelo **`#F2C230`** (sombra `#D29A12`), com bolso canguru e cordões brancos. A cor é próxima, mas não é a mesma. |
-| Calça **jeans** | Calça **azul lisa** `#3D5A9E`, sem textura nem costuras de jeans. |
-| Tênis **branco** | Sapato **preto** `#26222C`. |
-| Mãos de luva com polegar | Igual: luva preta `#1D1A22` com polegar (e dedos quando abre a mão ou aponta). |
-| Nota de R$ 10 no bolso | A nota aparece **só na cena da padaria** (ele segura e guarda no bolso). Não fica visível no bolso o tempo todo; ela existe como objeto separado: `note10()` em `codigo/characters_v1.js`. |
+| Sobrancelhas grossas | Igual (traço de 10 u). |
+| Barba rala | Igual: pontilhado fino e sombra leve no queixo e no maxilar. |
+| Moletom amarelo `#FFC928` com bolso | Igual: `#FFC928` (sombra `#E0A514`), bolso canguru com costura e cordões brancos. |
+| Calça jeans | Igual: `#4A6FA8` com textura de sarja e costura laranja. |
+| Tênis branco | Igual: `#F6F4EE` com sola cinza e cadarço. |
+| Mãos de luva com polegar | Igual: luva preta `#1D1A22` com polegar (e dedos ao abrir a mão ou apontar). |
+| Nota de R$ 10 no bolso | Igual quando você usa a opção `pocketNote: true` (aparece saindo do bolso canguru, como em `svg/polo_frente.svg`). No ep. 2 ele entrega a nota e passa a usar o chapéu fedora (`hat: 'fedora'`). |
+
+O Polo do vídeo "Já volto" (v5) ainda é a versão antiga (moletom `#F2C230`, calça lisa, sapato preto, sem barba); o episódio 2 v2 e esta ficha usam a versão nova.
 
 ### Mãe do Polo  (`mae`, id no código: `mae`)
 
@@ -349,7 +352,9 @@ O rig desenha cada personagem em "unidades" com os pés em (0,0). Em escala `s =
 
 - **Polo:** a partir do episódio 2 ele usa o chapéu fedora do homem de terno (`hat: 'fedora'`).
 - **Padeiro:** o padeiro do episódio 2 é o "padeiro novo" (`padeiro2`), que assumiu a padaria quando a padeira se aposentou no episódio 1.
-- **Opções novas de `person()`:** `hat` (`'fedora'` ou `null`), `hatLift` (levanta o chapéu, em u), `pale` (0–1, deixa a pele pálida), `tears` (0–1, lágrimas escorrendo), `fade` (0–1, opacidade, para sumir).
+- **Opções novas de `person()`:** `hat` (`'fedora'` ou `null`), `hatLift` (levanta o chapéu, em u), `pale` (0–1, deixa a pele pálida), `tears` (0–1, lágrimas escorrendo), `fade` (0–1, opacidade, para sumir), `back: true` (vista de costas), `pocketNote: true` (nota de R$ 10 no bolso do moletom).
+- **Outras funções novas:** `povHands(x, y, escala, svg)` (luvas do Polo em primeira pessoa segurando um objeto), `steeringWheel()` (volante), `bus(..., { door: 0–1, emptySeat: true })` (ônibus com porta sanfonada e banco do motorista vazio).
+- **Cidade (`codigo/city.js`):** `bldg()` (prédio com loja, sobrado ou prédio de 4 andares), `cityRow()` (quarteirão lateral com postes, árvores e bandeirinhas; opções `night`, `closed`, `signs`), `cityBack()` (fileira de fundo + torre do relógio como referência), `perspStreet()` + `onStreet()` (rua em perspectiva com ponto de fuga; `camH` alto = câmera alta) e `cityAerial()` (cidade vista do alto), além de `lampLight()` (cone e poça de luz dos postes à noite).
 
 ## Código
 
@@ -359,7 +364,8 @@ Tudo é JavaScript puro que gera texto SVG; não precisa de biblioteca nem de se
 2. `defs.js`: `DEFS`, o bloco `<defs>` com texturas e estampas (`pFabric`, `pSkin`, `pFlowers`, `pDots`, `pStripeH`…). Coloque `DEFS` uma vez em cada `<svg>`.
 3. `characters_v1.js`: objetos de cena: `note10()` (nota de R$ 10) e `bread({stone, cracks})` (pão / pão de pedra).
 4. `characters.js`: rosto do Polo (`face9`), mãos (`hand9`) e símbolos de emoção (`emote`).
-5. `characters2.js`: **rig atual**: `CAST2` (cores e medidas de cada personagem), `person()` e `personSide2()`.
+5. `characters2.js`: **rig atual**: `CAST2` (cores e medidas de cada personagem), `person()`, `personSide2()` e `personBack2()`.
+6. `environments.js` e `city.js` (opcionais): cenários (casas, padaria, ônibus, torre do relógio, cidade).
 
 ### `person(id, opções)` → string SVG
 

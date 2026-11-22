@@ -15,6 +15,8 @@ Narração original como trilha mestre (limitador de pico leve, −1,5 dBFS, com
 | 36.52 | 0.09 | passos correndo | padeiro foge com a mala |
 | 36.60 | 0.60 | asas | pombos voam |
 | 38.84 | 0.09 | passos | Polo vai ao ponto |
+| 43.60 | 0.12 | toque no volante | motorista solta o volante |
+| 44.70 | 0.50 | chiado pneumático | porta do ônibus abre |
 | 45.24 | 0.09 | passos | motorista vai embora a pé |
 | 46.50 | 3.20 | motor | ônibus segue sozinho |
 | 52.20 | 1.00 | rosnado | cachorro rosna |

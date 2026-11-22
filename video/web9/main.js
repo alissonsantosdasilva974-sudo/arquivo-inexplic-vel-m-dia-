@@ -21,6 +21,10 @@ function _pat() {
  <pattern id="pFlowers" patternUnits="userSpaceOnUse" width="56" height="56"><g transform="translate(14 14)"><circle r="6" cx="0" cy="-7" fill="#fff6e8"/><circle r="6" cx="7" cy="-2" fill="#fff6e8"/><circle r="6" cx="4" cy="6" fill="#fff6e8"/><circle r="6" cx="-4" cy="6" fill="#fff6e8"/><circle r="6" cx="-7" cy="-2" fill="#fff6e8"/><circle r="4" fill="#f2c230"/></g><g transform="translate(42 40) scale(0.8)"><circle r="6" cx="0" cy="-7" fill="#fff6e8"/><circle r="6" cx="7" cy="-2" fill="#fff6e8"/><circle r="6" cx="4" cy="6" fill="#fff6e8"/><circle r="6" cx="-4" cy="6" fill="#fff6e8"/><circle r="6" cx="-7" cy="-2" fill="#fff6e8"/><circle r="4" fill="#f2c230"/></g></pattern>
  <pattern id="pDots" patternUnits="userSpaceOnUse" width="34" height="34"><circle cx="8" cy="8" r="5" fill="#fff6e8" opacity="0.85"/><circle cx="25" cy="25" r="5" fill="#fff6e8" opacity="0.85"/></pattern>
  <pattern id="pStripeH" patternUnits="userSpaceOnUse" width="40" height="36"><rect y="0" width="40" height="14" fill="#fff6e8" opacity="0.85"/></pattern>
+ <pattern id="pDenim" patternUnits="userSpaceOnUse" width="8" height="8"><rect width="8" height="8" fill="#4a6fa8"/><path d="M 0 8 L 8 0 M -2 2 L 2 -2 M 6 10 L 10 6" stroke="#3a5a90" stroke-width="1.6"/><circle cx="2" cy="3" r="0.8" fill="#7a9ad0" opacity="0.7"/></pattern>
+ <radialGradient id="gPool"><stop offset="0" stop-color="#ffd890" stop-opacity="0.75"/><stop offset="1" stop-color="#ffd890" stop-opacity="0"/></radialGradient>
+ <linearGradient id="gCone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe0a0" stop-opacity="0.8"/><stop offset="1" stop-color="#ffe0a0" stop-opacity="0.05"/></linearGradient>
+ <radialGradient id="gWin"><stop offset="0" stop-color="#ffe2a0" stop-opacity="0.6"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient>
  <linearGradient id="gAO" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1424" stop-opacity="0"/><stop offset="1" stop-color="#1b1424" stop-opacity="0.22"/></linearGradient>
  <clipPath id="clipHead"><circle cx="0" cy="-322" r="78"/></clipPath>`;
 }

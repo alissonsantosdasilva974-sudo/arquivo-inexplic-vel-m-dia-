@@ -55,7 +55,7 @@ function face9(d, P, fx) {
   for (const k of [-1, 1]) {
     const cx = fx + k * sep, y = ey - 34 + bw[0];
     const inner = bw[1];
-    s += `<path d="M ${f2(cx - 15)} ${f2(y + (k < 0 ? 0 : inner * 0.5) + 3)} Q ${f2(cx)} ${f2(y - 6)} ${f2(cx + 15)} ${f2(y + (k < 0 ? inner * 0.5 : 0) + 3)}" stroke="${INK9}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    s += `<path d="M ${f2(cx - 16)} ${f2(y + (k < 0 ? 0 : inner * 0.5) + 3)} Q ${f2(cx)} ${f2(y - 7)} ${f2(cx + 16)} ${f2(y + (k < 0 ? inner * 0.5 : 0) + 3)}" stroke="${INK9}" stroke-width="${d.browW || 5}" fill="none" stroke-linecap="round"/>`;
   }
   for (const k of [-1, 1]) {
     const cx = fx + k * sep;

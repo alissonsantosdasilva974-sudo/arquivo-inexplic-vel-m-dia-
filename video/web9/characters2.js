@@ -6,7 +6,7 @@ const LW = 6;                  // outline width
 const H2 = -320, HR2 = 84;     // head centre / radius
 
 const CAST2 = {
-  polo:     { skin: '#f4c4a1', top: '#f2c230', topD: '#d29a12', topType: 'hoodie', bottom: '#3d5a9e', shoes: '#26222c', hands: '#1d1a22', hair: 'bald', poloFace: 1, w: 1.0, seed: 1 },
+  polo:     { skin: '#f4c4a1', top: '#ffc928', topD: '#e0a514', topType: 'hoodie', bottom: '#4a6fa8', jeans: 1, shoes: '#f6f4ee', sneakers: 1, hands: '#1d1a22', hair: 'bald', poloFace: 1, stubble: 1, w: 1.0, seed: 1 },
   padeira:  { skin: '#f1c08f', top: '#e0787a', topD: '#c05a5e', topType: 'dress', pattern: 'pDots', apron: 1, bottom: '#e0787a', shoes: '#7a3a2a', hair: 'chef', hairC: '#5a3424', blush: 1, ear: '#f2c230', w: 1.28, seed: 2 },
   padeiraV: { skin: '#f1c08f', top: '#9b84c8', topD: '#7a62aa', topType: 'dress', pattern: 'pFlowers', bottom: '#9b84c8', shoes: '#8a5a8a', hair: 'cloud', hairC: '#e8e4f2', bun: 1, glasses: '#c9a24a', blush: 1, ear: '#f2c230', w: 1.3, seed: 2 },
   mae:      { skin: '#c98b5e', top: '#7b52b8', topD: '#5e3c98', topType: 'dress', pattern: 'pFlowers', bottom: '#7b52b8', shoes: '#e07a9a', hair: 'cloud', hairC: '#3a2018', bun: 1, blush: 1, ear: '#f2c230', w: 1.22, seed: 3 },
@@ -190,9 +190,17 @@ function face2(P, d, fx, dir, side) {
 
 // Polo keeps the user's design: big round white eyes, tiny pupils, small curl nose, small mouth.
 function poloFace2(P, d, fx, side) {
-  const fdd = Object.assign({}, d, { sep: d.sep || (side ? 20 : 33) });
+  const fdd = Object.assign({}, d, { sep: d.sep || (side ? 20 : 33), browW: 10 });
   const old = HY; // v1 face uses HY (-322); same placement works on the r=84 head
-  return face9(fdd, CAST.polo, fx);
+  let s = '';
+  if (P.stubble) {   // barba rala: soft shadow + fine dots along the jaw and chin (clipped to the head)
+    const r = rng(77); const cx = fx * 0.9, cy = HY + 44;
+    s += `<clipPath id="cstub"><circle cx="0" cy="${H2}" r="${HR2 - 3}"/></clipPath><g clip-path="url(#cstub)">`;
+    s += `<path d="M ${f2(cx - 58)} ${f2(cy - 18)} Q ${f2(cx - 50)} ${f2(cy + 38)} ${f2(cx)} ${f2(cy + 42)} Q ${f2(cx + 50)} ${f2(cy + 38)} ${f2(cx + 58)} ${f2(cy - 18)} Q ${f2(cx + 30)} ${f2(cy + 18)} ${f2(cx)} ${f2(cy + 16)} Q ${f2(cx - 30)} ${f2(cy + 18)} ${f2(cx - 58)} ${f2(cy - 18)} Z" fill="#8a6a5a" opacity="0.16"/>`;
+    for (let i = 0; i < 70; i++) { const a = Math.PI * (0.08 + r() * 0.84), rr = 36 + r() * 22; const x = cx - Math.cos(a) * rr * 1.25, y = cy - 12 + Math.sin(a) * rr * 0.9; s += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(1.0 + r() * 0.8)}" fill="#5a4038" opacity="${f2(0.28 + r() * 0.25)}"/>`; }
+    s += '</g>';
+  }
+  return s + face9(fdd, CAST.polo, fx);
 }
 
 function hairBack2(P, dir) {
@@ -252,6 +260,7 @@ function torso2(P, d, k = 1) {
   s += '</g>';
   s += `<path d="${B.d}" fill="none" stroke="${OL}" stroke-width="${LW}" stroke-linejoin="round"/>`;
   if (P.topType === 'hoodie') {
+    if (d.pocketNote) s += `<g transform="translate(18 -172) rotate(-18)"><rect x="-22" y="-14" width="44" height="26" rx="3" fill="#e8907a" stroke="${OL}" stroke-width="3"/><text x="-17" y="-1" font-family="Fredoka" font-weight="700" font-size="10" fill="#7a2e22">10</text></g>`;
     s += `<path d="M -40 -168 L 40 -168 L 52 -124 L -52 -124 Z" fill="${P.topD}" stroke="${OL}" stroke-width="${LW - 1}" stroke-linejoin="round"/><path d="M -34 -161 L 34 -161 L 44 -130 L -44 -130 Z" fill="none" stroke="#8a6a10" stroke-width="2" stroke-dasharray="6 4" opacity="0.7"/>`;
     s += `<path d="M -18 -244 Q -22 -220 -20 -196 M 18 -244 Q 22 -220 20 -196" stroke="#f6efe2" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="-20" cy="-193" r="5" fill="#f6efe2" stroke="${OL}" stroke-width="2.5"/><circle cx="20" cy="-193" r="5" fill="#f6efe2" stroke="${OL}" stroke-width="2.5"/>`;
     s += `<path d="M ${-B.hip + 6} -118 Q 0 -104 ${B.hip - 6} -118" stroke="${OL}" stroke-width="4" fill="none"/>`;
@@ -294,7 +303,9 @@ function legs2(P, lA, rA, dir) {
     s += `<path d="M ${f2(x)} ${top} L ${f2(x)} -16" stroke="${OL}" stroke-width="34" stroke-linecap="round"/><path d="M ${f2(x)} ${top} L ${f2(x)} -16" stroke="${showSkin ? P.skin : P.bottom}" stroke-width="22" stroke-linecap="round"/>`;
     if (P.shorts) s += `<path d="M ${f2(x)} ${top} L ${f2(x)} ${top + L * 0.45}" stroke="${OL}" stroke-width="36" stroke-linecap="round"/><path d="M ${f2(x)} ${top} L ${f2(x)} ${top + L * 0.45}" stroke="${P.bottom}" stroke-width="26" stroke-linecap="round"/>`;
     else if (!dress) s += `<path d="M ${f2(x + 5)} ${top + 10} L ${f2(x + 5)} -26" stroke="${shade(P.bottom, 0.3)}" stroke-width="4" opacity="0.6"/>`;
+    if (P.jeans) s += `<path d="M ${f2(x)} ${top} L ${f2(x)} -18" stroke="url(#pDenim)" stroke-width="20" stroke-linecap="round"/><path d="M ${f2(x - 6)} ${top + 6} L ${f2(x - 6)} -24" stroke="#e0a050" stroke-width="2" stroke-dasharray="5 4" opacity="0.85"/><path d="M ${f2(x - 11)} -30 L ${f2(x + 11)} -30" stroke="${lite(P.bottom, 0.25)}" stroke-width="6" stroke-linecap="round"/>`;
     s += `<path d="M ${f2(x - 18 + dir * 4)} 0 Q ${f2(x - 20)} -28 ${f2(x + dir * 6)} -26 Q ${f2(x + dir * 36)} -22 ${f2(x + dir * 36)} -4 Q ${f2(x + dir * 32)} 6 ${f2(x)} 6 Q ${f2(x - 20)} 6 ${f2(x - 18 + dir * 4)} 0 Z" fill="${P.shoes}" stroke="${OL}" stroke-width="${LW - 1}"/><path d="M ${f2(x - 6)} -18 Q ${f2(x + dir * 10)} -22 ${f2(x + dir * 22)} -15" stroke="#fff" stroke-width="4" fill="none" opacity="0.35" stroke-linecap="round"/>`;
+    if (P.sneakers) s += `<path d="M ${f2(x - 20)} 1 Q ${f2(x)} 8 ${f2(x + dir * 37)} 0" stroke="#b8b4ac" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M ${f2(x + dir * 2)} -20 l ${dir * 10} 4 M ${f2(x + dir * 6)} -24 l ${dir * 10} 4" stroke="#8a8680" stroke-width="2.5"/>`;
     s += '</g>';
   }
   return s;
@@ -308,6 +319,7 @@ function person(id, o = {}) {
   if (d.mouth > 0.05) d.headTilt += Math.sin(d.t * 11) * 2.5;
   const s = d.s * (P.scale || 1);
   if (d.side) return personSide2(P, d, s);
+  if (d.back) return personBack2(P, d, s);
   const dir = d.face >= 0 ? 1 : -1, fx = d.face * 24;
   const breath = Math.sin(d.t * 2.3 + P.seed) * 2.2;
   let bob = 0, lA = 0, rA = 0;
@@ -367,3 +379,58 @@ function personSide2(P, d, s) {
 }
 // hat held in the hand (origin = brim centre)
 function fedoraProp(rot = 0) { return `<g transform="rotate(${rot}) translate(0 ${58 - H2})">${fedora(1, 0)}</g>`; }
+
+// ---------- back view (for over-the-shoulder shots) ----------
+function personBack2(P, d, s) {
+  const dir = d.face >= 0 ? 1 : -1;
+  const breath = Math.sin(d.t * 2.3 + P.seed) * 2.2;
+  let bob = 0, lA = 0, rA = 0;
+  if (d.walk != null) { bob = -Math.abs(Math.sin(d.walk)) * 10; lA = Math.sin(d.walk) * 20; rA = -lA; }
+  const shortS = P.topType === 'tee' || P.topType === 'dress';
+  let g = '';
+  if (d.shadow) g += `<ellipse cx="0" cy="4" rx="${f2(84 * (P.w || 1))}" ry="15" fill="#1b1424" opacity="0.24"/>`;
+  g += `<g transform="translate(0 ${f2(bob)}) rotate(${f2(d.tilt)} 0 -100)">`;
+  g += legs2(P, lA, rA, -dir);
+  // arms are mirrored: the character's right arm is on screen-left when seen from behind
+  const aR = limb2(P, -1, d.armR, d.bendR, shortS, d.armR > 120 ? 'open' : 'fist', d.holdR, dir);
+  const aL = limb2(P, 1, d.armL, d.bendL, shortS, d.armL > 120 ? 'open' : 'fist', d.holdL, dir);
+  g += `<g transform="translate(0 ${f2(breath * 0.4)})">`;
+  const B = bodyPath(P);
+  g += `<path d="${B.d}" fill="${P.top}"/>`;
+  g += `<clipPath id="cbk${P.seed}"><path d="${B.d}"/></clipPath><g clip-path="url(#cbk${P.seed})">` + (P.pattern ? `<rect x="-140" y="-260" width="280" height="260" fill="url(#${P.pattern})"/>` : '') +
+    `<path d="M -10 -260 C -40 -220 -50 -140 -34 0 L -140 0 L -140 -260 Z" fill="${P.topD}" opacity="0.45"/><rect x="-140" y="-260" width="280" height="260" fill="url(#pFabric)"/></g>`;
+  g += `<path d="${B.d}" fill="none" stroke="${OL}" stroke-width="${LW}" stroke-linejoin="round"/>`;
+  if (P.topType === 'hoodie') g += `<path d="M -56 -250 Q -60 -176 0 -164 Q 60 -176 56 -250 Q 30 -276 0 -276 Q -30 -276 -56 -250 Z" fill="${P.topD}" stroke="${OL}" stroke-width="${LW - 1}"/><path d="M -36 -244 Q 0 -190 36 -244" stroke="${shade(P.topD, 0.3)}" stroke-width="4" fill="none"/>`;
+  if (P.apron) g += `<path d="M -50 -150 Q 0 -140 50 -150" stroke="#fffaf0" stroke-width="9" fill="none"/><path d="M 0 -148 l -14 26 M 0 -148 l 14 26" stroke="#fffaf0" stroke-width="7"/>`;
+  g += aR.svg + aL.svg;
+  if (P.cane) g += `<path d="M ${f2(aL.hx)} ${f2(aL.hy)} L ${f2(aL.hx - 12)} 0" stroke="${OL}" stroke-width="15" stroke-linecap="round"/><path d="M ${f2(aL.hx)} ${f2(aL.hy)} L ${f2(aL.hx - 12)} 0" stroke="#8a5a34" stroke-width="8" stroke-linecap="round"/>`;
+  g += '</g>';
+  // head from behind
+  let h = '';
+  for (const k of [-1, 1]) h += `<ellipse cx="${k * 80}" cy="${H2 + 10}" rx="15" ry="18" fill="${P.skin}" stroke="${OL}" stroke-width="${LW - 1}"/>`;
+  h += `<circle cx="0" cy="${H2}" r="${HR2}" fill="${shade(P.skin, 0.12)}" stroke="${OL}" stroke-width="${LW}"/>`;
+  h += `<ellipse cx="-24" cy="${H2 - 40}" rx="30" ry="18" fill="#fff" opacity="0.18"/>`;
+  const c = P.hairC || '#3a2018';
+  if (P.hair === 'cloud') { h += hairBack2(P, dir); h += `<circle cx="0" cy="${H2 - 4}" r="${HR2 + 2}" fill="${c}" stroke="${OL}" stroke-width="${LW}"/>`; for (let i = 0; i < 7; i++) h += `<path d="M ${-60 + i * 20} ${H2 - 50 + Math.abs(i - 3) * 8} q 8 -8 16 -2" stroke="${lite(c, 0.35)}" stroke-width="5" fill="none" stroke-linecap="round"/>`; if (P.bun) h += `<circle cx="0" cy="${H2 - 104}" r="40" fill="${c}" stroke="${OL}" stroke-width="${LW}"/>`; }
+  else if (P.hair === 'long') h += `<path d="M -90 ${H2 - 4} C -100 ${H2 - 120} 100 ${H2 - 120} 90 ${H2 - 4} C 100 ${H2 + 60} 104 ${H2 + 120} 84 ${H2 + 140} L -84 ${H2 + 140} C -104 ${H2 + 120} -100 ${H2 + 60} -90 ${H2 - 4} Z" fill="${c}" stroke="${OL}" stroke-width="${LW}"/>` + (P.bow ? `<path d="M 0 ${H2 - 86} l -28 -18 l 0 36 Z M 0 ${H2 - 86} l 28 -18 l 0 36 Z" fill="${P.bow}" stroke="${OL}" stroke-width="4.5"/>` : '');
+  else if (P.hair !== 'bald') h += `<path d="M -86 ${H2 + 24} C -92 ${H2 - 112} 92 ${H2 - 112} 86 ${H2 + 24} Q 0 ${H2 + 56} -86 ${H2 + 24} Z" fill="${c}" stroke="${OL}" stroke-width="${LW}"/>`;
+  if (['chef', 'cap', 'driverCap', 'sides'].includes(P.hair)) h += hairFront2(P, d, -dir, 0);
+  const hat = d.hat !== undefined ? d.hat : P.hatDefault;
+  if (hat === 'fedora') h += fedora(dir, d.hatLift || 0);
+  g += `<g transform="translate(0 ${f2(breath)}) rotate(${f2(d.headTilt)} 0 ${H2 + 70})">${h}</g>`;
+  g += '</g>';
+  return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s)} ${f2(s)})"${d.fade != null ? ` opacity="${f2(d.fade)}"` : ''}>${g}</g>`;
+}
+
+// ---------- first-person hands (Polo's black gloves + yellow sleeves) holding an object ----------
+function povHands(x, y, k, inner, o = {}) {
+  const spread = o.spread || 230, lift = o.lift || 0;
+  const sleeve = (sx, dirn) => `<path d="M ${sx} ${y + 700} L ${f2(sx + dirn * 40)} ${y + 60}" stroke="${OL}" stroke-width="150" stroke-linecap="round"/><path d="M ${sx} ${y + 700} L ${f2(sx + dirn * 40)} ${y + 60}" stroke="#ffc928" stroke-width="134" stroke-linecap="round"/><path d="M ${f2(sx + dirn * 6)} ${y + 680} L ${f2(sx + dirn * 44)} ${y + 120}" stroke="#e0a514" stroke-width="30" stroke-linecap="round" opacity="0.6"/>` +
+    `<rect x="${f2(sx + dirn * 40 - 72)}" y="${y + 40}" width="144" height="48" rx="20" fill="#e0a514" stroke="${OL}" stroke-width="7"/>`;
+  const glove = (gx, dirn) => `<g transform="translate(${f2(gx)} ${y - lift}) scale(${dirn} 1)"><ellipse cx="0" cy="0" rx="78" ry="70" fill="#1d1a22" stroke="${OL}" stroke-width="8"/><path d="M 40 -30 Q 100 -60 96 -6 Q 92 24 52 18" fill="#1d1a22" stroke="${OL}" stroke-width="8"/><path d="M -50 -20 q 30 -16 60 0 M -50 10 q 30 -16 60 0" stroke="#4a4458" stroke-width="5" fill="none"/><ellipse cx="-28" cy="-34" rx="20" ry="11" fill="#fff" opacity="0.2"/></g>`;
+  const L = x - spread, R = x + spread;
+  return `<g transform="translate(0 0) scale(1)">${sleeve(L - 30, 1)}${sleeve(R + 30, -1)}<g transform="translate(${x} ${y - 40 - lift}) scale(${k})">${inner}</g>${glove(L + 10, 1)}${glove(R - 10, -1)}</g>`;
+}
+function steeringWheel(x, y, k = 1, rot = 0) {
+  return `<g transform="translate(${x} ${y}) scale(${k}) rotate(${rot})"><circle r="150" fill="none" stroke="${OL}" stroke-width="44"/><circle r="150" fill="none" stroke="#2a2a34" stroke-width="30"/><circle r="40" fill="#3a3a46" stroke="${OL}" stroke-width="8"/><path d="M -36 10 L -140 40 M 36 10 L 140 40 M 0 38 L 0 146" stroke="${OL}" stroke-width="30"/><path d="M -36 10 L -140 40 M 36 10 L 140 40 M 0 38 L 0 146" stroke="#2a2a34" stroke-width="18"/><path d="M -120 -80 a 150 150 0 0 1 90 -60" stroke="#6a6a7a" stroke-width="8" fill="none"/></g>`;
+}

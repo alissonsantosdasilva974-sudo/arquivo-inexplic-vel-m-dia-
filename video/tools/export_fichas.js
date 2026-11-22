@@ -30,13 +30,16 @@ const EXPR = [['neutra', 'neutral'], ['surpreso', 'surprised'], ['rindo', 'laugh
       const out = {};
       const wrap = (inner, vb, title) => `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb.map(v => v.toFixed(1)).join(' ')}" width="${Math.round(vb[2])}" height="${Math.round(vb[3])}"><title>${title}</title>${DEFS}${inner}</svg>\n`;
       const pad = 14;
-      const front = mk({ expr: 'neutral', shadow: false });
+      const front = mk({ expr: 'neutral', shadow: false, pocketNote: id === 'polo' });
       let bb = bbox(front);
       out.frente = wrap(front, [bb.x - pad, bb.y - pad, bb.w + 2 * pad, bb.h + 2 * pad], `${id} — frente`);
       out.metrics = bb;
       const side = mk({ expr: 'neutral', side: true, face: 0.8, shadow: false });
       let bs = bbox(side);
       out.lado = wrap(side, [bs.x - pad, bs.y - pad, bs.w + 2 * pad, bs.h + 2 * pad], `${id} — lado`);
+      const back = mk({ expr: 'neutral', back: true, shadow: false });
+      let bk = bbox(back);
+      out.costas = wrap(back, [bk.x - pad, bk.y - pad, bk.w + 2 * pad, bk.h + 2 * pad], `${id} — costas`);
       for (const [fname, ex] of EXPR) {
         const g = mk({ expr: ex, shadow: false, mouth: ex === 'laugh' ? 0.8 : 0 });
         const bf = bbox(g);
@@ -48,7 +51,7 @@ const EXPR = [['neutra', 'neutral'], ['surpreso', 'surprised'], ['rindo', 'laugh
       return out;
     }, { id, old: !!o.old, EXPR });
     const files = [];
-    for (const k of ['frente', 'lado', 'expr_neutra', 'expr_surpreso', 'expr_rindo']) {
+    for (const k of ['frente', 'lado', 'costas', 'expr_neutra', 'expr_surpreso', 'expr_rindo']) {
       const f = `${name}_${k}.svg`; fs.writeFileSync(path.join(OUT, f), res[k]); files.push(f);
     }
     report[name] = { id, files, bbox: res.metrics };

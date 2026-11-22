@@ -4,6 +4,7 @@
   "files": [
    "polo_frente.svg",
    "polo_lado.svg",
+   "polo_costas.svg",
    "polo_expr_neutra.svg",
    "polo_expr_surpreso.svg",
    "polo_expr_rindo.svg"
@@ -20,6 +21,7 @@
   "files": [
    "mae_frente.svg",
    "mae_lado.svg",
+   "mae_costas.svg",
    "mae_expr_neutra.svg",
    "mae_expr_surpreso.svg",
    "mae_expr_rindo.svg"
@@ -36,6 +38,7 @@
   "files": [
    "padeira_frente.svg",
    "padeira_lado.svg",
+   "padeira_costas.svg",
    "padeira_expr_neutra.svg",
    "padeira_expr_surpreso.svg",
    "padeira_expr_rindo.svg"
@@ -52,6 +55,7 @@
   "files": [
    "padeira_aposentada_frente.svg",
    "padeira_aposentada_lado.svg",
+   "padeira_aposentada_costas.svg",
    "padeira_aposentada_expr_neutra.svg",
    "padeira_aposentada_expr_surpreso.svg",
    "padeira_aposentada_expr_rindo.svg"
@@ -68,6 +72,7 @@
   "files": [
    "padeiro_novo_frente.svg",
    "padeiro_novo_lado.svg",
+   "padeiro_novo_costas.svg",
    "padeiro_novo_expr_neutra.svg",
    "padeiro_novo_expr_surpreso.svg",
    "padeiro_novo_expr_rindo.svg"
@@ -84,6 +89,7 @@
   "files": [
    "motorista_frente.svg",
    "motorista_lado.svg",
+   "motorista_costas.svg",
    "motorista_expr_neutra.svg",
    "motorista_expr_surpreso.svg",
    "motorista_expr_rindo.svg"
@@ -100,6 +106,7 @@
   "files": [
    "barnabe_frente.svg",
    "barnabe_lado.svg",
+   "barnabe_costas.svg",
    "barnabe_expr_neutra.svg",
    "barnabe_expr_surpreso.svg",
    "barnabe_expr_rindo.svg"
@@ -116,6 +123,7 @@
   "files": [
    "menino_frente.svg",
    "menino_lado.svg",
+   "menino_costas.svg",
    "menino_expr_neutra.svg",
    "menino_expr_surpreso.svg",
    "menino_expr_rindo.svg"
@@ -132,6 +140,7 @@
   "files": [
    "mulher_oculos_frente.svg",
    "mulher_oculos_lado.svg",
+   "mulher_oculos_costas.svg",
    "mulher_oculos_expr_neutra.svg",
    "mulher_oculos_expr_surpreso.svg",
    "mulher_oculos_expr_rindo.svg"
@@ -148,6 +157,7 @@
   "files": [
    "moca_frente.svg",
    "moca_lado.svg",
+   "moca_costas.svg",
    "moca_expr_neutra.svg",
    "moca_expr_surpreso.svg",
    "moca_expr_rindo.svg"
@@ -164,6 +174,7 @@
   "files": [
    "vizinho1_frente.svg",
    "vizinho1_lado.svg",
+   "vizinho1_costas.svg",
    "vizinho1_expr_neutra.svg",
    "vizinho1_expr_surpreso.svg",
    "vizinho1_expr_rindo.svg"
@@ -180,6 +191,7 @@
   "files": [
    "vizinho2_frente.svg",
    "vizinho2_lado.svg",
+   "vizinho2_costas.svg",
    "vizinho2_expr_neutra.svg",
    "vizinho2_expr_surpreso.svg",
    "vizinho2_expr_rindo.svg"
@@ -196,6 +208,7 @@
   "files": [
    "vizinha3_frente.svg",
    "vizinha3_lado.svg",
+   "vizinha3_costas.svg",
    "vizinha3_expr_neutra.svg",
    "vizinha3_expr_surpreso.svg",
    "vizinha3_expr_rindo.svg"
@@ -212,6 +225,7 @@
   "files": [
    "homem_terno_frente.svg",
    "homem_terno_lado.svg",
+   "homem_terno_costas.svg",
    "homem_terno_expr_neutra.svg",
    "homem_terno_expr_surpreso.svg",
    "homem_terno_expr_rindo.svg"
@@ -228,6 +242,7 @@
   "files": [
    "senhora_frente.svg",
    "senhora_lado.svg",
+   "senhora_costas.svg",
    "senhora_expr_neutra.svg",
    "senhora_expr_surpreso.svg",
    "senhora_expr_rindo.svg"
@@ -244,6 +259,7 @@
   "files": [
    "vulto_frente.svg",
    "vulto_lado.svg",
+   "vulto_costas.svg",
    "vulto_expr_neutra.svg",
    "vulto_expr_surpreso.svg",
    "vulto_expr_rindo.svg"

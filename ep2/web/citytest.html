@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8"><style>@font-face{font-family:'Fredoka';font-weight:700;src:url(fonts/fredoka-latin-700-normal.woff2)}body{margin:0;display:flex}svg{flex:none}</style></head><body>
+<script src="lib.js"></script><script src="words.js"></script><script src="characters_v1.js"></script><script src="characters.js"></script><script src="characters2.js"></script><script src="environments.js"></script><script src="city.js"></script><script src="scenes.js"></script><script src="shots.js"></script><script src="main.js"></script>
+<script>
+const panels = [
+  { cam: frameG(600, 900, 1.2, 1450), layers: [...backDawn(1), Lr(0.6, cityBack(1, {})), Lr(1, cityRow(1, { signs: ['PADARIA','MERCADO','BARBEARIA','CORREIO'], bunting: true }) + person('polo',{x:640,y:930,s:0.62,t:1,hat:'fedora',expr:'happy'}))] },
+  { cam: frameG(600, 900, 1.2, 1450), layers: [...backNight(1), Lr(0.6, cityBack(1, { night: 1 })), Lr(1, cityRow(1, { night: 1 }) + person('terno',{x:700,y:930,s:0.62,t:1,expr:'smug'}))], tint: ['#3a4a8a', 0.25] },
+  { cam: focus(960, 720, 1.0), layers: [...backNight(1), Lr(1, perspStreet(1, { night: 1 }) + onStreet('terno', 120, 2600, 0.9, { t: 1, expr: 'smug' }) + onStreet('polo', -150, 300, 0.9, { t: 1, back: true, hat: 'fedora' }))], tint: ['#3a4a8a', 0.2] },
+  { cam: focus(960, 700, 1.0), layers: [Lr(1, cityAerial(1, { night: 1 }))], tint: ['#3a4a8a', 0.15] },
+];
+let html = '';
+for (const r of panels) { let b = ''; for (const L of r.layers) b += `<g transform="${layerT(r.cam, L.d)}">${L.svg}</g>`; if (r.tint) b += `<rect width="1080" height="1920" fill="${r.tint[0]}" opacity="${r.tint[1]}" style="mix-blend-mode:multiply"/>`; html += `<svg xmlns="http://www.w3.org/2000/svg" width="540" height="960" viewBox="0 0 1080 1920">${DEFS}${b}<rect width="1080" height="1920" fill="url(#gVig)"/></svg>`; }
+document.body.innerHTML = html;
+</script></body></html>
