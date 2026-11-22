@@ -11,11 +11,11 @@ const backDusk = (t) => [Lr(0.04, sky('#4a3060', '#f2a46a', { sun: 640, sunX: 16
 const fog = (t, y = 820, op = 0.5) => `<g opacity="${op}">${Array.from({ length: 8 }, (_, i) => `<ellipse cx="${f2(((i * 520 + t * 30) % 4200) - 900)}" cy="${y + (i % 3) * 30}" rx="420" ry="60" fill="#c8cce8" opacity="0.35"/>`).join('')}</g>`;
 const GLOWN = (T) => 0.6 + 0.4 * Math.sin(T * 5);
 // side-view sets
-const nightSet = (T, t, extra, o = {}) => [...backNight(t), Lr(0.6, cityBack(t, { night: 1, seed: 41 })), Lr(1, cityRow(T, Object.assign({ night: 1, seed: 5, shops: 0.5 }, o)) + extra), Lr(1.2, fog(T))];
-const duskSet = (T, t, extra) => [...backDusk(t), Lr(0.6, cityBack(t, { night: 0.35, seed: 43 })), Lr(1, cityRow(T, { closed: 1, seed: 7, noTrees: false }) + extra)];
+const nightSet = (T, t, extra, o = {}) => [...backNight(t), ...sideStreet(T, t, Object.assign({ seed: 5, night: 1, npcs: false, fg: false, extra }, o)), Lr(1.2, fog(T))];
+const duskSet = (T, t, extra) => [...backDusk(t), ...sideStreet(T, t, { seed: 7, closed: 1, npcs: false, cars: false, fg: false, night: 0.3, extra })];
 const bakerySetV2 = (T, o = {}) => cityRow(T, { seed: 12, x0: 430, x1: 3000, signs: ['MERCADO', 'BARBEARIA', 'CORREIO', 'FLORES'], bunting: true, shops: 0.8 }) + cityRow(T, { seed: 13, x0: -1500, x1: -230, shops: 0.4 }) + bakeryFacade(-200, 900, Object.assign({ t: T, sign: false }, o));
-const morningSet = (T, t, extra, o) => [...backDawn(t), Lr(0.6, cityBack(t, { seed: 44 })), Lr(1, bakerySetV2(T, o) + extra)];
-const plazaSetV2 = (T, t, cx, extra, k = 0.6) => [...plazaBack(T, t), Lr(0.6, cityBack(t, { seed: 45, towerX: -2000 })), Lr(0.75, cityRow(T, { base: 760, seed: 21, signs: ['LIVRARIA', 'BAZAR', 'RELÓGIOS', 'SAPATARIA'], shops: 0.7, noTrees: true })), Lr(0.9, plazaGround(880) + towerEp2(T, cx, k)), Lr(1, extra)];
+const morningSet = (T, t, extra, o, so = {}) => [...backDawn(t), ...sideStreet(T, t, Object.assign({ seed: 12, main: (T2) => bakerySetV2(T2, o), extra, fg: false, avoidX: 450 }, so))];
+const plazaSetV2 = (T, t, cx, extra, k = 0.6) => [...plazaBack(T, t).slice(0, 2), Lr(0.12, hillsSkyline(t, 0) + haze('#f8e6c4', 380, 760, 0.55)), Lr(0.3, rooftops(t, 0, -3000) + haze('#f8e6c4', 300, 800, 0.4)), Lr(0.75, cityRow(T, { base: 760, seed: 21, signs: ['LIVRARIA', 'BAZAR', 'RELÓGIOS', 'SAPATARIA'], shops: 0.7, noTrees: true }) + walkers(T, 800, 0.46, 61, 7, 4200)), Lr(0.9, plazaGround(880) + towerEp2(T, cx, k) + walkers(T, 905, 0.5, 63, 4, 4200, cx)), Lr(1, extra)];
 const towerEp2 = (T, cx, k, o = {}) => {
   const run = Math.max(0, T - 56.58);
   const min = 120 + run * 90, hour = 210 + run * 7.5;
@@ -30,7 +30,7 @@ function road(t) {
 }
 // hook = the town from above at night, with the glowing note floating in front (also the loop-back ending)
 const hookNote = (t, T) => ({ cam: { ...focus(960, 700, 1.0 + 0.03 * Math.sin(T)), r: 0 }, layers: [
-  Lr(1, cityAerial(1, { night: 1 })),
+  ...backNight(1), Lr(1, street3D(1, { cam: cam3(3200, 260, 500, 0), seed: 7, night: 1, crowd: 0, traffic: false })),
   Lr(1.05, `<rect x="-800" y="-800" width="3600" height="3200" fill="#0e1230" opacity="0.35"/><g transform="translate(960 640)">${noteNamed('?', GLOWN(T), { s: 3.3, rot: Math.sin(T * 1.3) * 6, fs: 22 })}</g>` + dust(T, 500, 300, 900, 600, 30, 5, '#ffe7a0'))], tint: ['#3a4a8a', 0.12] });
 // POV close-ups with Polo's gloves
 const povBg = (c) => Lr(0.3, `<rect x="-800" y="-800" width="3600" height="3200" fill="${c}"/><circle cx="960" cy="560" r="460" fill="#ffd27a" opacity="0.1"/>`);
@@ -86,7 +86,9 @@ SHOTS.push(
   // 8 — perspective: the man walks slowly away down the dark street; Polo watches from the foreground
   { t0: 11.7, draw(t, T) {
     const D = lerp(500, 3200, E.inOut(clamp(t / 2.9)));
-    return { cam: focus(960, 720, 1.0), layers: [...backNight(t), Lr(1, perspStreet(T, { night: 1 }) + onStreet('terno', 60, D, 0.9, { t: T, back: true, walk: T * 5, hat: null }) + onStreet('polo', -260, 60, 0.95, { t: T, back: true, armR: 40, bendR: 40, holdR: fedoraProp(0), armL: 30, bendL: 50, holdL: wallet({ s: 0.3 }) })), Lr(1.1, fog(T, 760, 0.55))], tint: NIGHT };
+    const cam = cam3(640, 560, 500, 0), pp = P3(cam, -200, 0, 20);
+    const people = [{ id: 'terno', X: 60, D, s: 0.48, o: { t: T, back: true, walk: T * 5, hat: null } }, { id: 'polo', X: -200, D: 20, s: 0.44, o: { t: T, back: true, armR: 40, bendR: 40, holdR: fedoraProp(0), armL: 30, bendL: 50, holdL: wallet({ s: 0.3 }) } }];
+    return { cam: focus(pp.x + 150, pp.y - 200, 1.5, 1300), layers: [...backNight(t), Lr(1, street3D(T, { cam, seed: 7, night: 1, people, crowd: 0, traffic: false, clearNear: { g: -1, D: 900 } })), Lr(1.1, fog(T, 760, 0.55))], tint: NIGHT };
   } },
   // 9 — Polo puts the hat on
   { t0: 14.6, draw(t, T) {
@@ -108,7 +110,7 @@ SHOTS.push(
   // 12 — POV: the first note says "PADEIRO"
   { t0: 21.4, draw(t, T) { return { cam: push(focus(960, 600, 1.0), t, 2.2, 0.08), layers: [povBg('#262646'), pov(T, noteNamed('PADEIRO', GLOWN(T), { s: 1.6, rot: -4, fs: 17 }), { k: 2.0, spread: 260 }), Lr(1.05, dust(T, 500, 300, 900, 600, 22, 9, '#ffe7a0'))] }; } },
   // 13 — morning: the town from above
-  { t0: 23.6, xf: 0.35, draw(t, T) { return { cam: push(focus(960, 700, 1.0), t, 1.2, 0.05), layers: [Lr(0.04, sky('#f2b07a', '#fbe4c0', { sun: 300, sunX: 600, id: 'am' })), Lr(1, cityAerial(1, {}))] }; } },
+  { t0: 23.6, xf: 0.35, draw(t, T) { const q = E.inOut(clamp(t / 1.0)); return { cam: focus(960, 720, 1.0), layers: [...backDawn(t), Lr(1, street3D(T, { cam: cam3(lerp(3000, 1300, q), lerp(200, 420, q), 500, 0), seed: 12, crowd: 24, skyC: '#fbe4c0' }))] }; } },
   // 14 — Polo knocks at the bakery on the busy shopping street
   { t0: 24.6, draw(t, T) {
     const knock = (T > 24.8 && T < 25.5) ? Math.abs(Math.sin((T - 24.8) * 18)) : 0;
@@ -226,12 +228,15 @@ SHOTS.push(
   } },
   // 32 — perspective: Polo runs toward camera down the empty night street
   { t0: 70.8, xf: 0.25, draw(t, T) {
-    const D = lerp(2600, 250, E.inOut(clamp(t / 2.6)));
-    return { cam: focus(960, 720, 1.0), layers: [...backNight(t), Lr(1, perspStreet(T, { night: 1 }) + onStreet('polo', 40, D, 0.95, { t: T, walk: T * 16, hat: 'fedora', expr: 'worried', armL: 40 + Math.sin(T * 16) * 30, armR: 40 - Math.sin(T * 16) * 30 })), Lr(1.1, fog(T, 760, 0.5))], tint: NIGHT };
+    const D = lerp(2600, 120, E.inOut(clamp(t / 2.6)));
+    const people = [{ id: 'polo', X: 40, D, s: 0.44, o: { t: T, walk: T * 16, hat: 'fedora', expr: 'worried', armL: 40 + Math.sin(T * 16) * 30, armR: 40 - Math.sin(T * 16) * 30 } }];
+    return { cam: focus(960, 760, 1.2), layers: [...backNight(t), Lr(1, street3D(T, { cam: cam3(640, 560, 500, 0), seed: 7, night: 1, people, crowd: 0, traffic: false })), Lr(1.1, fog(T, 760, 0.5))], tint: NIGHT };
   } },
   // 33 — perspective: the man waits, standing on the corner, under the lamp (camera pushes in)
   { t0: 73.4, draw(t, T) {
-    return { cam: lerpCam(focus(960, 720, 1.0), focus(1025, 660, 2.8), E.inOut(clamp(t / 2.6))), layers: [...backNight(t), Lr(1, perspStreet(T, { night: 1 }) + onStreet('terno', 300, 1800, 0.95, { t: T, face: -0.3, expr: 'smug', hat: null })), Lr(1.1, fog(T, 760, 0.6))], tint: NIGHT };
+    const cam = cam3(640, 560, 500, 0), pm = P3(cam, 520, 0, 1800);
+    const people = [{ id: 'terno', X: 520, D: 1800, s: 0.48, o: { t: T, face: -0.3, expr: 'smug', hat: null } }];
+    return { cam: lerpCam(focus(960, 760, 1.2), focus(pm.x, pm.y - 60, 4.2, 1000), E.inOut(clamp(t / 2.6))), layers: [...backNight(t), Lr(1, street3D(T, { cam, seed: 7, night: 1, people, crowd: 0, traffic: false })), Lr(1.1, fog(T, 760, 0.6))], tint: NIGHT };
   } },
   // 34 — over Polo's shoulder: he holds out the last note
   { t0: 76.0, draw(t, T) {
@@ -255,8 +260,9 @@ SHOTS.push(
   } },
   // 37 — high angle: Polo alone, wearing the hat, in an empty town
   { t0: 85.1, xf: 0.4, draw(t, T) {
-    const c = lerpCam(focus(960, 900, 1.6), focus(960, 760, 1.0), E.inOut(clamp(t / 3.9)));
-    return { cam: c, layers: [...backDusk(t), Lr(1, perspStreet(T, { closed: 1, night: 0.3, camH: 1100, vpY: 420, tower: true }) + onStreet('polo', 0, 600, 0.95, { t: T, hat: 'fedora', expr: 'sad' }))], tint: DUSK };
+    const cam = cam3(1300, 420, 500, 0), pp = P3(cam, 0, 0, 500);
+    const c2 = lerpCam(focus(pp.x, pp.y - 70, 3.4, 1050), focus(960, 760, 1.25), E.inOut(clamp(t / 3.9)));
+    return { cam: c2, layers: [...backDusk(t), Lr(1, street3D(T, { cam, seed: 7, closed: 1, night: 0.3, people: [{ id: 'polo', X: 0, D: 500, s: 0.44, o: { t: T, hat: 'fedora', expr: 'sad' } }], crowd: 0, traffic: false, parked: false, skyC: '#f2a46a' }))], tint: DUSK };
   } },
   // 38 — then he hears footsteps on the road
   { t0: 89.0, draw(t, T) {

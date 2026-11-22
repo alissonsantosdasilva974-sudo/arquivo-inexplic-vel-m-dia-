@@ -25,6 +25,7 @@ function _pat() {
  <radialGradient id="gPool"><stop offset="0" stop-color="#ffd890" stop-opacity="0.75"/><stop offset="1" stop-color="#ffd890" stop-opacity="0"/></radialGradient>
  <linearGradient id="gCone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe0a0" stop-opacity="0.8"/><stop offset="1" stop-color="#ffe0a0" stop-opacity="0.05"/></linearGradient>
  <radialGradient id="gWin"><stop offset="0" stop-color="#ffe2a0" stop-opacity="0.6"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient>
+ <filter id="fgBlur" x="-0.2" y="-0.2" width="1.4" height="1.4"><feGaussianBlur stdDeviation="9"/></filter>
  <linearGradient id="gAO" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1424" stop-opacity="0"/><stop offset="1" stop-color="#1b1424" stop-opacity="0.22"/></linearGradient>
  <clipPath id="clipHead"><circle cx="0" cy="-322" r="78"/></clipPath>`;
 }

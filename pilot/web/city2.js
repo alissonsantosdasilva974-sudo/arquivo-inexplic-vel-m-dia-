@@ -104,8 +104,8 @@ function street3D(t, o = {}) {
   const pole = [];
   for (const g of [-1, 1]) for (let D = -200; D < Dmax; D += 720) pole.push({ g, D });
   for (const p of pole) items.push({ D: p.D, draw: () => { const b = P3(c, p.g * (R + 30), 0, p.D), tp = P3(c, p.g * (R + 30), 620, p.D); return poleP(b.x, b.y, tp.y, b.k, night); } });
-  for (const g of [-1, 1]) for (let D = 200 + (g > 0 ? 360 : 0); D < Dmax; D += 720) items.push({ D, draw: () => { const b = P3(c, g * (R + 120), 0, D); return treeP(b.x, b.y, b.k * 0.62, t, night, Math.floor(D) + g); } });
-  { const rc = rng((o.seed || 7) + 5); for (const g of [-1, 1]) for (let D = 100; D < Dmax; D += 420 + rc() * 600) if (rc() < 0.75) { const col = CARC[Math.floor(rc() * CARC.length)], type = CAR_TYPES[Math.floor(rc() * CAR_TYPES.length)], fr = rc() < 0.5; items.push({ D, draw: () => { const b = P3(c, g * (R - 110), 0, D); return carView(b.x, b.y, b.k * 0.62, col, night, { type, front: fr }); } }); } }
+  for (const g of [-1, 1]) for (let D = 200 + (g > 0 ? 360 : 0); D < Dmax; D += 720) if (!(o.clearNear && g === o.clearNear.g && D < o.clearNear.D)) items.push({ D, draw: () => { const b = P3(c, g * (R + 120), 0, D); return treeP(b.x, b.y, b.k * 0.62, t, night, Math.floor(D) + g); } });
+  if (o.parked !== false) { const rc = rng((o.seed || 7) + 5); for (const g of [-1, 1]) for (let D = 100; D < Dmax; D += 420 + rc() * 600) if (rc() < 0.75) { const col = CARC[Math.floor(rc() * CARC.length)], type = CAR_TYPES[Math.floor(rc() * CAR_TYPES.length)], fr = rc() < 0.5; items.push({ D, draw: () => { const b = P3(c, g * (R - 110), 0, D); return carView(b.x, b.y, b.k * 0.62, col, night, { type, front: fr }); } }); } }
   if (o.traffic !== false && !closed) { const rt = rng((o.seed || 7) + 31); for (let i = 0; i < (o.traffic || 7); i++) { const away = i % 2 === 0, col = CARC[Math.floor(rt() * CARC.length)], type = CAR_TYPES[Math.floor(rt() * CAR_TYPES.length)], sp = 380 + rt() * 260, D0 = rt() * 7000; const D = away ? ((D0 + t * sp) % 7200) + 150 : 7350 - ((D0 + t * sp) % 7200); items.push({ D, draw: () => { const b = P3(c, away ? 175 : -175, 0, D); return carView(b.x, b.y, b.k * 0.62, col, night, { type, front: !away }); } }); } }
   for (const mc of (o.movingCars || [])) items.push({ D: mc.D, draw: () => { const b = P3(c, mc.X, 0, mc.D); return carView(b.x, b.y, b.k * 0.62, mc.col, night, { brake: mc.brake, type: mc.type || 'sedan', front: !!mc.front }); } });
   for (const pp of (o.people || [])) items.push({ D: pp.D, draw: () => { const b = P3(c, pp.X, 0, pp.D); return person(pp.id, Object.assign({ x: b.x, y: b.y, s: (pp.s || 0.44) * b.k }, pp.o)); } });
@@ -265,16 +265,16 @@ function sideStreet(T, t, o = {}) {
   L.push(Lr(0.6, cityRow(T, { base: 820, seed: (o.seed || 5) + 40, shops: 0.2, night, closed, noTrees: true }) + haze(night ? '#2e3264' : '#e8eef0', 200, 900, 0.32)));
   let main = (o.main ? o.main(T) : cityRow(T, { seed: o.seed || 5, night, closed, signs: o.signs, bunting: !night && !closed, shops: 0.75 }));
   main += wiresSide(-1400 + 260, 3400, base + 40, 560, t);
-  if (!closed) main += carSide(-200, base + 130, '#3c6aa8', { s: 0.75, night }) + carSide(1500, base + 130, '#e8e4dc', { s: 0.75, night }) + carSide(2650, base + 130, '#c8443c', { s: 0.75, night });
+  if (!closed && o.cars !== false) main += carSide(-200, base + 130, '#3c6aa8', { s: 0.75, night }) + carSide(1500, base + 130, '#e8e4dc', { s: 0.75, night }) + carSide(2650, base + 130, '#c8443c', { s: 0.75, night });
   main += bancaSide(2000, base + 40) + orelhao(1180, base + 40) + lixeira(1420, base + 40) + streetSign(-560, base + 40, o.streetName || 'R. DO RELÓGIO');
   if (o.movingCar != null) main += carSide(o.movingCar, base + 260, '#f2c230', { s: 0.8, dir: 1, wheel: T * 600, night });
-  if (!closed) { const rn = rng((o.seed || 5) + 77); for (let i = 0; i < 9; i++) { const x = -1200 + i * 520 + rn() * 200; if (o.avoidX != null && Math.abs(x - o.avoidX) < 480) continue; main += person(NPC_IDS[(i * 7 + 3) % 24], { x, y: base + 34, s: 0.62, t, face: rn() < 0.5 ? -0.7 : 0.7, expr: 'happy', mouth: Math.max(0, Math.sin(t * 8 + i)) * 0.4, armR: 20 + Math.sin(t * 2 + i) * 15, bendR: 40 }); } main += walkers(T, base + 44, 0.62, (o.seed || 5) + 3, 5, 4200); }
+  if (!closed && o.npcs !== false) { const rn = rng((o.seed || 5) + 77); for (let i = 0; i < 9; i++) { const x = -1200 + i * 520 + rn() * 200; if (o.avoidX != null && Math.abs(x - o.avoidX) < 480) continue; main += person(NPC_IDS[(i * 7 + 3) % 24], { x, y: base + 34, s: 0.62, t, face: rn() < 0.5 ? -0.7 : 0.7, expr: 'happy', mouth: Math.max(0, Math.sin(t * 8 + i)) * 0.4, armR: 20 + Math.sin(t * 2 + i) * 15, bendR: 40 }); } main += walkers(T, base + 44, 0.62, (o.seed || 5) + 3, 5, 4200, o.avoidX); }
   main += (o.extra || '');
   L.push(Lr(1, main));
   // foreground: blurred pole, car roof, plant
   const fg = `<g filter="url(#fgBlur)"><path d="M ${o.fgX || 120} 1600 V -400" stroke="#2a2630" stroke-width="70"/><rect x="${(o.fgX || 120) - 60}" y="460" width="120" height="70" rx="12" fill="#3a3440"/>` +
     carSide(1500, 1520, '#5a8ac8', { s: 1.9, night }) + `<g transform="translate(2300 1420) scale(2.2)">${pot(0, 0, 1, t)}</g></g>`;
-  L.push(Lr(1.45, fg));
+  if (o.fg !== false) L.push(Lr(1.45, fg));
   return L;
 }
 

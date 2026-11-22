@@ -350,13 +350,15 @@ function pigeon(x, y, t, seed = 1, k = 1, fly = null) {
    <g transform="rotate(${f2(peck * 3)} 14 -24)"><circle cx="18" cy="-30" r="9" fill="#7a8090" stroke="${INK}" stroke-width="3"/><circle cx="21" cy="-32" r="2" fill="${INK}"/><path d="M 26 -30 l 7 2 l -7 2 Z" fill="#e0a83a"/></g>
    ${fly != null && t > fly ? '' : `<path d="M -2 -6 v 6 M 6 -6 v 6" stroke="#e07a5a" stroke-width="3"/>`}</g>`;
 }
-function walkers(t, y, k, seed, n = 4, span = 3000) {
+function walkers(t, y, k, seed, n = 4, span = 3000, avoid = null) {
   const r = rng(seed); let s = '';
   const ids = typeof NPC_IDS !== 'undefined' ? NPC_IDS.filter((_, i) => (i + seed) % 3 === 0) : ['viz1', 'viz2', 'viz3', 'moca', 'motorista', 'mulher'];
   for (let i = 0; i < n; i++) {
     const sp = (40 + r() * 50) * (r() < 0.5 ? 1 : -1), x0 = r() * span - 600;
     const x = ((x0 + t * sp) % span + span) % span - 600;
-    s += person(ids[i % ids.length], { x, y, s: k, t, face: sp > 0 ? 0.8 : -0.8, side: true, walk: t * 9 + i, shadow: true });
+    const fade = avoid == null ? 1 : clamp((Math.abs(x - avoid) - 200) / 140);
+    if (fade <= 0.01) continue;
+    s += person(ids[i % ids.length], { x, y, s: k, t, face: sp > 0 ? 0.8 : -0.8, side: true, walk: t * 9 + i, shadow: true, fade: fade < 1 ? fade : undefined });
   }
   return s;
 }
