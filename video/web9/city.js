@@ -9,7 +9,7 @@ const ROOFS = ['#d0704a', '#a85a3a', '#8a5a3a', '#5a6a8a', '#7a4a5a'];
 function lampLight(x, groundY, k = 1, op = 1) {
   // warm cone from the lantern + pool on the ground (screen blend so it brightens the night)
   const top = groundY - 440 * k;
-  return `<g style="mix-blend-mode:screen" opacity="${f2(op)}">` +
+  return `<g opacity="${f2(op)}">` +
     `<path d="M ${f2(x - 26 * k)} ${f2(top + 20 * k)} L ${f2(x + 26 * k)} ${f2(top + 20 * k)} L ${f2(x + 170 * k)} ${f2(groundY)} L ${f2(x - 170 * k)} ${f2(groundY)} Z" fill="url(#gCone)" opacity="0.55"/>` +
     `<ellipse cx="${f2(x)}" cy="${f2(groundY + 6)}" rx="${f2(200 * k)}" ry="${f2(42 * k)}" fill="url(#gPool)"/>` +
     `<circle cx="${f2(x)}" cy="${f2(top)}" r="${f2(70 * k)}" fill="url(#gPool)"/></g>`;
@@ -41,7 +41,7 @@ function bldg(x, base, w, floors, o = {}) {
       const wx = x + (w / nw) * (i + 0.5) - 34, lit = night > 0 && r() < 0.55 && !closed;
       s += `<rect x="${f2(wx - 6)}" y="${wy - 6}" width="80" height="102" rx="4" fill="#f4ead4" stroke="${INK}" stroke-width="3"/>`;
       s += `<rect x="${f2(wx)}" y="${wy}" width="68" height="90" fill="${lit ? '#ffd27a' : mix('#7a9ab0', '#2a3050', night)}" stroke="${INK}" stroke-width="3"/>`;
-      if (lit) s += `<circle cx="${f2(wx + 34)}" cy="${wy + 45}" r="90" fill="url(#gWin)" style="mix-blend-mode:screen"/>`;
+      if (lit) s += `<circle cx="${f2(wx + 34)}" cy="${wy + 45}" r="90" fill="url(#gWin)"/>`;
       s += `<path d="M ${f2(wx + 34)} ${wy} V ${wy + 90} M ${f2(wx)} ${wy + 45} H ${f2(wx + 68)}" stroke="${INK}" stroke-width="2.5"/>`;
       if (closed > 0.5 || (r() < 0.3 && !lit)) { s += `<rect x="${f2(wx - 4)}" y="${wy - 4}" width="76" height="98" fill="${shade(roof, 0.1)}" stroke="${INK}" stroke-width="3"/>`; for (let k = 1; k < 7; k++) s += `<path d="M ${f2(wx)} ${wy - 4 + k * 14} h 68" stroke="${INK}" stroke-width="1.8" opacity="0.5"/>`; }
       if (o.balcony && f === 1) s += `<rect x="${f2(wx - 14)}" y="${wy + 86}" width="96" height="10" fill="#4a4a5a" stroke="${INK}" stroke-width="2.5"/>` + Array.from({ length: 6 }, (_, k) => `<path d="M ${f2(wx - 10 + k * 18)} ${wy + 86} v -30" stroke="#4a4a5a" stroke-width="3"/>`).join('') + `<path d="M ${f2(wx - 14)} ${wy + 56} h 96" stroke="#4a4a5a" stroke-width="4"/>`;
@@ -146,7 +146,7 @@ function perspStreet(t, o = {}) {
   // lamps along both sidewalks (far to near), with light pools at night
   for (let D = Dmax - 300; D >= 200; D -= 700) for (const sgn of [-1, 1]) {
     const base = proj(sgn * 470, 0, D), top = proj(sgn * 470, 420, D), k = base.k;
-    if (night) s += `<g style="mix-blend-mode:screen"><ellipse cx="${f2(base.x)}" cy="${f2(base.y)}" rx="${f2(260 * k)}" ry="${f2(60 * k)}" fill="url(#gPool)"/><circle cx="${f2(top.x)}" cy="${f2(top.y)}" r="${f2(90 * k)}" fill="url(#gPool)"/></g>`;
+    if (night) s += `<g><ellipse cx="${f2(base.x)}" cy="${f2(base.y)}" rx="${f2(260 * k)}" ry="${f2(60 * k)}" fill="url(#gPool)"/><circle cx="${f2(top.x)}" cy="${f2(top.y)}" r="${f2(90 * k)}" fill="url(#gPool)"/></g>`;
     s += `<path d="M ${f2(base.x)} ${f2(base.y)} L ${f2(top.x)} ${f2(top.y)}" stroke="#2f2a3a" stroke-width="${f2(16 * k + 1)}"/><rect x="${f2(top.x - 22 * k)}" y="${f2(top.y - 50 * k)}" width="${f2(44 * k)}" height="${f2(50 * k)}" fill="${night ? '#ffe0a0' : '#e9d8a8'}" stroke="${INK}" stroke-width="${f2(3 * k + 0.5)}"/>`;
   }
   if (closed) for (let i = 0; i < 40; i++) { const D = r() * 4000, X = (r() - 0.5) * 800, p = proj(X, 0, D); s += `<path transform="translate(${f2(p.x)} ${f2(p.y)}) rotate(${f2(r() * 360)}) scale(${f2(p.k * 2)})" d="M -10 0 Q 0 -8 10 0 Q 0 8 -10 0 Z" fill="${['#d0704a', '#e0a83a', '#a85a3a'][i % 3]}" stroke="${INK}" stroke-width="2"/>`; }
@@ -187,6 +187,6 @@ function cityAerial(t, o = {}) {
     for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) { const lit = night && !closed && r() < 0.5; const a = P2(b.X + 15 + j * (b.w - 20) / cols, 25 + i * 90, b.D), c = P2(b.X + 15 + j * (b.w - 20) / cols + 22, 25 + i * 90 + 34, b.D); s += `<rect x="${f2(a.x)}" y="${f2(c.y)}" width="${f2(c.x - a.x)}" height="${f2(a.y - c.y)}" fill="${lit ? '#ffd27a' : mix('#7a9ab0', '#2a3050', night)}"/>`; }
   }
   if (!towerDrawn) s += tower();
-  if (night && !closed) for (let i = 0; i < 70; i++) { const p = P2((r() - 0.5) * 7000, 0, r() * 5600); s += `<circle cx="${f2(p.x)}" cy="${f2(p.y)}" r="${f2(30 * p.k + 6)}" fill="url(#gPool)" style="mix-blend-mode:screen"/>`; }
+  if (night && !closed) for (let i = 0; i < 70; i++) { const p = P2((r() - 0.5) * 7000, 0, r() * 5600); s += `<circle cx="${f2(p.x)}" cy="${f2(p.y)}" r="${f2(30 * p.k + 6)}" fill="url(#gPool)"/>`; }
   return s;
 }

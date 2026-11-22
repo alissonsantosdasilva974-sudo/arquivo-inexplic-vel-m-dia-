@@ -9,6 +9,8 @@ const path = require('path'), fs = require('fs');
   const errs = []; page.on('pageerror', e => errs.push(e.message)); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
   const url = 'file://' + path.resolve(__dirname, process.env.WEBDIR ? '../'+process.env.WEBDIR+'/index.html' : '../web/index.html') + (spec === 'sheet' ? '?sheet=1' : '');
   await page.goto(url); await page.evaluate(() => document.fonts.ready);
+  if (process.env.NOBLUR) await page.evaluate(() => { window.NOBLUR = true; });
+  if (process.env.LAYER) await page.evaluate(l => { window.LAYER = l; document.documentElement.style.background = 'transparent'; document.body.style.background = 'transparent'; }, process.env.LAYER);
   if (spec === 'sheet') { await page.screenshot({ path: path.join(out, 'sheet.png') }); }
   else {
     let frames = [];
@@ -16,11 +18,11 @@ const path = require('path'), fs = require('fs');
     else frames = spec.split(',').map(Number);
     frames = frames.filter((f, i) => i % +wc === +wi);
     for (const f of frames) {
-      const EXT = process.env.JPG ? 'jpg' : 'png';
+      const EXT = process.env.LAYER === 'overlay' ? 'png' : (process.env.JPG ? 'jpg' : 'png');
       const file = path.join(out, `f${String(f).padStart(5, '0')}.${EXT}`);
       if (fs.existsSync(file) && fs.statSync(file).size > 10000) continue; // resume
       await page.evaluate(n => window.renderFrame(n), f);
-      await page.screenshot(EXT === 'jpg' ? { path: file + '.tmp.jpg', type: 'jpeg', quality: 96 } : { path: file + '.tmp.png' });
+      await page.screenshot(EXT === 'jpg' ? { path: file + '.tmp.jpg', type: 'jpeg', quality: 96 } : { path: file + '.tmp.png', omitBackground: process.env.LAYER === 'overlay' });
       fs.renameSync(file + '.tmp.' + EXT, file);
     }
   }

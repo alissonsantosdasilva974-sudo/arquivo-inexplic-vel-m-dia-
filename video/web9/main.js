@@ -74,6 +74,7 @@ function renderFrame(f) {
   if (!sh.xf && i > 0 && t < 4 / FPS) { const k = 1 - t / (4 / FPS); blur = 28 * k; dx = -60 * k; }
   const nx = SHOTS[i + 1];
   if (nx && !nx.xf && nx.t0 - T <= 2 / FPS && nx.t0 - T > 0) { const k = 1 - (nx.t0 - T) / (3 / FPS); blur = 22 * k; dx = 50 * k; }
+  if (window.NOBLUR) blur = 0;
   if (blur > 0.5) body = `<filter id="wb" x="-0.1" y="-0.05" width="1.2" height="1.1"><feGaussianBlur stdDeviation="${blur.toFixed(1)} ${(blur * 0.08).toFixed(1)}"/></filter><g filter="url(#wb)" transform="translate(${dx.toFixed(1)} 0)">${body}</g>`;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${body}
    <rect width="1080" height="1920" fill="url(#gGlow)"/>
@@ -81,6 +82,7 @@ function renderFrame(f) {
    <image href="paper.png" x="0" y="0" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>
    <image href="noise.png" x="${(f * 37) % 7 - 7}" y="${(f * 53) % 9 - 9}" width="1096" height="1936" opacity="0.07" style="mix-blend-mode:overlay"/>
    ${over}${captionSVG(T)}${badge()}</svg>`;
+  if (window.LAYER === 'overlay') { document.body.style.background = 'transparent'; document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${over}${captionSVG(T)}${badge()}${typeof HUD === 'function' ? HUD(T) : ''}</svg>`; return i; }
   document.getElementById('stage').innerHTML = svg;
   return i;
 }

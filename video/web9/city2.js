@@ -43,7 +43,7 @@ function carView(x, y, k, col, night = 0, o = {}) {
   }
   if (front) {
     g += `<rect x="${-W2 + 12}" y="${-bodyH * 0.55}" width="54" height="30" rx="10" fill="${night ? '#fff6d0' : '#f4efe0'}" stroke="${INK}" stroke-width="4"/><rect x="${W2 - 66}" y="${-bodyH * 0.55}" width="54" height="30" rx="10" fill="${night ? '#fff6d0' : '#f4efe0'}" stroke="${INK}" stroke-width="4"/>`;
-    if (night) g += `<g style="mix-blend-mode:screen"><ellipse cx="${-W2 + 39}" cy="${-bodyH * 0.45}" rx="60" ry="40" fill="#fff2c0" opacity="0.45"/><ellipse cx="${W2 - 39}" cy="${-bodyH * 0.45}" rx="60" ry="40" fill="#fff2c0" opacity="0.45"/><ellipse cx="0" cy="40" rx="${W2 + 40}" ry="50" fill="#fff2c0" opacity="0.25"/></g>`;
+    if (night) g += `<g><ellipse cx="${-W2 + 39}" cy="${-bodyH * 0.45}" rx="60" ry="40" fill="#fff2c0" opacity="0.45"/><ellipse cx="${W2 - 39}" cy="${-bodyH * 0.45}" rx="60" ry="40" fill="#fff2c0" opacity="0.45"/><ellipse cx="0" cy="40" rx="${W2 + 40}" ry="50" fill="#fff2c0" opacity="0.25"/></g>`;
     g += `<rect x="-60" y="${-bodyH * 0.5}" width="120" height="30" rx="8" fill="${shade(col, 0.35)}" stroke="${INK}" stroke-width="4"/>` + Array.from({ length: 5 }, (_, i) => `<path d="M ${-50 + i * 25} ${-bodyH * 0.5 + 6} v 18" stroke="${INK}" stroke-width="3"/>`).join('');
   } else {
     g += `<rect x="${-W2 + 12}" y="${-bodyH * 0.72}" width="44" height="22" rx="6" fill="${night || o.brake ? '#ff4a3a' : '#c83a2a'}" stroke="${INK}" stroke-width="4"/><rect x="${W2 - 56}" y="${-bodyH * 0.72}" width="44" height="22" rx="6" fill="${night || o.brake ? '#ff4a3a' : '#c83a2a'}" stroke="${INK}" stroke-width="4"/>`;
@@ -64,7 +64,7 @@ function poleP(x, yBase, yTop, k, night) {
   return `<path d="M ${f2(x)} ${f2(yBase)} L ${f2(x)} ${f2(yTop)}" stroke="#3a3440" stroke-width="${f2(16 * k + 1)}" stroke-linecap="round"/>` +
     `<path d="M ${f2(x - 40 * k)} ${f2(yTop + 14 * k)} L ${f2(x + 40 * k)} ${f2(yTop + 14 * k)}" stroke="#3a3440" stroke-width="${f2(10 * k + 0.8)}"/>` +
     `<rect x="${f2(x - 18 * k)}" y="${f2(yTop + 30 * k)}" width="${f2(36 * k)}" height="${f2(46 * k)}" rx="${f2(6 * k)}" fill="${night ? '#ffe0a0' : '#e8dcc0'}" stroke="${INK}" stroke-width="${f2(3 * k + 0.4)}"/>` +
-    (night ? `<circle cx="${f2(x)}" cy="${f2(yTop + 54 * k)}" r="${f2(110 * k)}" fill="url(#gPool)" style="mix-blend-mode:screen"/>` : '');
+    (night ? `<circle cx="${f2(x)}" cy="${f2(yTop + 54 * k)}" r="${f2(110 * k)}" fill="url(#gPool)"/>` : '');
 }
 
 // ---------- the perspective street ----------
