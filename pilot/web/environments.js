@@ -352,7 +352,7 @@ function pigeon(x, y, t, seed = 1, k = 1, fly = null) {
 }
 function walkers(t, y, k, seed, n = 4, span = 3000) {
   const r = rng(seed); let s = '';
-  const ids = ['viz1', 'viz2', 'viz3', 'moca', 'motorista', 'mulher'];
+  const ids = typeof NPC_IDS !== 'undefined' ? NPC_IDS.filter((_, i) => (i + seed) % 3 === 0) : ['viz1', 'viz2', 'viz3', 'moca', 'motorista', 'mulher'];
   for (let i = 0; i < n; i++) {
     const sp = (40 + r() * 50) * (r() < 0.5 ? 1 : -1), x0 = r() * span - 600;
     const x = ((x0 + t * sp) % span + span) % span - 600;

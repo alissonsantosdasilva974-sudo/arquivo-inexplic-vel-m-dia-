@@ -17,24 +17,24 @@ SHOTS.push(
     const px = 380 + t * 120;
     const polo = P_('polo', { x: px, y: 930, s: 0.62, t: T, face: 0.8, side: true, walk: T * 11, hat: 'fedora', pocketNote: true });
     const main = (T2) => cityRow(T2, { seed: 12, x0: 430, x1: 3400, signs: ['MERCADO', 'BARBEARIA', 'FARMÁCIA', 'CORREIO', 'SORVETES'], bunting: true, shops: 0.85 }) + cityRow(T2, { seed: 13, x0: -1500, x1: -230, shops: 0.5 }) + bakeryFacade(-200, 900, { t: T2, sign: false });
-    return { cam: push(frameG(px + 80, 930, 1.35, 1450), t, 3.5, 0.05), layers: [...skyDay(t), ...sideStreet(T, t, { seed: 12, main, movingCar: -900 + t * 700, extra: walkers(T, 945, 0.42, 51, 3, 3200) + polo, fgX: px + 520 })] };
+    return { cam: push(frameG(px + 80, 930, 1.35, 1450), t, 3.5, 0.05), layers: [...skyDay(t), ...sideStreet(T, t, { seed: 12, main, movingCar: -900 + t * 700, extra: polo, fgX: px + 520, avoidX: 620 })] };
   } },
   // C — perspective street, morning: crowd, a car driving off, Polo from behind in the foreground
   { t0: 7.0, draw(t, T) {
     const cam = cam3(640, 560, 500, 0);
-    const people = [{ id: 'polo', X: -120, D: lerp(-60, 260, t / 3.5), s: 1.45, o: { t: T, back: true, walk: T * 9, hat: 'fedora' } }];
-    return { cam: push(focus(960, 720, 1.0), t, 3.5, 0.05), layers: [...skyDay(t), Lr(1, street3D(T, { cam, seed: 7, people, movingCars: [{ X: 170, D: 900 + t * 520, col: '#c8443c' }], crowd: 18 }))] };
+    const people = [{ id: 'polo', X: -530, D: lerp(60, 300, t / 3.5), s: 0.44, o: { t: T, back: true, walk: T * 9, hat: 'fedora' } }];
+    return { cam: push(focus(660, 820, 1.25), t, 3.5, 0.05), layers: [...skyDay(t), Lr(1, street3D(T, { cam, seed: 7, people, movingCars: [{ X: 170, D: 900 + t * 520, col: '#c8443c' }], crowd: 18 }))] };
   } },
   // D — the same street at night: the man in the suit waits under a lamp
   { t0: 10.5, xf: 0.5, draw(t, T) {
     const cam = cam3(640, 560, 500, 0);
-    const people = [{ id: 'terno', X: 330, D: 1800, s: 0.5, o: { t: T, face: -0.3, expr: 'smug', hat: 'fedora' } }, { id: 'polo', X: -150, D: 120, s: 1.45, o: { t: T, back: true, hat: 'fedora' } }];
-    return { cam: lerpCam(focus(960, 720, 1.0), focus(1020, 660, 1.8), E.inOut(clamp(t / 3))), layers: [...skyNight(t), Lr(1, street3D(T, { cam, seed: 7, night: 1, people, crowd: 0 }))], tint: ['#3a4a8a', 0.15] };
+    const people = [{ id: 'terno', X: 520, D: 1800, s: 0.48, o: { t: T, face: -0.3, expr: 'smug', hat: 'fedora' } }, { id: 'polo', X: -530, D: 80, s: 0.44, o: { t: T, back: true, hat: 'fedora' } }];
+    return { cam: lerpCam(focus(640, 820, 1.25), focus(1070, 690, 2.4), E.inOut(clamp(t / 3))), layers: [...skyNight(t), Lr(1, street3D(T, { cam, seed: 7, night: 1, people, crowd: 0 }))], tint: ['#3a4a8a', 0.15] };
   } },
   // E — the bakery street at night, side view, 5 layers
   { t0: 13.5, xf: 0.4, draw(t, T) {
     const main = (T2) => cityRow(T2, { seed: 12, x0: 430, x1: 3400, signs: ['MERCADO', 'BARBEARIA', 'FARMÁCIA', 'CORREIO', 'SORVETES'], night: 1, shops: 0.85 }) + cityRow(T2, { seed: 13, x0: -1500, x1: -230, night: 1, shops: 0.5 }) + bakeryFacade(-200, 900, { t: T2, sign: false, night: true }) + lampLight(560, 940, 1.1);
     const man = P_('terno', { x: 760, y: 930, s: 0.62, t: T, face: -0.3, lx: -1, expr: 'smug' });
-    return { cam: push(frameG(700, 930, 1.3, 1450), t, 2.5, 0.06), layers: [...skyNight(t), ...sideStreet(T, t, { seed: 12, night: 1, main, extra: man, fgX: 1180 })], tint: ['#3a4a8a', 0.15] };
+    return { cam: push(frameG(700, 930, 1.3, 1450), t, 2.5, 0.06), layers: [...skyNight(t), ...sideStreet(T, t, { seed: 12, night: 1, closed: 0, main, extra: man, fgX: 1180, avoidX: 760 })], tint: ['#3a4a8a', 0.15] };
   } },
 );

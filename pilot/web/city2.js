@@ -18,18 +18,39 @@ const hazeC = (col, D, Dmax, sky, amt = 0.65) => mix(col, sky, clamp(D / Dmax) *
 const sw3 = (k, w = 4) => `stroke="${INK}" stroke-width="${f2(Math.max(0.6, w * k))}" stroke-linejoin="round"`;
 
 // ---------- sprites placed in perspective ----------
-function carRear(x, y, k, col, night = 0, o = {}) {
-  const s = k * (o.s || 1);
-  return `<g transform="translate(${f2(x)} ${f2(y)}) scale(${f2(s)})">
-   <ellipse cx="0" cy="4" rx="150" ry="22" fill="#1b1424" opacity="0.3"/>
-   <path d="M -140 -10 L -140 -90 Q -136 -110 -112 -112 L 112 -112 Q 136 -110 140 -90 L 140 -10 Q 140 4 124 4 L -124 4 Q -140 4 -140 -10 Z" fill="${col}" stroke="${INK}" stroke-width="7"/>
-   <path d="M -100 -112 L -78 -176 Q -72 -186 -60 -186 L 60 -186 Q 72 -186 78 -176 L 100 -112 Z" fill="${shade(col, 0.12)}" stroke="${INK}" stroke-width="7"/>
-   <path d="M -84 -118 L -66 -168 L 66 -168 L 84 -118 Z" fill="${night ? '#2a3050' : '#9cc4d8'}" stroke="${INK}" stroke-width="5"/>
-   <rect x="-128" y="-80" width="44" height="22" rx="6" fill="${night || o.brake ? '#ff4a3a' : '#c83a2a'}" stroke="${INK}" stroke-width="4"/><rect x="84" y="-80" width="44" height="22" rx="6" fill="${night || o.brake ? '#ff4a3a' : '#c83a2a'}" stroke="${INK}" stroke-width="4"/>
-   ${night ? `<circle cx="-106" cy="-69" r="34" fill="#ff5a4a" opacity="0.3"/><circle cx="106" cy="-69" r="34" fill="#ff5a4a" opacity="0.3"/>` : ''}
-   <rect x="-40" y="-62" width="80" height="24" rx="4" fill="#f4f0e4" stroke="${INK}" stroke-width="4"/>
-   <rect x="-130" y="-8" width="40" height="22" rx="6" fill="#1e1a22"/><rect x="90" y="-8" width="40" height="22" rx="6" fill="#1e1a22"/>
-   <path d="M -120 -40 L 120 -40" stroke="${shade(col, 0.3)}" stroke-width="5"/></g>`;
+const CAR_TYPES = ['sedan', 'hatch', 'van', 'pickup', 'taxi', 'kombi'];
+function carRear(x, y, k, col, night = 0, o = {}) { return carView(x, y, k, col, night, Object.assign({ front: false }, o)); }
+function carView(x, y, k, col, night = 0, o = {}) {
+  const s = k * (o.s || 1), type = o.type || 'sedan', front = !!o.front;
+  if (type === 'taxi') col = '#f2c230';
+  const tall = type === 'van' || type === 'kombi' ? 1.35 : 1, wide = type === 'pickup' || type === 'van' ? 1.08 : type === 'hatch' ? 0.94 : 1;
+  const W2 = 140 * wide, bodyH = 100 * (type === 'van' ? 1.5 : type === 'kombi' ? 1.45 : 1), cabT = type === 'pickup' ? 0.75 : 1;
+  const glass = night ? '#2a3050' : '#9cc4d8';
+  let g = `<ellipse cx="0" cy="4" rx="${f2(W2 + 10)}" ry="22" fill="#1b1424" opacity="0.3"/>`;
+  g += `<path d="M ${-W2} -10 L ${-W2} ${-bodyH + 10} Q ${-W2 + 4} ${-bodyH - 10} ${-W2 + 28} ${-bodyH - 12} L ${W2 - 28} ${-bodyH - 12} Q ${W2 - 4} ${-bodyH - 10} ${W2} ${-bodyH + 10} L ${W2} -10 Q ${W2} 4 ${W2 - 16} 4 L ${-W2 + 16} 4 Q ${-W2} 4 ${-W2} -10 Z" fill="${col}" stroke="${INK}" stroke-width="7"/>`;
+  if (type === 'kombi') g += `<path d="M ${-W2} ${-bodyH * 0.55} L ${W2} ${-bodyH * 0.55} L ${W2} ${-bodyH - 12} L ${-W2} ${-bodyH - 12} Z" fill="#f4f0e4" stroke="${INK}" stroke-width="6"/>`;
+  if (type !== 'van' && type !== 'kombi') {
+    const cw = (W2 - 40) * cabT, ch = 74;
+    g += `<path d="M ${-cw} ${-bodyH - 12} L ${-cw + 22} ${-bodyH - 12 - ch} Q ${-cw + 28} ${-bodyH - 22 - ch} ${-cw + 40} ${-bodyH - 22 - ch} L ${cw - 40} ${-bodyH - 22 - ch} Q ${cw - 28} ${-bodyH - 22 - ch} ${cw - 22} ${-bodyH - 12 - ch} L ${cw} ${-bodyH - 12} Z" fill="${shade(col, 0.1)}" stroke="${INK}" stroke-width="7"/>`;
+    g += `<path d="M ${-cw + 16} ${-bodyH - 18} L ${-cw + 32} ${-bodyH - 6 - ch} L ${cw - 32} ${-bodyH - 6 - ch} L ${cw - 16} ${-bodyH - 18} Z" fill="${glass}" stroke="${INK}" stroke-width="5"/>`;
+    g += `<path d="M ${-cw + 30} ${-bodyH - 30} L ${-cw + 60} ${-bodyH - ch + 4}" stroke="#fff" stroke-width="6" opacity="${night ? 0.1 : 0.35}"/>`;
+    if (type === 'taxi') g += `<rect x="-30" y="${-bodyH - 52 - ch}" width="60" height="26" rx="6" fill="#f4f0e4" stroke="${INK}" stroke-width="4"/><text x="0" y="${-bodyH - 33 - ch}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="17" fill="${INK}">TÁXI</text>`;
+    if (type === 'pickup' && !front) g += `<rect x="${-W2 + 10}" y="${-bodyH - 4}" width="${W2 * 2 - 20}" height="16" fill="${shade(col, 0.3)}"/>`;
+  } else {
+    g += `<path d="M ${-W2 + 18} ${-bodyH * 0.92} L ${W2 - 18} ${-bodyH * 0.92} L ${W2 - 18} ${-bodyH * 0.62} L ${-W2 + 18} ${-bodyH * 0.62} Z" fill="${glass}" stroke="${INK}" stroke-width="5"/>`;
+  }
+  if (front) {
+    g += `<rect x="${-W2 + 12}" y="${-bodyH * 0.55}" width="54" height="30" rx="10" fill="${night ? '#fff6d0' : '#f4efe0'}" stroke="${INK}" stroke-width="4"/><rect x="${W2 - 66}" y="${-bodyH * 0.55}" width="54" height="30" rx="10" fill="${night ? '#fff6d0' : '#f4efe0'}" stroke="${INK}" stroke-width="4"/>`;
+    if (night) g += `<g style="mix-blend-mode:screen"><ellipse cx="${-W2 + 39}" cy="${-bodyH * 0.45}" rx="60" ry="40" fill="#fff2c0" opacity="0.45"/><ellipse cx="${W2 - 39}" cy="${-bodyH * 0.45}" rx="60" ry="40" fill="#fff2c0" opacity="0.45"/><ellipse cx="0" cy="40" rx="${W2 + 40}" ry="50" fill="#fff2c0" opacity="0.25"/></g>`;
+    g += `<rect x="-60" y="${-bodyH * 0.5}" width="120" height="30" rx="8" fill="${shade(col, 0.35)}" stroke="${INK}" stroke-width="4"/>` + Array.from({ length: 5 }, (_, i) => `<path d="M ${-50 + i * 25} ${-bodyH * 0.5 + 6} v 18" stroke="${INK}" stroke-width="3"/>`).join('');
+  } else {
+    g += `<rect x="${-W2 + 12}" y="${-bodyH * 0.72}" width="44" height="22" rx="6" fill="${night || o.brake ? '#ff4a3a' : '#c83a2a'}" stroke="${INK}" stroke-width="4"/><rect x="${W2 - 56}" y="${-bodyH * 0.72}" width="44" height="22" rx="6" fill="${night || o.brake ? '#ff4a3a' : '#c83a2a'}" stroke="${INK}" stroke-width="4"/>`;
+    if (night) g += `<circle cx="${-W2 + 34}" cy="${-bodyH * 0.62}" r="34" fill="#ff5a4a" opacity="0.3"/><circle cx="${W2 - 34}" cy="${-bodyH * 0.62}" r="34" fill="#ff5a4a" opacity="0.3"/>`;
+  }
+  g += `<rect x="-40" y="${-bodyH * 0.38}" width="80" height="24" rx="4" fill="#f4f0e4" stroke="${INK}" stroke-width="4"/><text x="0" y="${-bodyH * 0.38 + 18}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="15" fill="${INK}">${['ABC1D23', 'POL0A10', 'BRA2E19', 'RIO4K77', 'SPX9B01'][Math.abs((col.charCodeAt(2) || 1) + (type.length * 3)) % 5]}</text>`;
+  g += `<rect x="${-W2 + 10}" y="-8" width="40" height="22" rx="6" fill="#1e1a22"/><rect x="${W2 - 50}" y="-8" width="40" height="22" rx="6" fill="#1e1a22"/>`;
+  g += `<path d="M ${-W2 + 20} ${-bodyH * 0.25} L ${W2 - 20} ${-bodyH * 0.25}" stroke="${shade(col, 0.3)}" stroke-width="5"/>`;
+  return `<g transform="translate(${f2(x)} ${f2(y)}) scale(${f2(s)})">${g}</g>`;
 }
 function treeP(x, y, k, t, night = 0, seed = 1) {
   const sw = Math.sin(t * 0.8 + seed) * 3, c = night ? '#2a4a3e' : mix('#6aa05a', '#8ab86a', (seed % 5) / 5);
@@ -82,19 +103,21 @@ function street3D(t, o = {}) {
   for (const g of [-1, 1]) for (let D = -200; D < Dmax; D += 720) pole.push({ g, D });
   for (const p of pole) items.push({ D: p.D, draw: () => { const b = P3(c, p.g * (R + 40), 0, p.D), tp = P3(c, p.g * (R + 40), 520, p.D); return poleP(b.x, b.y, tp.y, b.k, night); } });
   for (const g of [-1, 1]) for (let D = 200 + (g > 0 ? 360 : 0); D < Dmax; D += 720) items.push({ D, draw: () => { const b = P3(c, g * (R + 120), 0, D); return treeP(b.x, b.y, b.k * 0.62, t, night, Math.floor(D) + g); } });
-  { const rc = rng((o.seed || 7) + 5); for (const g of [-1, 1]) for (let D = 100; D < Dmax; D += 420 + rc() * 600) if (rc() < 0.75) { const col = CARC[Math.floor(rc() * CARC.length)]; items.push({ D, draw: () => { const b = P3(c, g * (R - 110), 0, D); return carRear(b.x, b.y, b.k * 0.62, col, night); } }); } }
-  for (const mc of (o.movingCars || [])) items.push({ D: mc.D, draw: () => { const b = P3(c, mc.X, 0, mc.D); return carRear(b.x, b.y, b.k * 0.62, mc.col, night, { brake: mc.brake }); } });
+  { const rc = rng((o.seed || 7) + 5); for (const g of [-1, 1]) for (let D = 100; D < Dmax; D += 420 + rc() * 600) if (rc() < 0.75) { const col = CARC[Math.floor(rc() * CARC.length)], type = CAR_TYPES[Math.floor(rc() * CAR_TYPES.length)], fr = rc() < 0.5; items.push({ D, draw: () => { const b = P3(c, g * (R - 110), 0, D); return carView(b.x, b.y, b.k * 0.62, col, night, { type, front: fr }); } }); } }
+  if (o.traffic !== false && !closed) { const rt = rng((o.seed || 7) + 31); for (let i = 0; i < (o.traffic || 7); i++) { const away = i % 2 === 0, col = CARC[Math.floor(rt() * CARC.length)], type = CAR_TYPES[Math.floor(rt() * CAR_TYPES.length)], sp = 380 + rt() * 260, D0 = rt() * 7000; const D = away ? ((D0 + t * sp) % 7200) + 150 : 7350 - ((D0 + t * sp) % 7200); items.push({ D, draw: () => { const b = P3(c, away ? 175 : -175, 0, D); return carView(b.x, b.y, b.k * 0.62, col, night, { type, front: !away }); } }); } }
+  for (const mc of (o.movingCars || [])) items.push({ D: mc.D, draw: () => { const b = P3(c, mc.X, 0, mc.D); return carView(b.x, b.y, b.k * 0.62, mc.col, night, { brake: mc.brake, type: mc.type || 'sedan', front: !!mc.front }); } });
   for (const pp of (o.people || [])) items.push({ D: pp.D, draw: () => { const b = P3(c, pp.X, 0, pp.D); return person(pp.id, Object.assign({ x: b.x, y: b.y, s: (pp.s || 0.44) * b.k }, pp.o)); } });
-  if (!closed) { const rp = rng((o.seed || 7) + 9); for (let i = 0; i < (o.crowd == null ? 14 : o.crowd); i++) { const g = rp() < 0.5 ? -1 : 1, D0 = 300 + rp() * 5000, sp = (rp() < 0.5 ? 1 : -1) * (60 + rp() * 60), id = ['viz1', 'viz2', 'viz3', 'moca', 'mulher', 'motorista', 'senhora', 'menino'][i % 8]; const D = ((D0 + t * sp) % 5400 + 5400) % 5400 + 200, X = g * (R + 50 + rp() * 100); items.push({ D, draw: () => { const b = P3(c, X, 0, D); return person(id, { x: b.x, y: b.y, s: 0.44 * b.k, t, back: sp > 0, walk: t * 8 + i, face: 0 }); } }); } }
+  if (!closed) { const rp = rng((o.seed || 7) + 9); for (let i = 0; i < (o.crowd == null ? 34 : o.crowd); i++) { const g = rp() < 0.5 ? -1 : 1, D0 = 300 + rp() * 5000, sp = (rp() < 0.5 ? 1 : -1) * (60 + rp() * 60), id = NPC_IDS[i % NPC_IDS.length]; const D = ((D0 + t * sp) % 5400 + 5400) % 5400 + 200, X = g * (R + 50 + rp() * 100); items.push({ D, draw: () => { const b = P3(c, X, 0, D); return person(id, { x: b.x, y: b.y, s: 0.44 * b.k, t, back: sp > 0, walk: t * 8 + i, face: 0 }); } }); } }
   if (!closed && (o.crowd == null || o.crowd > 0)) {
-    const D0 = (o.crossD || 900) + 110, ids = ['moca', 'viz2', 'senhora'];
+    const D0 = (o.crossD || 900) + 110, ids = ['npc3', 'npc8', 'npc15'];
     for (let i = 0; i < 3; i++) { const ph = ((t * 0.12 + i / 3) % 1), X = lerp(-R - 60, R + 60, ph) * (i % 2 ? -1 : 1); items.push({ D: D0 + i * 30, draw: () => { const b = P3(c, X, 0, D0 + i * 30); return person(ids[i], { x: b.x, y: b.y, s: 0.44 * b.k, t, side: true, face: i % 2 ? -0.8 : 0.8, walk: t * 8 + i }); } }); }
     const rq = rng((o.seed || 7) + 13);
-    for (let i = 0; i < 6; i++) { const g = rq() < 0.5 ? -1 : 1, D = 600 + rq() * 3500, X = g * (W - 50), id = ['viz1', 'mulher', 'viz3', 'menino', 'barnabe', 'moca'][i]; items.push({ D, draw: () => { const b = P3(c, X, 0, D); return person(id, { x: b.x, y: b.y, s: 0.44 * b.k, t, face: g > 0 ? 0.9 : -0.9, lx: g, expr: 'happy' }); } }); }
+    for (let i = 0; i < 12; i++) { const g = rq() < 0.5 ? -1 : 1, D = 600 + rq() * 3500, X = g * (W - 50), id = NPC_IDS[(i * 5 + 2) % NPC_IDS.length]; items.push({ D, draw: () => { const b = P3(c, X, 0, D); return person(id, { x: b.x, y: b.y, s: 0.44 * b.k, t, face: g > 0 ? 0.9 : -0.9, lx: g, expr: 'happy' }); } }); }
   }
+  if (!closed && (o.crowd == null || o.crowd > 0)) { const rg = rng((o.seed || 7) + 17); for (let i = 0; i < 5; i++) { const g = rg() < 0.5 ? -1 : 1, D = 500 + rg() * 3000, X = g * (R + 120 + rg() * 60); for (const [dx, f, id] of [[-45, 0.7, NPC_IDS[(i * 3) % 24]], [45, -0.7, NPC_IDS[(i * 3 + 7) % 24]]]) items.push({ D: D + (dx > 0 ? 1 : 0), draw: () => { const b = P3(c, X + dx, 0, D); return person(id, { x: b.x, y: b.y, s: 0.44 * b.k, t, face: f, expr: 'happy', mouth: Math.max(0, Math.sin(t * 9 + i + dx)) * 0.5, armR: 30 + Math.sin(t * 3 + i) * 20, bendR: 40 }); } }); } }
   // painter: far→near, buildings and items merged by D
   s += drawBack();
-  const all = blds.map(b => ({ D: b.D, b })).concat(items.map(it => ({ D: it.D, it }))).sort((a, b) => b.D - a.D);
+  const all = blds.map(b => ({ D: b.D + b.len, b })).concat(items.map(it => ({ D: it.D, it }))).sort((a, b) => b.D - a.D);
   const wires = [];
   for (const e of all) {
     if (e.it) { s += e.it.draw(); continue; }
@@ -140,11 +163,28 @@ function building3D(c, b, R, W, night, closed, sky, Dmax, t) {
     const k = P3(c, X, 0, d0).k;
     s += Q3(P3(c, X, y0 - 8, d0 - 8), P3(c, X, y0 - 8, d1 + 8), P3(c, X, y1 + 8, d1 + 8), P3(c, X, y1 + 8, d0 - 8), hazeC('#f4ead4', d0, Dmax, sky, 0.6), sw3(k, 2.5));
     s += Q3(P3(c, X, y0, d0), P3(c, X, y0, d1), P3(c, X, y1, d1), P3(c, X, y1, d0), closed ? shade(base, 0.35) : (isLit ? '#ffd27a' : hazeC(night ? '#2a3050' : '#7a9ab0', d0, Dmax, sky, 0.5)), sw3(k, 2.2));
+    s += Q3(P3(c, X, y0 + 43, d0), P3(c, X, y0 + 43, d1), P3(c, X, y0 + 46, d1), P3(c, X, y0 + 46, d0), INK, 'opacity="0.5"');
+    s += Q3(P3(c, X, y1 + 8, d0 - 14), P3(c, X, y1 + 8, d1 + 14), P3(c, X - g * 26, y1 + 2, d1 + 14), P3(c, X - g * 26, y1 + 2, d0 - 14), hazeC('#f4ead4', d0, Dmax, sky, 0.6), sw3(k, 1.8));
+    if (b.seed % 2 === 0 && k > 0.12) for (const [u0, u1] of [[d0 - 36, d0 - 8], [d1 + 8, d1 + 36]]) s += Q3(P3(c, X, y0 - 6, u0), P3(c, X, y0 - 6, u1), P3(c, X, y1 + 6, u1), P3(c, X, y1 + 6, u0), hazeC(['#3c6aa8', '#a8503a', '#8a5aa8', '#4a4458'][b.seed % 4], d0, Dmax, sky, 0.6), sw3(k, 1.6));
+    if (!closed && rr() < 0.25 && k > 0.15) { for (let q = 0; q < 3; q++) { const pm = P3(c, X - g * 14, y1 + 18, d0 + (d1 - d0) * (q + 0.5) / 3); s += `<circle cx="${f2(pm.x)}" cy="${f2(pm.y)}" r="${f2(14 * k)}" fill="${['#e86a6a', '#f2c230', '#ee8aaa'][q]}" stroke="${INK}" stroke-width="${f2(1.5 * k + 0.3)}"/>`; } }
+    if (!closed && rr() < 0.12 && k > 0.18) { const m = P3(c, X, y0 + 50, (d0 + d1) / 2); s += `<circle cx="${f2(m.x)}" cy="${f2(m.y - 8 * k)}" r="${f2(16 * k)}" fill="${['#f1c08f', '#c98b5e', '#8d5a34'][b.seed % 3]}" stroke="${INK}" stroke-width="${f2(2 * k + 0.3)}"/><path d="M ${f2(m.x - 18 * k)} ${f2(m.y + 30 * k)} Q ${f2(m.x)} ${f2(m.y + 4 * k)} ${f2(m.x + 18 * k)} ${f2(m.y + 30 * k)} Z" fill="${CARC[b.seed % CARC.length]}"/>`; }
+    if (f >= 1 && b.fl >= 3 && rr() < 0.2) { const a1 = P3(c, X - g * 50, y0 - 8, d0 - 20), a2 = P3(c, X - g * 50, y0 - 8, d1 + 20), a3 = P3(c, X - g * 50, y0 + 30, d1 + 20), a4 = P3(c, X - g * 50, y0 + 30, d0 - 20); s += Q3(P3(c, X, y0 - 8, d0 - 20), P3(c, X, y0 - 8, d1 + 20), a2, a1, hazeC('#c8c0b4', d0, Dmax, sky, 0.6), sw3(k, 2)); for (let q = 0; q <= 5; q++) { const u = d0 - 20 + (d1 - d0 + 40) * q / 5, pa = P3(c, X - g * 50, y0 - 8, u), pb = P3(c, X - g * 50, y0 + 30, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="#4a4458" stroke-width="${f2(2.5 * k + 0.4)}"/>`; } s += `<path d="M ${f2(a4.x)} ${f2(a4.y)} L ${f2(a3.x)} ${f2(a3.y)}" stroke="#4a4458" stroke-width="${f2(3.5 * k + 0.5)}"/>`; }
     if (!closed && !isLit && rr() < 0.3) s += Q3(P3(c, X, y0, d0), P3(c, X, y0, (d0 + d1) / 2), P3(c, X, y1, (d0 + d1) / 2), P3(c, X, y1, d0), hazeC(shade(b.awn, 0.1), d0, Dmax, sky, 0.6), sw3(k, 2));
     if (isLit && rr() < 0.25) { const m = P3(c, X, y0 + 20, (d0 + d1) / 2); s += `<ellipse cx="${f2(m.x)}" cy="${f2(m.y + 30 * k)}" rx="${f2(14 * k)}" ry="${f2(26 * k)}" fill="#2a2030" opacity="0.6"/>`; }
     if (f >= 1 && rr() < 0.18) s += box3D(c, X + g * 0, X - g * 60, d0 + 10, d0 + 90, y0 - 50, y0 - 6, hazeC('#e8e4dc', d0, Dmax, sky, 0.6), k);           // AC unit
     if (f >= 1 && rr() < 0.15) { const a = P3(c, X - g * 80, y1 + 10, d0), bq = P3(c, X - g * 80, y1 + 10, d1); s += `<path d="M ${f2(a.x)} ${f2(a.y)} L ${f2(bq.x)} ${f2(bq.y)}" stroke="#4a4458" stroke-width="${f2(5 * k + 0.6)}"/>`; for (let q = 0; q < 4; q++) { const u = d0 + (d1 - d0) * (q + 0.5) / 4, pa = P3(c, X - g * 80, y1 + 10, u), pb = P3(c, X - g * 80, y1 - 26, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="${['#e86a6a', '#5ab0d8', '#f2c230', '#f4f0e4'][q]}" stroke-width="${f2(14 * k)}"/>`; } }   // varal
   }
+  // pilasters at the building's ends + facade tile base
+  for (const u of [D0, D1 - 30]) { const kk = P3(c, X, 0, u).k; s += Q3(P3(c, X, 0, u), P3(c, X, 0, u + 30), P3(c, X, H - 50, u + 30), P3(c, X, H - 50, u), hazeC(lite(base, 0.15), u, Dmax, sky, 0.6), sw3(kk, 2)); }
+  s += Q3(P3(c, X, 0, D0), P3(c, X, 0, D1), P3(c, X, 14, D1), P3(c, X, 14, D0), hazeC(shade(base, 0.4), D0, Dmax, sky, 0.6), '');
+  // cornice brackets under the platibanda
+  for (let u = D0 + 40; u < D1 - 20; u += 70) { const kk = P3(c, X, 0, u).k; if (kk < 0.2) break; s += Q3(P3(c, X, H - 62, u), P3(c, X, H - 62, u + 18), P3(c, X, H - 50, u + 18), P3(c, X, H - 50, u), hazeC(shade(base, 0.3), u, Dmax, sky, 0.6), ''); }
+  // clay-tile roof edge on low houses
+  if (b.fl <= 3 && (b.seed % 3 === 0)) { const kk = P3(c, X, 0, D0).k; s += Q3(P3(c, X, H, D0), P3(c, X, H, D1), P3(c, X - g * 120, H + 70, D1), P3(c, X - g * 120, H + 70, D0), hazeC('#c8643c', D0, Dmax, sky, 0.6), sw3(kk, 3)); for (let u = D0; u < D1; u += 40) { const pa = P3(c, X, H, u), pb = P3(c, X - g * 120, H + 70, u); s += `<path d="M ${f2(pa.x)} ${f2(pa.y)} L ${f2(pb.x)} ${f2(pb.y)}" stroke="#8a3a22" stroke-width="${f2(2 * kk + 0.4)}" opacity="0.6"/>`; } }
+  // posters / graffiti low on the wall
+  if (!b.shop && rr() < 0.6) { const u = D0 + b.len * 0.6, kk = P3(c, X, 0, u).k; s += Q3(P3(c, X, 30, u), P3(c, X, 30, u + 70), P3(c, X, 120, u + 70), P3(c, X, 120, u), hazeC(['#f2c230', '#e86a6a', '#5ab0d8', '#f4f0e4'][b.seed % 4], u, Dmax, sky, 0.6), sw3(kk, 1.5)); }
+  // door for residential buildings
+  if (!b.shop) { const u0 = D0 + b.len * 0.18, u1 = u0 + 110, kk = P3(c, X, 0, u0).k; s += Q3(P3(c, X, 0, u0 - 10), P3(c, X, 0, u1 + 10), P3(c, X, 230, u1 + 10), P3(c, X, 230, u0 - 10), hazeC('#f4ead4', u0, Dmax, sky, 0.6), sw3(kk, 2.5)); s += Q3(P3(c, X, 0, u0), P3(c, X, 0, u1), P3(c, X, 220, u1), P3(c, X, 220, u0), hazeC(shade(b.awn, 0.45), u0, Dmax, sky, 0.6), sw3(kk, 2.5)); }
   // stains / weathering
   for (let i = 0; i < 3; i++) { const u = D0 + rr() * b.len, v = rr() * H * 0.8, k = P3(c, X, 0, u).k; s += Q3(P3(c, X, v, u), P3(c, X, v, u + 90), P3(c, X, v + 60, u + 90), P3(c, X, v + 60, u), INK, 'opacity="0.05"'); }
   // ground floor shop: window, door, awning, sign
@@ -158,6 +198,7 @@ function building3D(c, b, R, W, night, closed, sky, Dmax, t) {
     s += Q3(sa, sb, sc, sd, night ? '#2a2a40' : hazeC('#3c4a5a', d0, Dmax, sky, 0.5), sw3(k, 2.5));
     if (k > 0.22) { const m = P3(c, X, 173, (d0 + d1) / 2), len = Math.hypot(sb.x - sa.x, sb.y - sa.y), ang = Math.atan2(sb.y - sa.y, sb.x - sa.x) * 180 / Math.PI, fs = Math.min(Math.abs(sd.y - sa.y) * 0.7, len / (b.sign.length * 0.62)); s += `<text transform="translate(${f2(m.x)} ${f2(m.y)}) rotate(${f2(ang)}) scale(1 ${f2(Math.max(0.3, Math.cos(ang * Math.PI / 180) * 0.4 + 0.6))})" text-anchor="middle" dominant-baseline="middle" font-family="Fredoka" font-weight="700" font-size="${f2(fs)}" fill="${night && !closed ? '#ffe7a0' : '#f4e6c8'}">${b.sign}</text>`; }
   }
+  if (b.shop && b.seed % 4 === 1) { const u = D0 + 20, kk = P3(c, X, 0, u).k; if (kk > 0.12) { s += Q3(P3(c, X, 230, u), P3(c, X - g * 90, 230, u), P3(c, X - g * 90, 460, u), P3(c, X, 460, u), night ? '#ff6a8a' : hazeC(b.awn, u, Dmax, sky, 0.6), sw3(kk, 2.5)); if (night) { const m = P3(c, X - g * 45, 345, u); s += `<circle cx="${f2(m.x)}" cy="${f2(m.y)}" r="${f2(140 * kk)}" fill="#ff6a8a" opacity="0.18"/>`; } } }
   return s;
 }
 function box3D(c, x0, x1, d0, d1, y0, y1, col, k) {
@@ -225,6 +266,7 @@ function sideStreet(T, t, o = {}) {
   if (!closed) main += carSide(-200, base + 130, '#3c6aa8', { s: 0.75, night }) + carSide(1500, base + 130, '#e8e4dc', { s: 0.75, night }) + carSide(2650, base + 130, '#c8443c', { s: 0.75, night });
   main += bancaSide(2000, base + 40) + orelhao(1180, base + 40) + lixeira(1420, base + 40) + streetSign(-560, base + 40, o.streetName || 'R. DO RELÓGIO');
   if (o.movingCar != null) main += carSide(o.movingCar, base + 260, '#f2c230', { s: 0.8, dir: 1, wheel: T * 600, night });
+  if (!closed) { const rn = rng((o.seed || 5) + 77); for (let i = 0; i < 9; i++) { const x = -1200 + i * 520 + rn() * 200; if (o.avoidX != null && Math.abs(x - o.avoidX) < 480) continue; main += person(NPC_IDS[(i * 7 + 3) % 24], { x, y: base + 34, s: 0.5, t, face: rn() < 0.5 ? -0.7 : 0.7, expr: 'happy', mouth: Math.max(0, Math.sin(t * 8 + i)) * 0.4, armR: 20 + Math.sin(t * 2 + i) * 15, bendR: 40 }); } main += walkers(T, base + 44, 0.5, (o.seed || 5) + 3, 6, 4200); }
   main += (o.extra || '');
   L.push(Lr(1, main));
   // foreground: blurred pole, car roof, plant

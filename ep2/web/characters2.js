@@ -293,19 +293,27 @@ function limb2(P, side, a, b, shortSleeve, pose, holdSvg, dir) {
   return { svg: s, hx, hy, ex, ey };
 }
 
-function legs2(P, lA, rA, dir) {
+function legs2(P, lA, rA, dir, fb) {
   const dress = P.topType === 'dress';
   const top = dress ? -60 : -110, L = -10 - top;
   let s = '';
   for (const [x, a] of [[-24 * (P.w || 1) * 0.8, lA], [24 * (P.w || 1) * 0.8, rA]]) {
     const showSkin = dress || P.shorts;
-    s += `<g transform="rotate(${f2(a)} ${f2(x)} ${top})">`;
+    const lift = fb ? Math.max(0, a) / 20 * 20 : 0;
+    s += fb ? `<g transform="translate(0 ${f2(-lift)})">` : `<g transform="rotate(${f2(a)} ${f2(x)} ${top})">`;
     s += `<path d="M ${f2(x)} ${top} L ${f2(x)} -16" stroke="${OL}" stroke-width="34" stroke-linecap="round"/><path d="M ${f2(x)} ${top} L ${f2(x)} -16" stroke="${showSkin ? P.skin : P.bottom}" stroke-width="22" stroke-linecap="round"/>`;
     if (P.shorts) s += `<path d="M ${f2(x)} ${top} L ${f2(x)} ${top + L * 0.45}" stroke="${OL}" stroke-width="36" stroke-linecap="round"/><path d="M ${f2(x)} ${top} L ${f2(x)} ${top + L * 0.45}" stroke="${P.bottom}" stroke-width="26" stroke-linecap="round"/>`;
     else if (!dress) s += `<path d="M ${f2(x + 5)} ${top + 10} L ${f2(x + 5)} -26" stroke="${shade(P.bottom, 0.3)}" stroke-width="4" opacity="0.6"/>`;
     if (P.jeans) s += `<path d="M ${f2(x)} ${top} L ${f2(x)} -18" stroke="url(#pDenim)" stroke-width="20" stroke-linecap="round"/><path d="M ${f2(x - 6)} ${top + 6} L ${f2(x - 6)} -24" stroke="#e0a050" stroke-width="2" stroke-dasharray="5 4" opacity="0.85"/><path d="M ${f2(x - 11)} -30 L ${f2(x + 11)} -30" stroke="${lite(P.bottom, 0.25)}" stroke-width="6" stroke-linecap="round"/>`;
+    if (fb) {
+      // shoe seen from the front (toe) or from behind (heel): rounded, symmetric
+      s += `<path d="M ${f2(x - 22)} -2 Q ${f2(x - 24)} -26 ${f2(x)} -26 Q ${f2(x + 24)} -26 ${f2(x + 22)} -2 Q ${f2(x + 20)} 8 ${f2(x)} 8 Q ${f2(x - 20)} 8 ${f2(x - 22)} -2 Z" fill="${P.shoes}" stroke="${OL}" stroke-width="${LW - 1}"/>`;
+      if (P.sneakers) s += `<path d="M ${f2(x - 21)} 2 Q ${f2(x)} 10 ${f2(x + 21)} 2" stroke="#b8b4ac" stroke-width="6" fill="none" stroke-linecap="round"/>` + (fb === 'front' ? `<path d="M ${f2(x - 8)} -18 l 16 0 M ${f2(x - 8)} -12 l 16 0" stroke="#8a8680" stroke-width="2.5"/>` : '');
+      s += `<ellipse cx="${f2(x - 7)}" cy="-16" rx="7" ry="4" fill="#fff" opacity="0.3"/>`;
+    } else {
     s += `<path d="M ${f2(x - 18 + dir * 4)} 0 Q ${f2(x - 20)} -28 ${f2(x + dir * 6)} -26 Q ${f2(x + dir * 36)} -22 ${f2(x + dir * 36)} -4 Q ${f2(x + dir * 32)} 6 ${f2(x)} 6 Q ${f2(x - 20)} 6 ${f2(x - 18 + dir * 4)} 0 Z" fill="${P.shoes}" stroke="${OL}" stroke-width="${LW - 1}"/><path d="M ${f2(x - 6)} -18 Q ${f2(x + dir * 10)} -22 ${f2(x + dir * 22)} -15" stroke="#fff" stroke-width="4" fill="none" opacity="0.35" stroke-linecap="round"/>`;
     if (P.sneakers) s += `<path d="M ${f2(x - 20)} 1 Q ${f2(x)} 8 ${f2(x + dir * 37)} 0" stroke="#b8b4ac" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M ${f2(x + dir * 2)} -20 l ${dir * 10} 4 M ${f2(x + dir * 6)} -24 l ${dir * 10} 4" stroke="#8a8680" stroke-width="2.5"/>`;
+    }
     s += '</g>';
   }
   return s;
@@ -329,7 +337,7 @@ function person(id, o = {}) {
   let g = '';
   if (d.shadow) g += `<ellipse cx="0" cy="4" rx="${f2(84 * (P.w || 1) * (1 - d.jump / 400))}" ry="15" fill="#1b1424" opacity="0.24"/>`;
   g += `<g transform="translate(0 ${f2(bob - d.jump)}) rotate(${f2(d.tilt)} 0 -100) scale(${f2(1 - d.squash * 0.5)} ${f2(1 + d.squash)})">`;
-  g += legs2(P, lA, rA, dir);
+  g += legs2(P, lA, rA, dir, 'front');
   const aL = limb2(P, -1, d.armL, d.bendL, shortS, poseOf(d.armL, d.handL), d.holdL, dir);
   const aR = limb2(P, 1, d.armR, d.bendR, shortS, poseOf(d.armR, d.handR), d.holdR, dir);
   g += `<g transform="translate(0 ${f2(breath * 0.4)})">`;
@@ -390,7 +398,7 @@ function personBack2(P, d, s) {
   let g = '';
   if (d.shadow) g += `<ellipse cx="0" cy="4" rx="${f2(84 * (P.w || 1))}" ry="15" fill="#1b1424" opacity="0.24"/>`;
   g += `<g transform="translate(0 ${f2(bob)}) rotate(${f2(d.tilt)} 0 -100)">`;
-  g += legs2(P, lA, rA, -dir);
+  g += legs2(P, lA, rA, -dir, 'back');
   // arms are mirrored: the character's right arm is on screen-left when seen from behind
   const aR = limb2(P, -1, d.armR, d.bendR, shortS, d.armR > 120 ? 'open' : 'fist', d.holdR, dir);
   const aL = limb2(P, 1, d.armL, d.bendL, shortS, d.armL > 120 ? 'open' : 'fist', d.holdL, dir);
@@ -434,3 +442,24 @@ function povHands(x, y, k, inner, o = {}) {
 function steeringWheel(x, y, k = 1, rot = 0) {
   return `<g transform="translate(${x} ${y}) scale(${k}) rotate(${rot})"><circle r="150" fill="none" stroke="${OL}" stroke-width="44"/><circle r="150" fill="none" stroke="#2a2a34" stroke-width="30"/><circle r="40" fill="#3a3a46" stroke="${OL}" stroke-width="8"/><path d="M -36 10 L -140 40 M 36 10 L 140 40 M 0 38 L 0 146" stroke="${OL}" stroke-width="30"/><path d="M -36 10 L -140 40 M 36 10 L 140 40 M 0 38 L 0 146" stroke="#2a2a34" stroke-width="18"/><path d="M -120 -80 a 150 150 0 0 1 90 -60" stroke="#6a6a7a" stroke-width="8" fill="none"/></g>`;
 }
+
+// ---------- procedural NPC crowd: npc0..npc23 (no greens; chroma-key safe) ----------
+(function () {
+  const r = rng(4242);
+  const skins = ['#f5d0b0', '#f1c08f', '#e0ac79', '#c98b5e', '#a8703e', '#8d5a34', '#6a4024'];
+  const tops = ['#c8443c', '#3c6aa8', '#e8b03a', '#8a5aa8', '#e07a3a', '#ee8aaa', '#5a8ac8', '#d0704a', '#7a4a8a', '#f4f0e4', '#2a2a34', '#a83a5a', '#4a74c0', '#f2c230'];
+  const bottoms = ['#3a3a4a', '#2a3550', '#5a4a3a', '#4a6fa8', '#6a5a7a', '#8a6a4a', '#2a2228'];
+  const hairs = ['short', 'cloud', 'long', 'cap', 'short', 'cloud'];
+  const hairC = ['#1d1a22', '#3a2018', '#6a3a24', '#8a5a2a', '#c8c2d4', '#e8c46a', '#1d1a22'];
+  const types = ['tee', 'shirt', 'dress', 'tee', 'shirt', 'vest'];
+  const pats = [null, null, 'pDots', 'pStripeH', 'pFlowers', null];
+  for (let i = 0; i < 24; i++) {
+    const tt = types[Math.floor(r() * types.length)], top = tops[Math.floor(r() * tops.length)];
+    CAST2['npc' + i] = { skin: skins[Math.floor(r() * skins.length)], top, topD: shade(top, 0.2), topType: tt, pattern: pats[Math.floor(r() * pats.length)],
+      vest: tt === 'vest' ? tops[Math.floor(r() * tops.length)] : undefined, bottom: tt === 'dress' ? top : bottoms[Math.floor(r() * bottoms.length)],
+      shoes: ['#2a2228', '#f4f1ea', '#6a3a28', '#c8443c'][Math.floor(r() * 4)], hair: hairs[Math.floor(r() * hairs.length)], hairC: hairC[Math.floor(r() * hairC.length)],
+      bun: r() < 0.3, blush: r() < 0.4, glasses: r() < 0.2 ? '#4a4458' : undefined, stache: r() < 0.15 ? '#3a2018' : undefined, shorts: tt === 'tee' && r() < 0.3,
+      scale: r() < 0.15 ? 0.74 : 0.9 + r() * 0.15, w: 0.95 + r() * 0.3, seed: 100 + i };
+  }
+})();
+const NPC_IDS = Array.from({ length: 24 }, (_, i) => 'npc' + i);
