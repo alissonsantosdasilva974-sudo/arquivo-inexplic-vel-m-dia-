@@ -40,7 +40,7 @@ Repositório de produção das animações verticais (TikTok/Reels/Shorts) do ca
 5. Cenas: escrever `epN/web/shots.js` (lista `SHOTS` com `t0` e `draw(t, T)`). Um corte a cada 2–3 s, gancho no primeiro segundo e final que emenda no começo (loop).
 6. Prévia: renderizar um quadro por cena com `WEBDIR=../epN/web VW=1080 VH=1920 node video/tools/render9.js epN/work/preview <quadros>` e montar uma folha de prévias. Conferir enquadramento, mãos e objetos.
 7. Som: efeitos sintetizados (modelo em `ep2/sfx_ep2.py`, com "whoosh" automático em cada corte lido do `shots.js`) e trilha (`ep2/music_ep2.py` → `ep2/duck_music.py`, que deixa a trilha 20 dB abaixo da voz e a faz subir nas pausas). Mixar com e sem música (comandos em `ep2/` e no histórico do git); alvo de −14 LUFS e pico de no máximo −1 dBFS.
-8. Render 4K: `epN/render_all.sh` (4 processos, JPEG, retomável). Codificação: `epN/encode.sh` (TikTok em duas passadas a 3,2 Mbps, versão sem música e versão HQ em `epN/renders/`).
+8. Render 4K: `epN/render_all.sh` (4 processos, JPEG, retomável; no fim roda `video/tools/fix_bars.py`, que acha e refaz quadros com a faixa preta aleatória do Chromium nas transições com desfoque). Codificação: `epN/encode.sh` (TikTok em duas passadas a 3,2 Mbps, versão sem música e versão HQ em `epN/renders/`).
 9. Verificação: duração = narração, quadros, sem quadros pretos (`blackdetect`) nem trechos congelados (`freezedetect`), loudness. Revisar o vídeo inteiro a 1 quadro por segundo.
 10. Capa: `epN/web/cover.html` → `epN/out/capa_epN.png`.
 
