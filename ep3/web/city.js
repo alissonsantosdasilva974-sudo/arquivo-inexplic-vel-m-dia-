@@ -82,7 +82,7 @@ function cityRow(t, o = {}) {
   s += street(base, { walk: o.night ? '#a8a0a8' : '#e6d6b8', road: o.night ? '#5a5866' : '#9a96a0' });
   // street furniture
   for (let lx = (o.x0 != null ? o.x0 : -1400) + 260; lx < x1; lx += 560) s += lamp(lx, base + 40, 1.0, o.night ? 1 : 0) + (o.night ? lampLight(lx, base + 40, 1.0) : '');
-  for (let tx = (o.x0 != null ? o.x0 : -1400) + 520; tx < x1; tx += 1120) if (!o.noTrees) s += tree(tx, base + 40, 0.6, t, o.night ? '#3a5a4a' : '#7ab06a');
+  for (let tx = (o.x0 != null ? o.x0 : -1400) + 520; tx < x1; tx += 1120) if (!o.noTrees) s += tree(tx, base + 40, 0.6, t, o.night ? '#4a3a48' : '#d08a48');
   if (o.bunting && !o.closed) for (let bx = -1200; bx < x1; bx += 700) { s += `<path d="M ${bx} ${base - 420} Q ${bx + 350} ${base - 360} ${bx + 700} ${base - 420}" stroke="${INK}" stroke-width="2" fill="none"/>`; for (let k = 0; k < 9; k++) { const u = (k + 0.5) / 9, px = bx + 700 * u, py = base - 420 + 4 * 60 * u * (1 - u); s += `<path d="M ${f2(px - 12)} ${f2(py)} L ${f2(px + 12)} ${f2(py)} L ${f2(px)} ${f2(py + 24)} Z" fill="${['#e86a6a', '#f2c230', '#5ab0d8', '#ee8aaa'][k % 4]}" stroke="${INK}" stroke-width="2"/>`; } }
   if (o.closed) s += leaves(-1200, x1, base + 36, 11, 90);
   return s;
@@ -119,7 +119,7 @@ function perspStreet(t, o = {}) {
   for (const sgn of [-1, 1]) { let D = 120; let i = 0; while (D < Dmax) { const len = 380 + r() * 420, H = 300 + Math.floor(r() * 3) * 150; segs.push({ sgn, D, len, H, wall: WALLS[Math.floor(r() * WALLS.length)], shop: r() < 0.55, sign: SHOPS[(i + (sgn > 0 ? 3 : 0)) % SHOPS.length], seed: i }); D += len + (r() < 0.2 ? 120 : 0); i++; } }
   segs.sort((a, b) => b.D - a.D);
   // landmark tower at the end of the street
-  if (o.tower !== false) { const p = proj(0, 0, Dmax + 1500), k = p.k; s += `<g transform="translate(${f2(p.x)} ${f2(p.y)}) scale(${f2(k * 1.8)})"><rect x="-60" y="-900" width="120" height="900" fill="${night ? '#5a2a2a' : '#a85a3a'}" stroke="${INK}" stroke-width="10"/><circle cx="0" cy="-960" r="110" fill="#f4ead4" stroke="${INK}" stroke-width="12"/><path d="M 0 -960 L 0 -1040 M 0 -960 L 50 -940" stroke="${INK}" stroke-width="12"/><path d="M -150 -1060 L 0 -1220 L 150 -1060 Z" fill="#3c6a5a" stroke="${INK}" stroke-width="10"/></g>`; }
+  if (o.tower !== false) { const p = proj(0, 0, Dmax + 1500), k = p.k; s += `<g transform="translate(${f2(p.x)} ${f2(p.y)}) scale(${f2(k * 1.8)})"><rect x="-60" y="-900" width="120" height="900" fill="${night ? '#5a2a2a' : '#a85a3a'}" stroke="${INK}" stroke-width="10"/><circle cx="0" cy="-960" r="110" fill="#f4ead4" stroke="${INK}" stroke-width="12"/><path d="M 0 -960 L 0 -1040 M 0 -960 L 50 -940" stroke="${INK}" stroke-width="12"/><path d="M -150 -1060 L 0 -1220 L 150 -1060 Z" fill="#5a3c6a" stroke="${INK}" stroke-width="10"/></g>`; }
   for (const b of segs) {
     const X = b.sgn * W, a0 = proj(X, 0, b.D), a1 = proj(X, 0, b.D + b.len), t1 = proj(X, b.H, b.D + b.len), t0 = proj(X, b.H, b.D);
     const lit = night;
@@ -171,7 +171,7 @@ function cityAerial(t, o = {}) {
   for (let bz = -1; bz <= 8; bz++) { const a = P2(-4000, 0, bz * 700 - 60), b = P2(4000, 0, bz * 700 - 60), c = P2(4000, 0, bz * 700 + 20), d = P2(-4000, 0, bz * 700 + 20); s += quad(a, b, c, d, night ? '#45424e' : '#9a96a0'); }
   for (let bx = -7; bx <= 7; bx++) { const X = bx * 520 + 260; s += quad(P2(X - 40, 0, -800), P2(X + 40, 0, -800), P2(X + 40, 0, 6000), P2(X - 40, 0, 6000), night ? '#45424e' : '#9a96a0'); }
   s += quad(P2(-700, 0, 2050), P2(700, 0, 2050), P2(700, 0, 2750), P2(-700, 0, 2750), night ? '#5a5462' : '#d6c39a');
-  const tower = () => { const p = P2(0, 0, 2400), k = p.k; return `<g transform="translate(${f2(p.x)} ${f2(p.y)}) scale(${f2(k * 0.9)})"><rect x="-50" y="-700" width="100" height="700" fill="#a85a3a" stroke="${INK}" stroke-width="8"/><circle cx="0" cy="-740" r="90" fill="${night ? '#ffe7a0' : '#f4ead4'}" stroke="${INK}" stroke-width="10"/><path d="M -130 -820 L 0 -960 L 130 -820 Z" fill="#3c6a5a" stroke="${INK}" stroke-width="8"/></g>`; };
+  const tower = () => { const p = P2(0, 0, 2400), k = p.k; return `<g transform="translate(${f2(p.x)} ${f2(p.y)}) scale(${f2(k * 0.9)})"><rect x="-50" y="-700" width="100" height="700" fill="#a85a3a" stroke="${INK}" stroke-width="8"/><circle cx="0" cy="-740" r="90" fill="${night ? '#ffe7a0' : '#f4ead4'}" stroke="${INK}" stroke-width="10"/><path d="M -130 -820 L 0 -960 L 130 -820 Z" fill="#5a3c6a" stroke="${INK}" stroke-width="8"/></g>`; };
   let towerDrawn = false;
   for (const b of boxes) {
     if (!towerDrawn && b.D < 2400) { s += tower(); towerDrawn = true; }

@@ -12,7 +12,7 @@ const CAST = {
   barnabe:  { skin: '#eab88a', top: '#8a6a3a', topD: '#6e5228', topType: 'vest', pants: '#5a5a6a', shoes: '#3a2a20', hair: 'whiteSides', stache: '#f4f1ea', hat: 'straw', cane: 1, seed: 5 },
   padeiro2: { skin: '#c98b5e', top: '#f6efe2', topD: '#ddd2bc', topType: 'apron', pants: '#3a3a4a', shoes: '#2a2228', hair: 'chef', seed: 13 },
   menino:   { skin: '#8d5a34', top: '#e86a4a', topD: '#c8503a', topType: 'tee', pants: '#3d5a9e', shoes: '#f4f1ea', hair: 'cap', hairC: '#2a1a14', scale: 0.72, seed: 6 },
-  mulher:   { skin: '#e0ac79', top: '#4f9a72', topD: '#3a7a58', topType: 'dress', pants: '#3a5a48', shoes: '#5a2a2a', hair: 'curly', hairC: '#6a3a24', glasses: '#c8643c', blush: 1, wide: 1.15, seed: 7 },
+  mulher:   { skin: '#e0ac79', top: '#9a6a4f', topD: '#7a4a3a', topType: 'dress', pants: '#5a3a48', shoes: '#5a2a2a', hair: 'curly', hairC: '#6a3a24', glasses: '#c8643c', blush: 1, wide: 1.15, seed: 7 },
   moca:     { skin: '#f5d0b0', top: '#e88aa8', topD: '#cc6a8a', topType: 'tee', pants: '#5a7ab8', shoes: '#f4f1ea', hair: 'long', hairC: '#7a4a2a', bow: '#f2c230', blush: 1, scale: 0.95, seed: 8 },
   viz1:     { skin: '#c98b5e', top: '#7aa0c8', topD: '#5a82ac', topType: 'shirt', pants: '#5a4a3a', shoes: '#2a2228', hair: 'short', hairC: '#1d1a22', seed: 9 },
   viz2:     { skin: '#f1c08f', top: '#c8643c', topD: '#a44e2c', topType: 'tee', pants: '#3a3a4a', shoes: '#2a2228', hair: 'short', hairC: '#8a5a2a', seed: 10 },

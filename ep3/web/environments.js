@@ -120,7 +120,7 @@ function bakeryFacade(x, base, o = {}) {
   const t = o.t || 0;
   for (let i = 0; i < 5; i++) { const ph = ((t * 0.35 + i / 5) % 1); s += `<circle cx="${f2(x + w * 0.7 + 17 + Math.sin(ph * 6 + i) * 18)}" cy="${f2(base - h - 140 - ph * 220)}" r="${f2(18 + ph * 40)}" fill="#efe6da" opacity="${f2(0.5 * (1 - ph))}"/>`; }
   // sign board
-  s += `<rect x="${x + 110}" y="${base - h + 26}" width="${w - 220}" height="84" rx="12" fill="#3c5a4a" stroke="${INK}" stroke-width="5"/>`;
+  s += `<rect x="${x + 110}" y="${base - h + 26}" width="${w - 220}" height="84" rx="12" fill="#5a3c4a" stroke="${INK}" stroke-width="5"/>`;
   s += `<text x="${x + w / 2}" y="${base - h + 86}" text-anchor="middle" ${FONT} font-size="56" fill="#f4e6c8" letter-spacing="6">PADARIA</text>`;
   // awning
   const aw = base - h + 140;
@@ -135,7 +135,7 @@ function bakeryFacade(x, base, o = {}) {
   for (let i = 0; i < 3; i++) s += `<g transform="translate(${wx + 70 + i * 80} ${wy + wh * 0.88})">${bread({ s: 0.55, rot: -8 })}</g>`;
   s += `<path d="M ${wx + 20} ${wy + 70} L ${wx + 90} ${wy + 10}" stroke="#fff" stroke-width="8" opacity="0.3"/>`;
   // door
-  s += door(x + 410, base, 150, 250, { color: '#3c5a4a', glass: true, sign: o.sign === false ? null : (o.sign || 'JÁ VOLTO'), signAng: o.signAng || 0, open: o.open, inside: '#5a3a24' });
+  s += door(x + 410, base, 150, 250, { color: '#5a3c4a', glass: true, sign: o.sign === false ? null : (o.sign || 'JÁ VOLTO'), signAng: o.signAng || 0, open: o.open, inside: '#5a3a24' });
   // step & plants
   s += `<rect x="${x + 390}" y="${base - 6}" width="190" height="18" fill="#b6a58a" stroke="${INK}" stroke-width="3"/>`;
   s += pot(x + 360, base, 0.9, t) + pot(x + 600, base, 0.8, t + 1);
@@ -145,9 +145,9 @@ function bakeryFacade(x, base, o = {}) {
 function pot(x, base, k = 1, t = 0) {
   const sw = Math.sin(t * 1.3) * 3;
   return `<g transform="translate(${x} ${base}) scale(${k})"><path d="M -30 -50 L 30 -50 L 22 0 L -22 0 Z" fill="#c8643c" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
-  <g transform="rotate(${f2(sw)} 0 -50)"><ellipse cx="-18" cy="-80" rx="20" ry="34" fill="#6a7a3e" stroke="${INK}" stroke-width="3.5" transform="rotate(-20 -18 -80)"/><ellipse cx="16" cy="-86" rx="20" ry="38" fill="#7a8a4a" stroke="${INK}" stroke-width="3.5" transform="rotate(18 16 -86)"/><ellipse cx="0" cy="-100" rx="16" ry="34" fill="#8a9a56" stroke="${INK}" stroke-width="3.5"/></g></g>`;
+  <g transform="rotate(${f2(sw)} 0 -50)"><ellipse cx="-18" cy="-80" rx="20" ry="34" fill="#b0603a" stroke="${INK}" stroke-width="3.5" transform="rotate(-20 -18 -80)"/><ellipse cx="16" cy="-86" rx="20" ry="38" fill="#7a8a4a" stroke="${INK}" stroke-width="3.5" transform="rotate(18 16 -86)"/><ellipse cx="0" cy="-100" rx="16" ry="34" fill="#8a9a56" stroke="${INK}" stroke-width="3.5"/></g></g>`;
 }
-function tree(x, base, k = 1, t = 0, c = '#6a7a3e') {
+function tree(x, base, k = 1, t = 0, c = '#b0603a') {
   const sw = Math.sin(t * 0.9 + x) * 2.5;
   return `<g transform="translate(${x} ${base}) scale(${k})"><path d="M -18 0 Q -10 -120 -16 -220 L 16 -220 Q 10 -120 18 0 Z" fill="#6a4a34" stroke="${INK}" stroke-width="4"/>
   <g transform="rotate(${f2(sw)} 0 -220)"><circle cx="-70" cy="-260" r="80" fill="${c}" stroke="${INK}" stroke-width="4"/><circle cx="70" cy="-270" r="84" fill="${c}" stroke="${INK}" stroke-width="4"/><circle cx="0" cy="-340" r="100" fill="${mix(c, '#c8d08a', 0.2)}" stroke="${INK}" stroke-width="4"/><circle cx="-30" cy="-370" r="34" fill="#ffffff" opacity="0.12"/></g></g>`;
@@ -252,7 +252,7 @@ function clockTower(cx, base, o = {}) {
   s += `<path d="M ${cx - 70} ${base - 130} L ${cx - 54} ${base - H + R + 40} L ${cx - 30} ${base - H + R + 40} L ${cx - 40} ${base - 130} Z" fill="#ffffff" opacity="0.14"/><path d="M ${cx + 30} ${base - 130} L ${cx + 26} ${base - H + R + 40} L ${cx + 54} ${base - H + R + 40} L ${cx + 70} ${base - 130} Z" fill="#1b1424" opacity="0.18"/>`;
   s += `<rect x="${cx - 160}" y="${base - 90}" width="320" height="90" fill="url(#pBrick)"/>`;
   for (let i = 0; i < 4; i++) s += `<rect x="${cx - 62 + i * 2}" y="${base - 200 - i * 120}" width="${124 - i * 4}" height="12" fill="#e0a83a" stroke="${INK}" stroke-width="3"/>`;
-  s += `<path d="M ${cx - R - 40} ${base - H - R + 40} L ${cx} ${base - H - R - 110} L ${cx + R + 40} ${base - H - R + 40} Z" fill="#3c5a4a" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>`;
+  s += `<path d="M ${cx - R - 40} ${base - H - R + 40} L ${cx} ${base - H - R - 110} L ${cx + R + 40} ${base - H - R + 40} Z" fill="#5a3c4a" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>`;
   s += `<circle cx="${cx}" cy="${base - H - R - 116}" r="14" fill="#e0a83a" stroke="${INK}" stroke-width="4"/>`;
   s += clockFace(cx, base - H + 40 - R * 0.0, R, o.hour || 0, o.min || 0, { day: o.day, glow: o.glow, blur: o.blur });
   s += '</g></g>';
@@ -292,9 +292,9 @@ function bakeryInterior(t, o = {}) {
   // window
   s += windowBox(1340, 400, 200, 170, { glass: '#bfe0e8', lit: 0 });
   // door
-  s += door(1640, 900, 180, 330, { color: '#3c5a4a', glass: true, open: o.doorOpen || 0, inside: '#f2d9a0', sign: null });
+  s += door(1640, 900, 180, 330, { color: '#5a3c4a', glass: true, open: o.doorOpen || 0, inside: '#f2d9a0', sign: null });
   // hanging lamp
-  s += `<path d="M 600 -400 V 120" stroke="${INK}" stroke-width="4"/><path d="M 550 120 L 650 120 L 620 80 L 580 80 Z" fill="#3c5a4a" stroke="${INK}" stroke-width="4"/><circle cx="600" cy="140" r="18" fill="#ffe08a"/><circle cx="600" cy="160" r="160" fill="#ffd27a" opacity="0.15"/>`;
+  s += `<path d="M 600 -400 V 120" stroke="${INK}" stroke-width="4"/><path d="M 550 120 L 650 120 L 620 80 L 580 80 Z" fill="#5a3c4a" stroke="${INK}" stroke-width="4"/><circle cx="600" cy="140" r="18" fill="#ffe08a"/><circle cx="600" cy="160" r="160" fill="#ffd27a" opacity="0.15"/>`;
   // floor
   s += `<rect x="-800" y="900" width="3600" height="400" fill="#8a5a34"/><rect x="-800" y="900" width="3600" height="400" fill="url(#pWood)"/><rect x="-800" y="900" width="3600" height="40" fill="#1b1424" opacity="0.22"/>`;
   for (let i = 0; i < 30; i++) s += `<path d="M ${-800 + i * 140} 900 L ${-1200 + i * 200} 1300" stroke="${INK}" stroke-width="2" opacity="0.15"/>`;
@@ -373,7 +373,7 @@ function banner(x, y, w, text, t) {
   s += `<path d="M ${x} ${y + 6} Q ${x + w / 2} ${y + sag * 2 + 6} ${x + w} ${y + 6} L ${x + w} ${y + 62} Q ${x + w / 2} ${y + sag * 2 + 62} ${x} ${y + 62} Z" fill="#fff4dc" stroke="${INK}" stroke-width="4"/>`;
   s += `<path id="bnr${x}" d="M ${x + 20} ${y + 48} Q ${x + w / 2} ${y + sag * 2 + 48} ${x + w - 20} ${y + 48}" fill="none"/>`;
   s += `<text font-family="Fredoka" font-weight="700" font-size="30" fill="#d0503a" letter-spacing="0.5"><textPath href="#bnr${x}" startOffset="50%" text-anchor="middle">${text}</textPath></text>`;
-  for (let i = 0; i < 9; i++) { const u = (i + 0.5) / 9, bx = x + w * u, by = y + 4 * sag * u * (1 - u) * 2 + 64; s += `<path d="M ${f2(bx - 14)} ${f2(by)} L ${f2(bx + 14)} ${f2(by)} L ${f2(bx)} ${f2(by + 28 + Math.sin(t * 3 + i) * 2)} Z" fill="${['#e86a6a', '#f2c230', '#5ab0d8', '#7ab06a'][i % 4]}" stroke="${INK}" stroke-width="2.5"/>`; }
+  for (let i = 0; i < 9; i++) { const u = (i + 0.5) / 9, bx = x + w * u, by = y + 4 * sag * u * (1 - u) * 2 + 64; s += `<path d="M ${f2(bx - 14)} ${f2(by)} L ${f2(bx + 14)} ${f2(by)} L ${f2(bx)} ${f2(by + 28 + Math.sin(t * 3 + i) * 2)} Z" fill="${['#e86a6a', '#f2c230', '#5ab0d8', '#d08a48'][i % 4]}" stroke="${INK}" stroke-width="2.5"/>`; }
   return s;
 }
 function cake(x, y, t) {

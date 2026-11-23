@@ -52,11 +52,11 @@ const nightTint = T => { const S = plazaSky(T); return S.night > 0.02 ? ['#4a4a8
 // ---------- environments ----------
 function streetARow(t, o = {}) {
   const base = 900; let s = '';
-  s += house(-1150, base, 380, 420, { wall: '#e8c9a0', roof: '#d0704a', windows: 2, shutters: '#7aa06a', seed: 1 });
+  s += house(-1150, base, 380, 420, { wall: '#e8c9a0', roof: '#d0704a', windows: 2, shutters: '#c09a6a', seed: 1 });
   s += house(-720, base, 420, 470, { wall: '#9fc3d8', roof: '#d0704a', windows: 2, door: true, doorX: 30, sign: o.signs ? 'JÁ VOLTO' : null, signAng: Math.sin(t * 1.7 + 1) * 3, flowers: true, shutters: '#4f7a9a', seed: 2 });
   s += house(-250, base, 380, 430, { wall: '#f2d27a', roof: '#a85a3a', windows: 1, door: true, doorX: 220, sign: o.signs ? 'JÁ VOLTO' : null, signAng: Math.sin(t * 1.5 + 2) * 3, seed: 3, cat: true, t });
   s += bakeryFacade(180, base, { t, sign: false, open: o.bakeryOpen || 0 });
-  s += house(860, base, 420, 450, { wall: '#a8d4a8', roof: '#d0704a', windows: 2, shutters: '#e8865a', flowers: true, seed: 4 });
+  s += house(860, base, 420, 450, { wall: '#d4b8a8', roof: '#d0704a', windows: 2, shutters: '#e8865a', flowers: true, seed: 4 });
   s += house(1320, base, 380, 440, { wall: '#d8c4a8', roof: '#8a5a3a', windows: 1, door: true, doorX: 160, sign: 'JÁ VOLTO', signAng: o.oldAng != null ? o.oldAng : Math.sin(t * 1.3) * 3, dust: 0.35, web: true, seed: 5, doorC: '#6a5a4a' });
   for (let i = 0; i < 7; i++) s += `<g transform="translate(${1500 + (i % 4) * 26 - 10} ${base + 4 - Math.floor(i / 4) * 16}) rotate(${(i * 37) % 30 - 15})"><rect x="-26" y="-9" width="52" height="18" rx="9" fill="#efe8d8" stroke="${INK}" stroke-width="3"/><path d="M -14 -9 v 18 M 10 -9 v 18" stroke="#b6a58a" stroke-width="3"/></g>`;
   s += house(1760, base, 440, 480, { wall: '#e8a8b8', roof: '#a85a3a', windows: 2, door: true, doorX: 155, sign: o.signs ? 'JÁ VOLTO' : null, signAng: Math.sin(t * 1.6 + 3) * 3, shutters: '#4f7a9a', seed: 6 });
@@ -86,10 +86,10 @@ function plazaBack(T, t) {
 }
 function plazaMid(T, t) {
   const S = plazaSky(T); let s = ''; const r = rng(31); let x = -1500;
-  const walls = ['#f2d27a', '#9fc3d8', '#e8a8b8', '#a8d4a8', '#e8c9a0'];
-  while (x < 3400) { const w = 330 + r() * 120, h = 360 + r() * 160; s += house(x, 760, w, h, { wall: walls[Math.floor(r() * 5)], roof: r() < 0.5 ? '#d0704a' : '#a85a3a', windows: 2, shutters: r() < 0.5 ? '#4f7a9a' : '#7aa06a', lit: S.night, seed: (x | 0) + 7 }); x += w + 30; }
+  const walls = ['#f2d27a', '#9fc3d8', '#e8a8b8', '#d4b8a8', '#e8c9a0'];
+  while (x < 3400) { const w = 330 + r() * 120, h = 360 + r() * 160; s += house(x, 760, w, h, { wall: walls[Math.floor(r() * 5)], roof: r() < 0.5 ? '#d0704a' : '#a85a3a', windows: 2, shutters: r() < 0.5 ? '#4f7a9a' : '#c09a6a', lit: S.night, seed: (x | 0) + 7 }); x += w + 30; }
   s += `<rect x="-1500" y="760" width="4900" height="30" fill="#c8b48e" stroke="${INK}" stroke-width="3"/>`;
-  for (const tx of [-500, 150, 1950, 2500]) s += tree(tx, 800, 0.9, t, '#7ab06a');
+  for (const tx of [-500, 150, 1950, 2500]) s += tree(tx, 800, 0.9, t, '#d08a48');
   s += walkers(t, 800, 0.3, 23, 6, 3800);
   return s;
 }
@@ -116,7 +116,7 @@ function fruitStall(x, base, t) {
   let s = `<rect x="${x - 120}" y="${base - 120}" width="240" height="120" fill="#b87a4a" stroke="${INK}" stroke-width="4"/><rect x="${x - 120}" y="${base - 120}" width="240" height="120" fill="url(#pWoodV)"/>`;
   s += `<path d="M ${x - 130} ${base - 120} V ${base - 300} M ${x + 130} ${base - 120} V ${base - 300}" stroke="${INK}" stroke-width="8"/>`;
   for (let i = 0; i < 6; i++) s += `<path d="M ${x - 150 + i * 50} ${base - 300} h 50 v 40 q -25 18 -50 0 Z" fill="${i % 2 ? '#fff4dc' : '#e86a4a'}" stroke="${INK}" stroke-width="3"/>`;
-  const fr = [['#e86a4a', 0], ['#f2c230', 1], ['#7ab06a', 2], ['#f08a3a', 3]];
+  const fr = [['#e86a4a', 0], ['#f2c230', 1], ['#d08a48', 2], ['#f08a3a', 3]];
   fr.forEach(([c, k]) => { for (let j = 0; j < 4; j++) s += `<circle cx="${x - 95 + k * 60 + (j % 2) * 18}" cy="${base - 128 - Math.floor(j / 2) * 16}" r="11" fill="${c}" stroke="${INK}" stroke-width="2.5"/>`; });
   return s;
 }

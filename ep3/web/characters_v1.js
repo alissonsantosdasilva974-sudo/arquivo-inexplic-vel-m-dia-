@@ -6,7 +6,7 @@ const CH = {
   motorista: { scale: 1.05, seed: 4, skin: '#f3c9a0', cloth: '#3c5a8a' },
   barnabe: { scale: 1.02, seed: 5, skin: '#eab88a', cloth: '#8a5a34' },
   menino: { scale: 0.72, seed: 6, skin: '#8d5524', cloth: '#4f7a9a' },
-  mulher: { scale: 1, seed: 7, skin: '#e0ac69', cloth: '#4f8a5e' },
+  mulher: { scale: 1, seed: 7, skin: '#e0ac69', cloth: '#8a5e4f' },
   moca: { scale: 0.96, seed: 8, skin: '#f3c9a0', cloth: '#e07a96' },
   viz1: { scale: 0.98, seed: 9, skin: '#c68642', cloth: '#c8a03a' },
   viz2: { scale: 1.04, seed: 10, skin: '#f1c27d', cloth: '#6a5a80' },
@@ -115,7 +115,7 @@ function accessories(d, ex, dir) {
   }
   if (id === 'mae') {
     s += `<path d="M -68 -168 C -70 -248 70 -248 68 -168 Q 0 -190 -68 -168 Z" fill="#7a8a4a" stroke="${INK}" stroke-width="4"/>`;
-    s += `<path d="M ${-dir * 62} -176 l ${-dir * 26} -10 l ${-dir * 2} 26 Z" fill="#6a7a3e" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>`;
+    s += `<path d="M ${-dir * 62} -176 l ${-dir * 26} -10 l ${-dir * 2} 26 Z" fill="#b0603a" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>`;
     s += `<circle cx="${f2(ex - 18)}" cy="-212" r="5" fill="#e0a83a"/><circle cx="${f2(ex + 14)}" cy="-218" r="5" fill="#e0a83a"/>`;
   }
   if (id === 'motorista') {
@@ -147,7 +147,7 @@ function accessories(d, ex, dir) {
     s += `<path d="M -62 -168 C -64 -244 64 -244 62 -168 Q 10 -205 -20 -178 Q -40 -195 -62 -168 Z" fill="#6b3b2a" stroke="${INK}" stroke-width="4"/>`;
     s += `<path d="M 10 -228 l -30 -16 l 0 32 Z M 10 -228 l 30 -16 l 0 32 Z" fill="#e88aa0" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/><circle cx="10" cy="-228" r="7" fill="#d46a86" stroke="${INK}" stroke-width="3"/>`;
   }
-  if (id === 'viz1') s += `<path d="M -58 -186 C -70 -236 50 -250 62 -196 Q 0 -200 -58 -186 Z" fill="#5b7a4a" stroke="${INK}" stroke-width="4"/><circle cx="4" cy="-238" r="6" fill="#5b7a4a" stroke="${INK}" stroke-width="3"/>`;
+  if (id === 'viz1') s += `<path d="M -58 -186 C -70 -236 50 -250 62 -196 Q 0 -200 -58 -186 Z" fill="#7a5b4a" stroke="${INK}" stroke-width="4"/><circle cx="4" cy="-238" r="6" fill="#7a5b4a" stroke="${INK}" stroke-width="3"/>`;
   if (id === 'viz2') s += `<ellipse cx="0" cy="-192" rx="78" ry="13" fill="#2f2a3a" stroke="${INK}" stroke-width="4"/><path d="M -46 -194 C -46 -250 46 -250 46 -194 Z" fill="#2f2a3a" stroke="${INK}" stroke-width="4"/><path d="M -46 -206 L 46 -206" stroke="#c8643c" stroke-width="7"/>`;
   if (id === 'viz3') s += `<path d="M -64 -168 C -66 -240 66 -240 64 -168 Q 0 -192 -64 -168 Z" fill="#2e2a2a" stroke="${INK}" stroke-width="4"/><circle cx="${-dir * 40}" cy="-206" r="13" fill="#e88aa0" stroke="${INK}" stroke-width="3"/><circle cx="${-dir * 40}" cy="-206" r="5" fill="#e0a83a"/>`;
   return s;

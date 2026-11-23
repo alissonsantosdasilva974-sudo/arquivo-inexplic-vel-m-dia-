@@ -55,7 +55,7 @@ function carView(x, y, k, col, night = 0, o = {}) {
   return `<g transform="translate(${f2(x)} ${f2(y)}) scale(${f2(s)})">${g}</g>`;
 }
 function treeP(x, y, k, t, night = 0, seed = 1) {
-  const sw = Math.sin(t * 0.8 + seed) * 3, c = night ? '#2a4a3e' : mix('#6aa05a', '#8ab86a', (seed % 5) / 5);
+  const sw = Math.sin(t * 0.8 + seed) * 3, c = night ? '#4a3440' : mix('#d0803e', '#e0a050', (seed % 5) / 5);
   return `<g transform="translate(${f2(x)} ${f2(y)}) scale(${f2(k)})"><ellipse cx="0" cy="4" rx="90" ry="18" fill="#1b1424" opacity="0.25"/>
    <path d="M -14 0 Q -8 -150 -12 -260 L 12 -260 Q 8 -150 14 0 Z" fill="#6a4a34" stroke="${INK}" stroke-width="6"/>
    <g transform="rotate(${f2(sw)} 0 -260)"><circle cx="-70" cy="-300" r="86" fill="${shade(c, 0.12)}" stroke="${INK}" stroke-width="6"/><circle cx="72" cy="-310" r="90" fill="${shade(c, 0.08)}" stroke="${INK}" stroke-width="6"/><circle cx="0" cy="-390" r="108" fill="${c}" stroke="${INK}" stroke-width="6"/><circle cx="-36" cy="-420" r="40" fill="#fff" opacity="0.13"/></g></g>`;

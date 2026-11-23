@@ -49,3 +49,6 @@ ep3/renders/
 ep3/work/preview/
 ep3/audio/*.wav
 !ep3/audio/sfx_stem.wav
+ep3/teste/frames/
+ep3/teste/f2/
+ep3/teste/f3/
