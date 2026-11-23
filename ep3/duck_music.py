@@ -19,8 +19,8 @@ if len(idx):
         if b - a > gap: ends.append(a); starts.append(b)
     ends.append(idx[-1])
     for a, b in zip(starts, ends): act[a:b + 1] = True
-BASE = float(sys.argv[1]) if len(sys.argv) > 1 else -16.5   # dB gain on the music during speech (≈ −20 dB under the voice)
-LIFT = 8.0                                                   # extra dB in pauses
+BASE = float(sys.argv[1]) if len(sys.argv) > 1 else -25.0   # dB gain on the music during speech (≈ −20 dB under the voice)
+LIFT = 5.0                                                   # extra dB in pauses
 g_db = np.where(act, BASE, BASE + LIFT).astype(np.float64)
 k = int(0.25 * SR); g_db = np.convolve(np.pad(g_db, (k, k), mode='edge'), np.ones(2 * k + 1) / (2 * k + 1), 'valid')[:n]
 out = m * (10 ** (g_db / 20))[:, None]

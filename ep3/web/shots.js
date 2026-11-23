@@ -63,11 +63,28 @@ function std(t, T, k, o = {}) {
   } else if (k === 'R') {
     cam = push(focus(650, PH + 20, 2.5, 940), t, 0.9, 0.05);
     inner = polo + P_('casaco', { x: 800, y: 990, s: 0.9, t: T, back: true });
+  } else if (k === 'LUI') {
+    cam = push(frameG(790, G, 1.7, 1430), t, 0.9, 0.05);
+    const lu = P_('luisa', { x: 965, y: G - 10, s: 0.5, t: T, face: -0.5, lx: -1, expr: 'happy', armR: wave(T, T - t, T - t + 5, 160, 20) || 20, bendR: 20 });
+    inner = lu + `<g transform="translate(965 ${f2(G - 10 - 0.5 * 0.95 * 560)})"><rect x="-58" y="-26" width="116" height="44" rx="22" fill="#ffffff" stroke="${OL}" stroke-width="4"/><text y="6" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="26" fill="#6a40a8">Luisa</text></g>` + polo + man;
+  } else if (k === 'DUT') { cam = { ...push(focus(MX0, MH, 3.2, 930), t, 0.9, 0.06), r: -8 }; inner = polo + man; }
+  else if (k === 'DUTP') { cam = { ...push(focus(PX0, PH, 3.3, 950), t, 0.9, 0.06), r: 7 }; inner = man + polo; }
+  else if (k === 'LOWP') { cam = lerpCam(focus(PX0, G - 50, 2.3, 1300), focus(PX0, PH, 2.7, 1000), E.inOut(clamp(t / 0.8))); inner = man + polo; }
+  else if (k === 'PROF') {
+    cam = push(focus(715, PH - 10, 2.6, 950), t, 0.9, 0.05);
+    inner = poloP(T, Object.assign({}, o.polo || {}, { x: PX0 + 25, side: true, face: 0.8 })) + (o.noMan ? '' : manP(T, Object.assign({}, o.man || {}, { x: MX0 - 25, side: true, face: -0.8 })));
+  } else if (k === 'P3D' || k === 'TOP') {
+    const c3 = k === 'TOP' ? cam3(1700, 300, 500, 0) : cam3(640, 560, 500, 0), D = 700;
+    const on = (T >= 4.3 && T < 23.4);
+    const people = [{ id: 'polo', X: -70, D, s: 0.44, o: { t: T, face: 0.7, lx: 1, hat: on ? 'fedora' : null, pocketNote: true, expr: (o.polo || {}).expr || 'worried', mouth: talk(T, POLO_TALK) } },
+      { id: 'casaco', X: 70, D, s: 0.44, o: { t: T, face: -0.7, lx: -1, expr: T > 46.4 ? 'smug' : 'neutral', coatNote: T < 55, mouth: talk(T, MAN_TALK) } }];
+    const pp = P3(c3, 0, 0, D);
+    return { cam: k === 'TOP' ? push(focus(960, 760, 1.15), t, 0.9, 0.05) : push(focus(pp.x, pp.y - 150, 2.4, 1000), t, 0.9, 0.05), layers: [...backNight(t), Lr(1, street3D(T, { cam: c3, seed: 7, night: 1, people, crowd: 0, traffic: false }) + darkRect(T)), Lr(1.1, fog(T, 760, 0.45))], tint: tintAt(T), over: o.over || '' };
   } else { cam = push(frameG(715, G, 2.0, 1430), t, 0.9, 0.05); inner = polo + man; }
   return { cam, layers: nightSet(T, t, lamp + inner + extra), tint: tintAt(T), over: o.over || '' };
 }
 // beat: divide [t0,t1] igualmente entre os enquadramentos da lista; fn(t, T, k, i) devolve a cena
-const PC = new Set(['P', 'PX', 'POVP', 'HOOK']);
+const PC = new Set(['P', 'PX', 'POVP', 'HOOK', 'DUTP']);
 function beat(t0, t1, ks, fn) {
   ks.forEach((k, i) => { const a = t0 + (t1 - t0) * i / ks.length; SHOTS.push({ t0: +a.toFixed(3), k, pc: PC.has(k), draw(t, T) { return fn(t, T, k, i); } }); });
 }
@@ -86,6 +103,17 @@ function bubble(T, t0, t1, text, x, y, tail = -1) {
   const w = Math.max(420, text.length * 34 + 90);
   return `<g transform="translate(${x} ${y}) scale(${f2(pop)})" opacity="${f2(out)}"><path d="M ${-w / 2} -70 Q ${-w / 2} -110 ${-w / 2 + 40} -110 H ${w / 2 - 40} Q ${w / 2} -110 ${w / 2} -70 V 40 Q ${w / 2} 80 ${w / 2 - 40} 80 H ${tail * 60 + 50} L ${tail * 150} 170 L ${tail * 60 - 30} 80 H ${-w / 2 + 40} Q ${-w / 2} 80 ${-w / 2} 40 Z" fill="#ffffff" stroke="#211c26" stroke-width="10" stroke-linejoin="round"/>` +
     `<text y="0" text-anchor="middle" dominant-baseline="middle" font-family="Fredoka" font-weight="700" font-size="60" fill="#211c26">${text}</text></g>`;
+}
+function luisaCard(T) {
+  const a = clamp((T - 15.95) / 0.2) * (1 - clamp((T - 19.0) / 0.2));
+  if (a <= 0) return '';
+  const y = 640 + (1 - E.back(clamp((T - 15.95) / 0.35))) * 80;
+  return `<g transform="translate(540 ${f2(y)})" opacity="${f2(a)}"><rect x="-480" y="-140" width="960" height="280" rx="36" fill="#ffffff" stroke="#211c26" stroke-width="10"/>` +
+    `<g transform="translate(-392 -50)"><circle r="46" fill="#8a5ac8" stroke="#211c26" stroke-width="6"/><text y="16" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="48" fill="#ffffff">L</text></g>` +
+    `<text x="-322" y="-66" font-family="Fredoka" font-weight="600" font-size="36" fill="#7a7280">@Lulu_br10 · Luisa</text>` +
+    `<text x="-322" y="-6" font-family="Fredoka" font-weight="700" font-size="48" fill="#211c26"><tspan fill="#d0402a">Cobra</tspan> e prvf fala meu nome</text>` +
+    `<text x="-322" y="56" font-family="Fredoka" font-weight="700" font-size="48" fill="#211c26">no próximo vídeo! 💜</text>` +
+    `<text x="420" y="112" text-anchor="end" font-family="Fredoka" font-weight="700" font-size="34" fill="#d0402a">♥ Polo curtiu</text></g>`;
 }
 function commentPanel(T) {
   const a = clamp((T - 77.3) / 0.25) * (1 - clamp((T - 81.9) / 0.2));
@@ -139,7 +167,7 @@ beat(13.17, 15.9, ['P', 'POVW', 'PX'], (t, T, k) => {
   return std(t, T, k, { noMan: k === 'PX', polo: { armR: 40, bendR: 60, holdR: wallet({ s: 0.3 }) } });
 });
 // 6 · "Podia cobrar a nota. Fingir que nada era estranho." (15,9–19,2)
-beat(15.9, 19.2, ['W', 'P', 'M', 'PX'], S((T, k) => ({ polo: { expr: T < 17 ? 'smug' : 'neutral', lx: k === 'PX' ? -1 : 1 }, extra: k === 'P' ? emote('q', PX0 + 40, G - 0.62 * 470, T - 16.0, 0.9) : '' })));
+beat(15.9, 19.2, ['LUI', 'P', 'PROF', 'PX'], S((T, k) => ({ polo: { expr: T < 17 ? 'smug' : 'neutral', lx: k === 'PX' ? -1 : 1 }, extra: k === 'P' ? emote('q', PX0 + 40, G - 0.62 * 470, T - 16.0, 0.9) : '' })));
 // 7 · "Mas lembrou do homem de terno, esperando tanto tempo." (19,2–23,0) — lembrança em sépia
 const SEPIA = ['#b07a40', 0.42];
 beat(19.2, 23.03, ['P', 'MEM', 'MEM2', 'MEMC', 'PX'], (t, T, k) => {
@@ -149,7 +177,7 @@ beat(19.2, 23.03, ['P', 'MEM', 'MEM2', 'MEMC', 'PX'], (t, T, k) => {
 });
 function t0of(T) { const i = shotAt(T); return SHOTS[i].t0; }
 // 8 · "Então tirou o chapéu e contou tudo." (23,0–25,4)
-beat(23.03, 25.38, ['P', 'W', 'O'], S({ polo: { expr: 'neutral' } }));
+beat(23.03, 25.38, ['P', 'P3D', 'O'], S({ polo: { expr: 'neutral' } }));
 // 9 · "Toda nota de dez tem dono." (25,4–27,5)
 beat(25.38, 27.49, ['POVN', 'P', 'POVN2'], (t, T, k) => {
   if (k === 'P') return std(t, T, 'P', { polo: { armR: 120, bendR: 30, handR: 'point' } });
@@ -163,16 +191,16 @@ beat(27.49, 32.24, ['P', 'HATI', 'M', 'PX', 'MEMG', 'P'], (t, T, k) => {
   return std(t, T, k, { polo: { armR: 30 + talk(T, POLO_TALK) * 90, bendR: 40, handR: 'open' } });
 });
 // 11 · "O homem ficou em silêncio." (32,2–34,3)
-beat(32.24, 34.32, ['M', 'W', 'MX'], S({ man: { expr: 'neutral', ly: 0.3 } , over: '' }));
+beat(32.24, 34.32, ['DUT', 'TOP', 'MX'], S({ man: { expr: 'neutral', ly: 0.3 } , over: '' }));
 SHOTS[SHOTS.length - 3].draw = ((f) => (t, T) => { const r = f(t, T); r.over = comic(T, 32.7, '...', 540, 520, { size: 140, life: 1.0, fill: '#ffffff' }); return r; })(SHOTS[SHOTS.length - 3].draw);
 // 12 · "Olhou a nota. Olhou a carteira." (34,3–37,9)
-beat(34.32, 37.85, ['MX', 'POCKET', 'W', 'MX2', 'WAL'], (t, T, k) => {
+beat(34.32, 37.85, ['MX', 'POCKET', 'PROF', 'MX2', 'WAL'], (t, T, k) => {
   if (k === 'POCKET') return { cam: push(focus(MX0 - 22, G - 0.62 * 1.12 * 214, 7.0, 900), t, 0.7, 0.08), layers: nightSet(T, t, lampLight(720, 940, 1) + manP(T, { face: -0.2 })), tint: tintAt(T) };
   if (k === 'WAL') return std(t, T, 'P', { polo: { armR: 50, bendR: 60, holdR: wallet({ s: 0.3 }), ly: 0.6, lx: 0.3 } });
   return std(t, T, k === 'MX2' ? 'MX' : k, { man: { ly: k === 'MX' ? 0.8 : 0.4, lx: k === 'MX2' ? -1 : 0.2 } });
 });
 // 13 · "Perguntou: e se eu não devolver?" (37,9–41,3)
-beat(37.85, 41.32, ['M', 'MX', 'R', 'P'], (t, T, k) => std(t, T, k, { man: { expr: 'neutral' }, polo: { expr: 'worried' }, over: bubble(T, 38.9, 41.1, 'e se eu não devolver?', k === 'P' || k === 'R' ? 600 : 540, 520, 1) }));
+beat(37.85, 41.32, ['DUT', 'MX', 'R', 'DUTP'], (t, T, k) => std(t, T, k, { man: { expr: 'neutral' }, polo: { expr: 'worried' }, over: bubble(T, 38.9, 41.1, 'e se eu não devolver?', k === 'DUTP' || k === 'R' ? 600 : 540, 520, 1) }));
 // 14 · "Polo respondeu: aí você fica livre da cidade, mas a nota continua te seguindo!" (41,3–47,4)
 beat(41.32, 47.35, ['P', 'PX', 'DRONE', 'FOLLOW', 'FOLLOW2', 'P', 'M'], (t, T, k) => {
   if (k === 'DRONE') { const q = E.inOut(clamp(t / 0.9)); return { cam: focus(960, 720, 1.0), layers: [...backNight(t), Lr(1, street3D(T, { cam: cam3(lerp(2400, 3400, q), 260, 500, 0), seed: 7, night: 1, crowd: 0, traffic: false }))], tint: NIGHT, over: comic(T, 43.4, 'LIVRE!', 540, 520, { size: 110, life: 0.8, fill: '#ffd23f' }) }; }
@@ -186,9 +214,9 @@ beat(41.32, 47.35, ['P', 'PX', 'DRONE', 'FOLLOW', 'FOLLOW2', 'P', 'M'], (t, T, k
   return std(t, T, k, { polo: { expr: 'neutral', armR: 30 + talk(T, POLO_TALK) * 90, bendR: 40, handR: 'point' } });
 });
 // 15 · "O homem sorriu, devagar." (47,4–50,9)
-beat(47.35, 50.91, ['M', 'MX', 'P', 'MX', 'W'], S((T) => ({ man: { expr: 'smug' }, polo: { expr: 'worried' }, extra: '' })));
+beat(47.35, 50.91, ['M', 'PROF', 'LOWP', 'MX', 'P3D'], S((T) => ({ man: { expr: 'smug' }, polo: { expr: 'worried' }, extra: '' })));
 // 16 · "Disse: eu já sabia. Por isso vim." (50,9–53,5)
-beat(50.91, 53.45, ['M', 'PX', 'MX'], S({ man: { expr: 'smug' }, polo: { expr: 'surprised' } }));
+beat(50.91, 53.45, ['DUT', 'PX', 'MX'], S({ man: { expr: 'smug' }, polo: { expr: 'surprised' } }));
 // 17 · "Tirou a nota do bolso, dobrada em quatro." (53,5–57,8)
 beat(53.45, 57.79, ['W', 'PULL', 'M', 'UNF', 'UNF2'], (t, T, k) => {
   if (k === 'PULL') { const q = E.inOut(inv(54.6, 55.2, T)); return { cam: push(focus(MX0 - 10, G - 0.62 * 1.12 * 200, 4.8, 900), t, 0.8, 0.06), layers: nightSet(T, t, lampLight(720, 940, 1) + manP(T, { face: -0.2, coatNote: q < 0.5, armR: lerp(10, 150, q < 0.5 ? q * 2 : 2 - q * 2) * 0 + (q < 0.5 ? lerp(10, 160, q * 2) : lerp(160, 62, (q - 0.5) * 2)), bendR: 40, holdR: q >= 0.5 ? FOLD(0.3, 1.1) : '' })), tint: tintAt(T) }; }
@@ -202,9 +230,9 @@ beat(57.79, 60.23, ['NOTE', 'PX', 'NOTE2'], (t, T, k) => {
   return { cam: push(focus(960, 600, k === 'NOTE' ? 1.0 : 1.5), t, 0.8, 0.1), layers: [povBg('#1c1c38'), Lr(1, `<g transform="translate(960 560)">${noteNamed('@polo', rv * GLOWN(T) + 0.2, { s: 3.2, rot: -3, fs: 20 })}</g>` + dust(T, 500, 300, 900, 600, 24, 3, '#ffe7a0'))], over: comic(T, 58.4, 'POLO?!', 540, 420, { size: 130, life: 1.4, fill: '#ff7a45' }) };
 });
 // 19 · "Polo parou. Não entendeu." (60,2–63,1)
-beat(60.23, 63.1, ['PX', 'W', 'P', 'PX'], S((T, k) => ({ polo: { expr: T < 61.2 ? 'surprised' : 'worried', mouth: 0 }, extra: k === 'P' ? emote('q', PX0 + 40, G - 0.62 * 470, T - 61.4, 0.9) : '' })));
+beat(60.23, 63.1, ['PX', 'TOP', 'DUTP', 'PX'], S((T, k) => ({ polo: { expr: T < 61.2 ? 'surprised' : 'worried', mouth: 0 }, extra: k === 'DUTP' ? emote('q', PX0 + 40, G - 0.62 * 470, T - 61.4, 0.9) : '' })));
 // 20 · "O homem falou: o dono te mandou me avisar. Ele não quer a nota de volta. Quer você!" (63,1–69,5)
-beat(63.1, 69.47, ['M', 'R', 'MX', 'P', 'LOW', 'PX', 'MX', 'O'], (t, T, k) => std(t, T, k, { man: { expr: T > 67.9 ? 'smug' : 'neutral', armL: T > 68.0 && T < 69.4 ? 75 : 8, bendL: 0, handL: T > 68.0 && T < 69.4 ? 'point' : null }, polo: { expr: T > 66 ? 'surprised' : 'worried' }, over: comic(T, 68.15, 'QUER VOCÊ!', 540, 520, { size: 110, life: 1.3, fill: '#ff7a45' }) }));
+beat(63.1, 69.47, ['M', 'R', 'PROF', 'P', 'LOW', 'PX', 'DUT', 'P3D'], (t, T, k) => std(t, T, k, { man: { expr: T > 67.9 ? 'smug' : 'neutral', armL: T > 68.0 && T < 69.4 ? 75 : 8, bendL: 0, handL: T > 68.0 && T < 69.4 ? 'point' : null }, polo: { expr: T > 66 ? 'surprised' : 'worried' }, over: comic(T, 68.15, 'QUER VOCÊ!', 540, 520, { size: 110, life: 1.3, fill: '#ff7a45' }) }));
 // 21 · "A rua escureceu. O relógio da torre parou." (69,5–73,3)
 const towerNight = (t, T, z) => { const run = Math.min(T, 71.75); const H = 22 + run * 0.4 + (T > 71.75 ? Math.sin(T * 40) * 0.002 * Math.max(0, 1 - (T - 71.75) * 3) : 0); return { cam: push(focus(960, 880 - (z > 2 ? 560 : 360), z, 960), t, 0.8, 0.06), layers: [...backNight(t), Lr(0.3, rooftops(t, 1, -3000)), Lr(0.9, `<rect x="-1400" y="880" width="4720" height="1200" fill="#2a2638"/>` + clockTower(960, 880, { hour: (H % 12) * 30, min: (H % 1) * 360 + (T < 71.75 ? Math.floor(T * 2) * 6 : 0) }) + darkRect(T))], tint: tintAt(T) }; };
 beat(69.47, 73.34, ['W', 'LAMP', 'P', 'TOWER', 'TOWERC'], (t, T, k) => {
@@ -220,7 +248,7 @@ beat(73.34, 75.99, ['W', 'HAND', 'POVP', 'M'], (t, T, k) => {
   return std(t, T, k, {});
 });
 // 23 · pergunta final + painel de comentário (75,99–81,8) → volta ao gancho
-beat(75.99, 81.76, ['P', 'MX', 'W', 'PX', 'M', 'P'], (t, T, k) => std(t, T, k, {
+beat(75.99, 81.76, ['P', 'MX', 'P3D', 'PX', 'DUT', 'P'], (t, T, k) => std(t, T, k, {
   man: { expr: 'smug' }, polo: { expr: T > 80.2 ? 'neutral' : 'worried', armR: T > 78.2 && T < 80 ? 110 : 70, handR: T > 78.2 && T < 80 ? 'point' : null },
   over: comic(T, 78.6, 'CONFIA', 300, 1000, { size: 96, life: 1.2, fill: '#7ac0ff', rot: -8 }) + comic(T, 79.2, 'DESCONFIA', 760, 1060, { size: 96, life: 1.0, fill: '#ff7a45', rot: 8 }) + comic(T, 80.4, 'PARTE 4?', 540, 1040, { size: 110, life: 1.2, fill: '#ffd23f' }) }));
 // último plano = primeiro quadro (loop)
@@ -230,7 +258,7 @@ SHOTS.push({ t0: 81.76, k: 'HOOK', pc: true, draw(t, T) { return hook(T - HOOK_E
 const _comic = comic;
 // ---------- placar: notas na carteira ×1 → ×2 (a nota com o nome do Polo) ----------
 function HUD(T) {
-  let out = commentPanel(T);
+  let out = commentPanel(T) + luisaCard(T);
   if (T < 14.0 || T > 81.7) return out;
   const n = T >= 74.3 ? 2 : 1, since = T - 74.3;
   const app = E.back(clamp((T - 14.0) / 0.3)) * (1 - clamp((T - 81.4) / 0.3));

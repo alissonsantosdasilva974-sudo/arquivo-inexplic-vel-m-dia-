@@ -22,6 +22,7 @@ const CAST2 = {
   senhora:  { skin: '#d9a27a', top: '#c8506a', topD: '#a63c54', topType: 'dress', pattern: 'pFlowers', bottom: '#c8506a', shoes: '#6a3a5a', hair: 'cloud', hairC: '#c8c2d4', bun: 1, blush: 1, ear: '#f2c230', w: 1.25, seed: 15 },
   vulto:    { skin: '#4a4258', top: '#2a2436', topD: '#1c1828', topType: 'shirt', bottom: '#241f30', shoes: '#141018', hair: 'short', hairC: '#16121e', w: 1.08, seed: 16 },
   casaco:   { skin: '#e6c6a8', top: '#2b2733', topD: '#1a1720', topType: 'coat', coat: 1, bottom: '#25212c', shoes: '#141018', hair: 'short', hairC: '#8e8a98', stubble: 0, w: 1.08, scale: 1.12, seed: 17 },
+  luisa:    { skin: '#f0c6a4', top: '#8a5ac8', topD: '#6a40a8', topType: 'tee', bottom: '#3a4a7a', shoes: '#f4f1ea', hair: 'long', hairC: '#3a2018', bow: '#ff8ab0', blush: 1, ear: '#ff8ab0', scale: 0.95, w: 1.0, seed: 18 },
   padeiro2: { skin: '#c98b5e', top: '#f6efe2', topD: '#dcd2bc', topType: 'shirt', apron: 1, bottom: '#3a3a4a', shoes: '#2a2228', hair: 'chef', hairC: '#1d1a22', w: 1.08, seed: 13 },
 };
 const shade = (c, k = 0.22) => mix(c, '#2a1a2a', k);
