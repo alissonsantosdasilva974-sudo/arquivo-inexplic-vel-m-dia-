@@ -7,14 +7,14 @@
 window.renderCover = () => {
   const T = 3, t = 1;
   const cam = frameG(700, 905, 1.62, 1600);
-  const polo = person('polo', { x: 680, y: 905, s: 0.68, t: 0.4, face: 0.25, expr: 'smug', wink: true, hat: 'fedora', armR: 95, bendR: 10, holdR: noteNamed('?', 1, { s: 0.5 }) });
-  const man = person('terno', { x: 905, y: 905, s: 0.62, t: 0.4, face: -0.4, lx: -1, expr: 'smug', fade: 0.6 });
+  const polo = person('polo', { x: 640, y: 905, s: 0.68, t: 0.4, face: 0.2, lx: 0.4, expr: 'surprised', mouth: 0.6, pocketNote: true, hat: null, armL: 40, bendL: 50, holdL: HAT(-10), armR: 100, bendR: 10, holdR: noteNamed('@polo', 1, { s: 0.62, fs: 20 }) });
+  const man = person('casaco', { x: 880, y: 905, s: 0.62, t: 0.4, face: -0.4, lx: -1, expr: 'smug', fade: 0.75 });
   const layers = nightSet(T, t, man + lampLight(760, 940, 1.0) + polo);
   let body = ''; for (const L of layers) body += `<g transform="${layerT(cam, L.d)}">${L.svg}</g>`;
   body += `<rect width="1080" height="1920" fill="#3a4a8a" opacity="0.22" style="mix-blend-mode:multiply"/>`;
   const title = (txt, y, size, fill) => `<text x="540" y="${y}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${size}" fill="${fill}" stroke="#211c26" stroke-width="22" stroke-linejoin="round" paint-order="stroke">${txt}</text>`;
-  const head = `<g transform="rotate(-4 540 560)">${title('QUEM DEVOLVE', 470, 100, '#ffffff')}${title('A NOTA VIRA', 575, 100, '#ffffff')}${title('O COBRADOR!', 700, 128, '#ffd23f')}</g>`;
-  const part = `<g transform="translate(820 340) rotate(8)"><rect x="-150" y="-50" width="300" height="100" rx="24" fill="#ff7a45" stroke="#211c26" stroke-width="10"/><text x="0" y="22" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="64" fill="#fff">PARTE 2</text></g>`;
+  const head = `<g transform="rotate(-4 540 560)">${title('A NOTA TEM', 500, 120, '#ffffff')}${title('SEU NOME!', 650, 150, '#ffd23f')}</g>`;
+  const part = `<g transform="translate(820 340) rotate(8)"><rect x="-150" y="-50" width="300" height="100" rx="24" fill="#ff7a45" stroke="#211c26" stroke-width="10"/><text x="0" y="22" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="64" fill="#fff">PARTE 3</text></g>`;
   document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${body}<rect width="1080" height="1920" fill="url(#gGlow)"/><rect width="1080" height="1920" fill="url(#gVig)"/><image href="paper.png" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>${head}${part}${badge()}</svg>`;
 };
 </script></body></html>
