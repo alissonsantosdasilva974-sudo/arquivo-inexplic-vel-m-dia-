@@ -1,5 +1,5 @@
 // Core helpers: easing, keyframes, color, camera/parallax. Everything is a pure function of time.
-const FPS = 30, W = 1080, H = 1920;
+const FPS = 60, W = 1080, H = 1920;
 const INK = '#2a2233';
 
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));

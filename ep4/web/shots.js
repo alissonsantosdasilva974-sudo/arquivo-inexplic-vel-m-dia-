@@ -47,37 +47,80 @@ const folk = (id, x, o = {}) => P_(id, Object.assign({ x, y: GY, s: 0.62, t: o.T
 
 // ---------- DIA CÔMICO ----------
 SHOTS.push(
-  // 01 (0.00) gancho: morador conta uma mentira, balão "Foi trânsito!" e o pescoço/ombros afundam na hora
+  // ===== 01 (0.00–3.08) gancho — 2 planos =====
+  // 01a: dolly-in contínuo da rua viva até o morador que conta a mentira ("Foi trânsito!")
   { t0: 0, draw(t, T) {
-    const lean = lerp(0, 18, E.out(I(t, 0.35, 0.85)));
-    const m = P_('morador', { x: 700, y: GY, s: 0.62, t: T, three4: 1, lean, expr: t < 0.4 ? 'happy' : 'worried', mouth: talk(T, [[0.05, 0.9]]), armR: 60, bendR: 90, handR: 'open', headTilt: lean * 0.3 });
-    const l = P_('viz2', { x: 920, y: GY, s: 0.62, t: T, three4: -1, expr: 'neutral', armL: 70, bendL: 120, armR: 70, bendR: 120, lx: -1 });
-    const ex = m + l + speech(730, GY - 0.62 * 470, 'Foi trânsito!', { w: 300, h: 84, k: 0.8, ap: I(t, 0.12, 0.4) * (1 - I(t, 2.4, 2.8)) }) + emote('sweat', 790, GY - 0.62 * 400, t - 0.5, 0.8);
-    return { cam: push(frameG(830, GY, 1.7, 1450), t, 3, 0.05), layers: [...plainDay(T, t, ex), Lr(1.45, fgLeaves(T, 1))] };
+    const m = P_('morador', act(T, { x: 720, y: GY, s: 0.62, three4: 1, lean: 0, expr: 'happy', armL: 14 }, { talk: [[0.2, 1.3]], seed: 2 }));
+    const l = P_('viz2', act(T, { x: 930, y: GY, s: 0.62, three4: -1, expr: 'neutral', armL: 70, bendL: 120, armR: 70, bendR: 120, lx: -1 }, { seed: 5 }));
+    const ex = passersby(T, 3, 4, GY - 4, 0.5) + m + l + speech(740, GY - 0.62 * 470, 'Foi trânsito!', { w: 300, h: 84, k: 0.8, ap: E.elastic(clamp((t - 0.25) / 0.5)) });
+    const c = cam(t, [[0, 900, GY - 260, 1.05, 0, 900], [1.4, 820, GY - 190, 1.95, -1.5, 900]]);
+    return { cam: c, layers: [...plainDay(T, t, ex, { npcs: true, avoidX: 820, movingCar: lerp(-600, 2200, t / 3) }), Lr(1.45, fgLeaves(T, 1))] };
   } },
-  // 02 (3.08) Polo caminha apontando os moradores tortos; depois corte interno em "Uma mentira grande" (5.7)
+  // 01b: plano baixo; a cada palavra forte o pescoço entorta mais ("mentira", "pesa", "ombros")
+  { t0: 1.4, draw(t, T) {
+    const lean = kf(T, [[1.4, 4], [1.46, 4], [1.6, 22], [1.75, 16], [2.01, 16], [2.13, 27], [2.3, 22], [2.55, 22], [2.68, 33], [2.85, 28]]);
+    const m = P_('morador', act(T, { x: 720, y: GY, s: 0.62, three4: 1, lean, expr: 'worried', headTilt: lean * 0.4, armL: 14, armR: 20, bendR: 40 }, { seed: 2 }));
+    const l = P_('viz2', act(T, { x: 930, y: GY, s: 0.62, three4: -1, expr: 'smug', armL: 70, bendL: 120, armR: 70, bendR: 120, lx: -1 }, { seed: 5 }));
+    const ex = m + l + speech(740, GY - 0.62 * 470, 'Foi trânsito!', { w: 300, h: 84, k: 0.8, ap: 1 - E.in(clamp((t - 1.2) / 0.3)) }) + emote('sweat', 800, GY - 0.62 * 400, T - 1.6, 0.8);
+    const c = punch(cam(t, [[0, 770, GY - 200, 2.4, -4, 1000], [1.68, 860, GY - 230, 2.7, -2, 1000]]), T, [WS('mentira', 1.3, 1.6), WS('pesa', 1.9, 2.2), WS('ombros', 2.4, 2.7)], 0.07);
+    return { cam: c, layers: plainDay(T, t, ex, { npcs: true, avoidX: 820 }) };
+  } },
+  // ===== 02 (3.08–8.50) — 3 planos =====
+  // 02a: travelling lateral acompanhando Polo; o "mentirinha" entorta o pescoço em "entorta"
   { t0: 3.08, draw(t, T) {
-    const tortos = (z) => (z ? [['viz1', 900, 16, -1], ['mulher', 1040, 26, 1], ['senhora', 1160, 11, -1]] : [['viz1', 800, 14, -1], ['mulher', 1080, 22, 1], ['viz3', 1400, 30, -1], ['senhora', 560, 9, 1]]).map(([id, x, ln, f], i) => P_(id, { x, y: GY, s: 0.62, t: T, three4: f, lean: ln * f, expr: i % 2 ? 'sad' : 'worried', armL: 10 + i * 3, armR: 14 })).join('');
-    if (t < 2.62) {
-      const px = lerp(300, 1250, E.inOut(t / 2.62));
-      const polo = P_('polo', POLO({ x: px, y: GY, s: 0.62, t: T, three4: 1, walk: T * 8, armR: 95, bendR: 12, handR: 'point', expr: 'thinking' }));
-      return { cam: frameG(px + 140, GY, 1.55, 1440), layers: plainDay(T, t, tortos(0) + polo, { avoidX: px }) };
-    }
-    const polo = P_('polo', POLO({ x: 800, y: GY, s: 0.7, t: T, three4: 1, armR: 100, bendR: 10, handR: 'point', expr: 'thinking', lean: 4 }));
-    return { cam: push(frameG(930, GY, 1.9, 1440), t - 2.62, 2.8, 0.06), layers: [...plainDay(T, t, tortos(1) + polo), Lr(1.45, fgPole(160))] };
+    const px = 380 + t * 210;
+    const polo = P_('polo', POLO({ x: px, y: GY, s: 0.62, t: T, side: true, face: 1, walk: T * 9, expr: 'thinking' }));
+    const tilt = kf(T, [[4.4, 0], [4.6, 34], [4.75, 26]], E.out);
+    const guy = P_('viz1', act(T, { x: 900, y: GY, s: 0.62, three4: -1, expr: T < 4.46 ? 'happy' : 'worried', headTilt: -tilt }, { seed: 7 }));
+    const others = [['mulher', 1180, 18, 1], ['senhora', 1420, 12, -1], ['viz3', 640, 9, 1]].map(([id, x, ln, f], i) => P_(id, act(T, { x, y: GY, s: 0.62, three4: f, lean: ln * f, expr: 'sad' }, { seed: 11 + i }))).join('');
+    const c = punch(cam(t, [[0, 500, GY - 190, 1.6, 0, 960], [2.62, 1050, GY - 190, 1.75, 0, 960]], { ease: E.lin }), T, [WS('entorta', 4.3, 4.6)], 0.06);
+    return { cam: c, layers: plainDay(T, t, passersby(T, 9, 3, GY - 4, 0.5) + others + guy + polo, { npcs: false, movingCar: lerp(2400, -600, t / 2.6) }) };
   } },
-  // 03 (8.50) close rápido: Polo ergue a sobrancelha observando a postura da cidade
+  // 02b: rua em perspectiva; moradores tortos vêm na direção da câmera, um bem torto no meio ("mentira grande")
+  { t0: 5.7, draw(t, T) {
+    const c3 = cam3(640, 560, 500, lerp(-60, 60, t / 1.5));
+    const walkers3 = [[-120, 650, 'viz1', 38], [200, 950, 'mulher', 18], [-320, 1250, 'senhora', 24], [300, 1550, 'viz3', 12], [40, 1900, 'viz2', 28]].map(([X, D0, id, ln], i) => ({ id, X, D: D0 - t * 200, s: 0.44, o: { t: T, walk: T * 8 + i, lean: ln * (i % 2 ? 1 : -1), expr: i ? 'sad' : 'worried', headTilt: Math.sin(T * 3 + i) * 4 } }));
+    const c = punch(cam(t, [[0, 950, 640, 1.9, 0, 980], [1.5, 930, 660, 2.3, 0, 980]]), T, [WS('grande', 6.6, 6.9)], 0.07);
+    return { cam: c, layers: [...backDay(t), Lr(1, street3D(T, { cam: c3, seed: 12, people: walkers3, crowd: 10, traffic: 4, skyC: '#eaf2ee' }))] };
+  } },
+  // 02c: contra-plongée; "quase te joga no chão": o homem quase cai, poeira no chão
+  { t0: 7.2, draw(t, T) {
+    const lean = kf(T, [[7.2, 30], [7.5, 38], [7.9, 46], [8.05, 66], [8.18, 58], [8.5, 60]]);
+    const g = P_('viz1', act(T, { x: 760, y: GY, s: 0.7, three4: -1, lean: -lean, expr: T < 8.0 ? 'worried' : 'surprised', armL: 40 + lean * 0.6, bendL: 20, armR: 30 + lean * 0.5, bendR: 30, handL: 'open', handR: 'open' }, { seed: 4 }));
+    const ex = g + dust(T, 560, GY - 30, 300, 60, T > 8.05 ? 14 : 0, 6, '#d8c8a8') + crumbs(T, 8.05, 640, GY - 10, 12, '#cbb89a');
+    const c = punch(cam(t, [[0, 820, GY - 120, 2.1, 5, 1150], [1.3, 740, GY - 90, 2.45, 2, 1150]]), T, [WS('chão', 7.95, 8.2)], 0.12);
+    return { cam: c, layers: plainDay(T, t, ex, { npcs: true, avoidX: 760 }) };
+  } },
+  // ===== 03 (8.50–12.45) — 2 planos =====
+  // 03a: close do Polo falando com gesto a cada palavra; câmera em arco lento
   { t0: 8.5, draw(t, T) {
-    const polo = P_('polo', POLO({ x: 780, y: GY, s: 0.75, t: T, three4: 1, lean: 5, expr: 'thinking', mouth: talk(T, [[8.8, 12.2]]), armR: 30, bendR: 60, handR: 'open' }));
-    const bg = P_('viz1', { x: 1020, y: GY, s: 0.62, t: T, three4: -1, lean: -26, expr: 'sad' });
-    return { cam: push(focus(900, GY - 0.75 * 320, 2.3, 800), t, 3.9, 0.08), layers: plainDay(T, t, polo + bg, {}) };
+    const polo = P_('polo', POLO(act(T, { x: 780, y: GY, s: 0.75, three4: 1, lean: 5, expr: 'thinking', armL: 12 }, { talk: [[8.77, 10.45]], seed: 3 })));
+    const bg = P_('viz1', act(T, { x: 1020, y: GY, s: 0.62, three4: -1, lean: -26, expr: 'sad' }, { seed: 9 }));
+    const c = cam(t, [[0, 860, GY - 250, 2.2, -2, 820], [1.95, 930, GY - 235, 2.55, 1.5, 820]]);
+    return { cam: punch(c, T, [WS('detector', 9.8, 10.0)], 0.06), layers: plainDay(T, t, passersby(T, 21, 3, GY - 4, 0.5) + polo + bg, { npcs: false }) };
   } },
-  // 04 (12.45) padaria: "Esse pão saiu agora!" e o ombro afunda no balcão
+  // 03b: POV do Polo varrendo a calçada de tortos; para no mais torto em "postura"
+  { t0: 10.45, draw(t, T) {
+    const row = [['viz2', 560, 14], ['mulher', 760, 24], ['viz1', 960, 8], ['senhora', 1160, 30], ['viz3', 1360, 20], ['morador', 1560, 42]].map(([id, x, ln], i) => P_(id, act(T, Object.assign({ x, y: GY, s: 0.62, three4: i % 2 ? 1 : -1, lean: ln * (i % 2 ? 1 : -1), expr: i === 5 ? 'shy' : 'sad' }, {}), { seed: 30 + i }))).join('');
+    const c = punch(cam(t, [[0, 560, GY - 200, 1.7, 0, 1000], [1.25, 1400, GY - 200, 1.75, 0, 1000], [1.5, 1560, GY - 210, 2.3, 0, 1000]], { ease: E.inOut }), T, [WS('postura', 11.6, 11.9)], 0.09);
+    return { cam: c, layers: plainDay(T, t, row + emote('excl', 1600, GY - 0.62 * 420, T - 11.8, 0.8), { npcs: false, movingCar: lerp(-500, 2500, t / 2) }) };
+  } },
+  // ===== 04 (12.45–17.14) — 2 planos =====
+  // 04a: padeiro entrega o saco em arco: "Esse pão saiu agora!"
   { t0: 12.45, draw(t, T) {
-    const lean = lerp(0, 24, E.inOut(I(T, 14.9, 16.4)));
-    const bk = P_('padeiro2', { x: 830, y: 900, s: 0.66, t: T, three4: -1, lean: -lean, expr: T < 14.9 ? 'happy' : 'shy', mouth: talk(T, [[13.0, 15.0]]), armL: 70, bendL: 40, holdL: bagBread(), armR: 20, bendR: 30 });
-    const c = push(focus(790, 900 - 0.66 * 300, 2.3, 900), t, 4.7, 0.05);
-    const ex = bk + counter(520, 812, 700) + basket(700, 795, 0.9) + basket(1030, 798, 0.8) + speech(780, 900 - 0.66 * 480, 'Saiu agora!', { w: 290, h: 80, k: 0.8, ap: I(T, 13.1, 13.35) * (1 - I(T, 15.0, 15.3)) }) + emote('sweat', 940, 900 - 0.66 * 400, T - 15.1, 0.8);
+    const armL = kf(T, [[12.45, 18], [13.45, 18], [13.7, 92], [13.85, 74], [15.1, 74]], E.out), bendL = kf(T, [[13.45, 60], [13.7, 18], [13.85, 32]]);
+    const bk = P_('padeiro2', act(T, { x: 830, y: 900, s: 0.66, three4: -1, expr: 'happy', armL, bendL, holdL: bagBread() }, { talk: [[13.3, 14.9]], arms: 'R', seed: 6 }));
+    const ex = bk + counter(520, 812, 700) + basket(700, 795, 0.9) + basket(1030, 798, 0.8) + speech(780, 900 - 0.66 * 480, 'Saiu agora!', { w: 290, h: 80, k: 0.8, ap: E.elastic(clamp((T - 13.6) / 0.45)) });
+    const c = punch(cam(t, [[0, 900, 900 - 0.66 * 250, 1.9, 1.5, 900], [2.65, 800, 900 - 0.66 * 300, 2.35, -1, 900]]), T, [WS('agora', 14.2, 14.5)], 0.08);
+    return { cam: c, layers: [Lr(0.85, bakeryInterior(T, { clock: false, doorOpen: 1 })), Lr(1, ex)] };
+  } },
+  // 04b: close lateral: o ombro afunda até quase bater no balcão (squash, migalhas)
+  { t0: 15.1, draw(t, T) {
+    const lean = kf(T, [[15.1, 2], [15.39, 8], [16.04, 14], [16.2, 31], [16.35, 25], [16.6, 27]]);
+    const bk = P_('padeiro2', act(T, { x: 830, y: 900, s: 0.66, three4: -1, lean: -lean, expr: T < 16.0 ? 'worried' : 'shy', armL: 60, bendL: 40, holdL: bagBread(), squash: T > 16.04 && T < 16.3 ? 0.04 : 0 }, { seed: 6 }));
+    const hx = Math.sin(lean * Math.PI / 180) * 210 * 0.66;
+    const ex = bk + counter(520, 812, 700) + basket(1030, 798, 0.8) + crumbs(T, 16.1, 830 - hx, 800, 14) + emote('sweat', 900 - hx, 900 - 0.66 * 380, T - 16.1, 0.8);
+    const c = punch(cam(t, [[0, 820, 900 - 0.66 * 300, 2.8, -3, 950], [1.0, 800 - hx * 0.5, 900 - 0.66 * 260, 3.1, -3, 950], [2.04, 780 - hx * 0.6, 900 - 0.66 * 230, 3.2, -2, 950]]), T, [WS('afunda', 15.9, 16.2)], 0.1);
     return { cam: c, layers: [Lr(0.85, bakeryInterior(T, { clock: false, doorOpen: 1 })), Lr(1, ex)] };
   } },
   // 05 (17.14) praça: prefeito de lado, seguranças o seguram de pé
@@ -230,3 +273,6 @@ SHOTS.push(
     return { cam: push(frameG(440, GY, 1.6, 1440), t, 1.8, 0.04), layers: [...dayShop(T, t, ant + polo, { gateUp: 0.85, inside: '#6a5a4a' }, { cars: false }), Lr(1.45, fgLeaves(T, -1))], tint: WARM };
   } },
 );
+
+// fluidez: entrada/saída com movimento em todos os cortes
+applyCutMoves(113.36);

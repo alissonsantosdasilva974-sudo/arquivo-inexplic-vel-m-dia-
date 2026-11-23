@@ -74,7 +74,6 @@ add(0.35, creak_lean(0.5), 'rangido', 'morador conta a mentira e o pescoço ento
 add(0.2, boing(0.1), 'boing', 'balão "Foi trânsito!"')
 # 02–03
 add(3.6, boing(0.08), 'boing', 'moradores tortos na calçada'); steps(3.2, 5.7, 7, 0.1, 'passos', 'Polo caminha apontando')
-add(5.7 - 0.08, whoosh(0.2, 0.06), 'whoosh', 'corte interno (mentira grande)')
 add(9.6, tick(0.12), 'tick', 'sobrancelha de Polo')
 # 04 padaria
 add(13.1, click(0.16), 'clique', 'balão "Saiu agora!"'); add(15.1, creak_lean(0.9, 0.08), 'rangido', 'padeiro afunda no balcão')

@@ -6,10 +6,9 @@ Narração original como trilha mestre (só limitador de pico, −1,5 dBFS). Tri
 |---|---|---|---|
 | 0.20 | 0.30 | boing | balão "Foi trânsito!" |
 | 0.35 | 0.50 | rangido | morador conta a mentira e o pescoço entorta |
-| 3.00 | 0.22 | whoosh de corte | borrão de movimento em cada corte |
+| 1.32 | 0.22 | whoosh de corte | borrão de movimento em cada corte |
 | 3.59 | 0.09 | passos | Polo caminha apontando |
 | 3.60 | 0.30 | boing | moradores tortos na calçada |
-| 5.62 | 0.20 | whoosh | corte interno (mentira grande) |
 | 9.60 | 0.06 | tick | sobrancelha de Polo |
 | 13.10 | 0.05 | clique | balão "Saiu agora!" |
 | 15.10 | 0.90 | rangido | padeiro afunda no balcão |

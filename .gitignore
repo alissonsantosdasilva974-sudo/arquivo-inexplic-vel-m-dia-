@@ -50,3 +50,6 @@ ep4/work/preview/
 ep4/audio/*.wav
 !ep4/audio/sfx_stem.wav
 ep4/work/pv2/
+ep4/work/pv60/
+ep4/work/test60/
+ep4/work/test60_w*.log

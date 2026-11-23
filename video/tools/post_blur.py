@@ -7,13 +7,13 @@ D, WEB, N = sys.argv[1], sys.argv[2], int(sys.argv[3])
 src = open(os.path.join('video', WEB, 'shots.js')).read()
 shots = [(float(a), b is not None and b != '') for a, b in re.findall(r'\{ t0: ([0-9.]+),( xf: [0-9.]+,)? draw', src)]
 cuts = [t for t, xf in shots if t > 0 and not xf]
-FPS = 30; plan = {}
+FPS = float(os.environ.get('FPS', 30)); plan = {}   # janelas em segundos (4/30 s depois, 2/30 s antes do corte), iguais em 30 e 60 fps
 for c in cuts:
-    for f in range(int(np.floor(c * FPS)) - 3, int(np.ceil(c * FPS)) + 5):
+    for f in range(int(np.floor(c * FPS)) - int(FPS / 10) - 1, int(np.ceil(c * FPS)) + int(FPS / 6) + 2):
         if not (0 <= f < N): continue
         T = f / FPS; blur = dx = 0
-        if 0 <= T - c < 4 / FPS: k = 1 - (T - c) / (4 / FPS); blur, dx = 28 * k, -60 * k
-        elif 0 < c - T <= 2 / FPS: k = 1 - (c - T) / (3 / FPS); blur, dx = 22 * k, 50 * k
+        if 0 <= T - c < 4 / 30: k = 1 - (T - c) / (4 / 30); blur, dx = 28 * k, -60 * k
+        elif 0 < c - T <= 2 / 30: k = 1 - (c - T) / (3 / 30); blur, dx = 22 * k, 50 * k
         if blur > 0.5: plan[f] = (blur, dx)
 def motion(img, sigma, dx):
     sc = img.width / 1080.0; s = sigma * sc
