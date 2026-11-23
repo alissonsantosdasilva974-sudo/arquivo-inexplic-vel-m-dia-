@@ -335,6 +335,10 @@ function legs2(P, lA, rA, dir, fb) {
 }
 
 function person(id, o = {}) {
+  const __out = person__(id, o);
+  return (id === 'polo' && o.rim !== false) ? `<g filter="url(#rimPolo)">${__out}</g>` : __out; // __rim: contorno de luz e brilho no Polo
+}
+function person__(id, o = {}) {
   const key = id === 'padeira' && o.old ? 'padeiraV' : id;
   let P = CAST2[key] || CAST2.viz1;
   if (o.pale) P = Object.assign({}, P, { skin: mix(P.skin, '#e2e8ee', clamp(o.pale) * 0.85) });

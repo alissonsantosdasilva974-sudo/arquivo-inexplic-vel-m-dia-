@@ -29,7 +29,7 @@ function _pat() {
  <linearGradient id="gAO" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1424" stop-opacity="0"/><stop offset="1" stop-color="#1b1424" stop-opacity="0.22"/></linearGradient>
  <clipPath id="clipHead"><circle cx="0" cy="-322" r="78"/></clipPath>`;
 }
-const DEFS = `<defs>${_pat()}
+const DEFS = `<defs><filter id="rimPolo" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="7" result="d"/><feGaussianBlur in="d" stdDeviation="5" result="b"/><feFlood flood-color="#fff1b8" flood-opacity="0.95"/><feComposite in2="b" operator="in" result="rim"/><feComponentTransfer in="SourceGraphic" result="br"><feFuncR type="linear" slope="1.14" intercept="0.03"/><feFuncG type="linear" slope="1.14" intercept="0.03"/><feFuncB type="linear" slope="1.1" intercept="0.02"/></feComponentTransfer><feMerge><feMergeNode in="rim"/><feMergeNode in="br"/></feMerge></filter>${_pat()}
  <linearGradient id="gWallShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.10"/><stop offset="1" stop-color="#2a2233" stop-opacity="0.14"/></linearGradient>
  <radialGradient id="gFace" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#fff" stop-opacity="0.5"/><stop offset="1" stop-color="#c9a56a" stop-opacity="0.25"/></radialGradient>
  <radialGradient id="gVig" cx="0.5" cy="0.47" r="0.72"><stop offset="0.5" stop-color="#2a1a14" stop-opacity="0"/><stop offset="0.85" stop-color="#2a1a14" stop-opacity="0.28"/><stop offset="1" stop-color="#1a1010" stop-opacity="0.6"/></radialGradient>
