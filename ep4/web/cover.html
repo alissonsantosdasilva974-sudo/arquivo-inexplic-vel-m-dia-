@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>@font-face{font-family:'Fredoka';font-weight:700;src:url(fonts/fredoka-latin-700-normal.woff2)}html,body{margin:0;background:#000}#stage{width:1080px;height:1920px;overflow:hidden}</style></head><body><div id="stage"></div>
+<script src="lib.js"></script><script src="words.js"></script><script src="characters_v1.js"></script><script src="characters.js"></script><script src="characters2.js"></script><script src="cast4.js"></script><script src="environments.js"></script>
+<script src="city.js"></script><script src="city2.js"></script><script src="scenes.js"></script><script src="props4.js"></script><script src="shots.js"></script><script src="main.js"></script>
+<script>
+// Capa: título + Polo no quadrado central (1080x1080 do meio), Seu Antônio torto ao fundo, manhã.
+window.renderCover = () => {
+  const T = 3, t = 1, cam = frameG(420, GY, 1.75, 1560);
+  const polo = person('polo', { x: 330, y: GY, s: 0.72, t: 0.4, three4: 1, expr: 'thinking', hat: 'fedora', pocketNote: true, armR: 38, bendR: 35, handR: 'open' });
+  const ant = person('antonio', { x: 600, y: GY, s: 0.7, t: 0.4, three4: -1, lean: -34, expr: 'happy', armL: 14, armR: 14 });
+  const layers = dayShop(T, t, ant + polo, {}, { cars: false });
+  let body = ''; for (const L of layers) body += `<g transform="${layerT(cam, L.d)}">${L.svg}</g>`;
+  const title = (txt, y, size, fill) => `<text x="540" y="${y}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${size}" fill="${fill}" stroke="#211c26" stroke-width="22" stroke-linejoin="round" paint-order="stroke">${txt}</text>`;
+  const head = `<g transform="rotate(-4 540 470)">${title('TODA MENTIRA', 330, 110, '#ffffff')}${title('PESA NOS', 440, 110, '#ffffff')}${title('OMBROS!', 570, 136, '#ffd23f')}</g>`;
+  document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${body}<rect width="1080" height="1920" fill="url(#gGlow)"/><rect width="1080" height="1920" fill="url(#gVig)"/><image href="paper.png" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>${head}${badge()}</svg>`;
+};
+</script></body></html>
