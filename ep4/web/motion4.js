@@ -70,3 +70,16 @@ function crumbs(T, t0, x, y, n = 10, c = '#d8a860') {
 function applyCutMoves(total) {
   SHOTS.forEach((s, i) => { const f = s.draw, d = (SHOTS[i + 1] ? SHOTS[i + 1].t0 : total) - s.t0; s.draw = function (t, T) { const r = f.call(s, t, T); if (!s.still) r.cam = cutMove(r.cam, t, d); return r; }; });
 }
+// "Peso nos ombros" natural: em vez de dobrar o tronco inteiro no quadril (dobradiça), distribui a curva:
+// quadril compensa para trás (tilt), tronco curva (lean menor), cabeça volta quase reta (olhos nivelados),
+// ombros descem (squash leve) e o olhar cai. L = graus "de roteiro" (0..44), dir = +1 olhando p/ direita, −1 p/ esquerda.
+function slump(L, dir = 1) {
+  const k = clamp(L / 44);
+  return { lean: dir * L * 0.85, tilt: -dir * L * 0.12, headTilt: -dir * L * 0.22, squash: -0.06 * k, ly: 0.35 * k };
+}
+// PS = P_ com o lean convertido em postura curvada (somado ao que a cena já define)
+function PS(id, o = {}) {
+  if (!o.lean) return P_(id, o);
+  const L = Math.abs(o.lean), sl = slump(L, Math.sign(o.lean));
+  return P_(id, Object.assign({}, o, { lean: sl.lean, tilt: (o.tilt || 0) + sl.tilt, headTilt: (o.headTilt || 0) + sl.headTilt, squash: (o.squash || 0) + sl.squash, ly: o.ly != null ? o.ly : sl.ly }));
+}
