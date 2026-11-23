@@ -126,7 +126,7 @@ SHOTS.push(
   // 05 (17.14) praça: prefeito de lado, seguranças o seguram de pé
   { t0: 17.14, draw(t, T) {
     const fy = 880 - 176, lean = lerp(30, 38, E.inOut(I(t, 0.5, 2.5)));
-    const pf = PS('prefeito', { x: 1000, y: fy, s: 0.66, t: T, three4: 1, lean, expr: 'worried', mouth: talk(T, [[17.8, 19.4]]), armL: 25, bendL: 20, armR: 25, bendR: 20 });
+    const pf = PS('prefeito', { x: 1000, y: fy, s: 0.66, t: T, three4: 1, lean, expr: 'worried', mouth: talk(T, [[17.8, 19.4]]), _talk: [[17.8, 19.4]], armL: 25, bendL: 20, armR: 25, bendR: 20 });
     const sg = (x, f, i) => PS('seguranca', { x, y: fy, s: 0.66, t: T, three4: f, expr: 'angry', armL: f > 0 ? 18 : 62, bendL: 30, armR: f > 0 ? 62 : 18, bendR: 30, jump: Math.abs(Math.sin(T * 9 + i)) * 2 });
     const crowd = [0, 1, 2, 3, 4].map(i => PS(NPC_IDS[(i * 5 + 2) % 24], { x: 640 + i * 190, y: 960, s: 0.5, t: T, back: true, expr: 'happy' })).join('');
     const ex = palanque(1000, 880, T) + sg(800, 1, 0) + pf + sg(1200, -1, 1) + mic(1130, fy - 0.66 * 290) + speech(1010, fy - 0.66 * 430, 'Vou arrumar a rua!', { w: 380, h: 84, k: 0.8, ap: I(T, 17.8, 18.05) * (1 - I(T, 19.3, 19.6)) }) + crowd;
@@ -144,7 +144,7 @@ SHOTS.push(
   } },
   // 07 (27.60) apresentação do Seu Antônio limpando uma ferramenta na oficina
   { t0: 27.6, draw(t, T) {
-    const ant = ANT(T, { x: 330, y: GY, s: 0.7, face: 1, expr: 'happy', mouth: talk(T, [[28.3, 29.7], [30.4, 31.8], [32.2, 33.4]]), armR: 70 + Math.sin(T * 6) * 8, bendR: 70, holdR: wrench(), armL: 60, bendL: 80, holdL: rag(), handL: 'fist' });
+    const ant = ANT(T, { x: 330, y: GY, s: 0.7, face: 1, expr: 'happy', mouth: talk(T, [[28.3, 29.7], [30.4, 31.8], [32.2, 33.4]]), _talk: [[28.3, 29.7], [30.4, 31.8], [32.2, 33.4]], armR: 70 + Math.sin(T * 6) * 8, bendR: 70, holdR: wrench(), armL: 60, bendL: 80, holdL: rag(), handL: 'fist' });
     return { cam: push(frameG(290, GY, 1.4, 1440), t, 6, 0.12), layers: dayShop(T, t, ant, {}, { avoidX: 330 }) };
   } },
   // 08 (33.61) montagem de 3 dias: cada semana mais curvado varrendo a entrada
@@ -157,8 +157,8 @@ SHOTS.push(
   } },
   // 09 (39.44) over-the-shoulder: Polo pergunta, Antônio "Tô ótimo!" e o tronco afunda mais um degrau (corte interno em 46.42)
   { t0: 39.44, draw(t, T) {
-    const polo = PS('polo', POLO({ x: 310, y: GY + 10, s: 0.8, t: T, three4: 1, expr: 'thinking', mouth: talk(T, [[41.4, 43.3]]), armR: 20, bendR: 20 }));
-    const ant = polo + ANT(T, { x: 580, y: GY, s: 0.66, face: -1, expr: T < 44.4 ? 'neutral' : 'happy', mouth: talk(T, [[44.5, 46.2]]), armL: 14, armR: 14 });
+    const polo = PS('polo', POLO({ x: 310, y: GY + 10, s: 0.8, t: T, three4: 1, expr: 'thinking', mouth: talk(T, [[41.4, 43.3]]), _talk: [[41.4, 43.3]], armR: 20, bendR: 20 }));
+    const ant = polo + ANT(T, { x: 580, y: GY, s: 0.66, face: -1, expr: T < 44.4 ? 'neutral' : 'happy', mouth: talk(T, [[44.5, 46.2]]), _talk: [[44.5, 46.2]], armL: 14, armR: 14 });
     const bal = speech(400, GY - 0.8 * 440, 'Tá tudo bem, Seu Antônio?', { w: 440, h: 84, k: 0.6, fs: 30, ap: I(T, 41.45, 41.7) * (1 - I(T, 43.3, 43.6)) }) + speech(610, GY - 0.66 * 470, 'Tô ótimo, Polo!', { w: 360, h: 80, k: 0.62, ap: I(T, 44.5, 44.75) * (1 - I(T, 46.2, 46.5)) });
     const c = T < 46.42 ? push(focus(440, GY - 0.7 * 220, 1.75, 1000), t, 7, 0.05) : push(focus(560, GY - 0.66 * 260, 3.2, 980), T - 46.42, 2.1, 0.05);
     return { cam: c, layers: dayShop(T, t, ant + bal + (T > 46.42 ? emote('sweat', 640, GY - 0.66 * 360, T - 46.5, 0.8) : ''), {}, { avoidX: 560 }) };
@@ -196,7 +196,7 @@ const NIGHT_IN = ['#3a3470', 0.18];
 SHOTS.push(
   // 13 (64.45) interior: Antônio ao telefone numa oficina vazia, luz única; a câmera abre em "A oficina vazia"
   { t0: 64.45, draw(t, T) {
-    const ant = ANT(T, { x: 900, y: 900, s: 0.66, face: -1, expr: 'happy', mouth: talk(T, [[64.9, 66.2], [66.7, 69.2]]), armL: 150, bendL: 125, holdL: phoneHand(), handL: 'fist', armR: 14, bendR: 20 });
+    const ant = ANT(T, { x: 900, y: 900, s: 0.66, face: -1, expr: 'happy', mouth: talk(T, [[64.9, 66.2], [66.7, 69.2]]), _talk: [[64.9, 66.2], [66.7, 69.2]], armL: 150, bendL: 125, holdL: phoneHand(), handL: 'fist', armR: 14, bendR: 20 });
     const ex = bench4(1250, 780, 520) + plate(1480, 770, 0.9) + ant;
     const c = lerpCam(push(focus(830, 900 - 0.66 * 240, 2.2, 950), t, 4.5, 0.04), { ...focus(900, 760, 1.15, 980) }, E.inOut(I(T, 69.2, 70.5)));
     return { cam: c, layers: [Lr(0.9, workshopInterior(T, { night: 1 })), Lr(1, ex), Lr(1.03, `<rect x="-800" y="-600" width="3600" height="2600" fill="#0e0a20" opacity="0.22"/>`)] , tint: NIGHT_IN };
@@ -207,13 +207,13 @@ SHOTS.push(
       const c = push(focus(1480, 700, 3.4, 900), t, 2.3, 0.1);
       return { cam: c, layers: [Lr(0.9, workshopInterior(T, { night: 1 })), Lr(1, bench4(1250, 780, 520) + plate(1480, 770, 1.0)), Lr(1.03, `<rect x="-800" y="-600" width="3600" height="2600" fill="#0e0a20" opacity="0.2"/>`)], tint: NIGHT_IN };
     }
-    const ph = phoneScreen(0, 0, 1.0, T, { mouth: talk(T, [[75.95, 77.1]]) * 0 + 0.35 * Math.abs(Math.sin(T * 6)), expr: 'happy' });
+    const ph = phoneScreen(0, 0, 1.0, T, { mouth: talk(T, [[75.95, 77.1]]), _talk: [[75.95, 77.1]] * 0 + 0.35 * Math.abs(Math.sin(T * 6)), expr: 'happy' });
     return { cam: push(focus(960, 640, 1.0), T - 73.53, 3.8, 0.05), layers: [povBg('#1c1838'), povAnt(T, ph, { k: 1.55, spread: 320, dy: 40 }), Lr(1.05, dust(T, 500, 300, 900, 600, 14, 9, '#ffe7a0'))], tint: NIGHT_IN };
   } },
   // 15 (77.31) close dramático em Antônio; a cada "tô ótimo" os ombros descem mais um nível (música corta seco)
   { t0: 77.31, draw(t, T) {
     const L = antonioLean(T), hx = Math.sin(L * Math.PI / 180) * 210 * 0.9;
-    const ant = ANT(T, { x: 860, y: 900, s: 0.9, face: -1, expr: T < 83.3 ? 'happy' : 'tired', mouth: talk(T, [[77.4, 78.8], [79.1, 79.9], [80.0, 81.8], [81.9, 83.1], [83.4, 85.3]]), armL: 14, armR: 14 });
+    const ant = ANT(T, { x: 860, y: 900, s: 0.9, face: -1, expr: T < 83.3 ? 'happy' : 'tired', mouth: talk(T, [[77.4, 78.8], [79.1, 79.9], [80.0, 81.8], [81.9, 83.1], [83.4, 85.3]]), _talk: [[77.4, 78.8], [79.1, 79.9], [80.0, 81.8], [81.9, 83.1], [83.4, 85.3]], armL: 14, armR: 14 });
     const c = push(focus(800 - hx * 0.6, 900 - 0.9 * 250, 2.6, 980), t, 8.4, 0.05);
     return { cam: c, layers: [Lr(0.9, workshopInterior(T, { night: 1 })), Lr(1, ant), Lr(1.03, `<rect x="-800" y="-600" width="3600" height="2600" fill="#0e0a20" opacity="${f2(0.2 + 0.1 * I(T, 79, 85))}"/>`)], tint: NIGHT_IN };
   } },
@@ -253,7 +253,7 @@ SHOTS.push(
   } },
   // 19 (100.11) entrada da oficina: Polo chega sorrindo e pergunta; Antônio ainda curvado
   { t0: 100.11, draw(t, T) {
-    const polo = PS('polo', POLO({ x: 250, y: GY, s: 0.7, t: T, three4: 1, expr: 'happy', mouth: talk(T, [[102.1, 104.3]]), armR: 20, bendR: 20, lean: -2 }));
+    const polo = PS('polo', POLO({ x: 250, y: GY, s: 0.7, t: T, three4: 1, expr: 'happy', mouth: talk(T, [[102.1, 104.3]]), _talk: [[102.1, 104.3]], armR: 20, bendR: 20, lean: -2 }));
     const ant = ANT(T, { x: 520, y: GY, s: 0.66, face: -1, expr: 'neutral', lean: 38, armL: 14, armR: 14 });
     const fila = [['#c8443c', 760], ['#3c6aa8', 1160], ['#f2c230', 1560]].map(([c, x]) => carSide(x, 1160, c, { s: 0.8 })).join('');
     return { cam: push(frameG(390, GY, 1.6, 1440), t, 4.2, 0.05), layers: dayShop(T, t, ant + polo + fila, { gateUp: 0.85, inside: '#6a5a4a' }, { cars: false }), tint: WARM };
@@ -268,11 +268,34 @@ SHOTS.push(
   } },
   // 21 (111.53) fechamento quente: Antônio reto, Polo sorrindo tímido; folhas em primeiro plano. SEM letreiro (a pedido).
   { t0: 111.53, draw(t, T) {
-    const ant = ANT(T, { x: 580, y: GY, s: 0.7, face: -1, lean: 0, expr: 'happy', mouth: talk(T, [[111.73, 112.84]]), armL: 14, armR: 14 });
+    const ant = ANT(T, { x: 580, y: GY, s: 0.7, face: -1, lean: 0, expr: 'happy', mouth: talk(T, [[111.73, 112.84]]), _talk: [[111.73, 112.84]], armL: 14, armR: 14 });
     const polo = PS('polo', POLO({ x: 300, y: GY, s: 0.7, t: T, three4: 1, expr: 'shy', armR: 20, bendR: 20 }));
     return { cam: push(frameG(440, GY, 1.6, 1440), t, 1.8, 0.04), layers: [...dayShop(T, t, ant + polo, { gateUp: 0.85, inside: '#6a5a4a' }, { cars: false }), Lr(1.45, fgLeaves(T, -1))], tint: WARM };
   } },
 );
 
+// ---------- sub-cortes (outro ângulo a cada ~2 s nas cenas 05–21) ----------
+SHOTS.push(
+  { t0: 19.3, draw: alt(1.45, 60, -40, 2) },
+  { t0: 24.7, draw: alt(1.35, -30, -30, -2) },
+  { t0: 30.0, draw: alt(1.5, 40, -60, 1.5) },
+  { t0: 32.2, draw: alt(0.85, -40, 20, -1) },
+  { t0: 43.4, draw: alt(1.3, -40, -40, -1.5) },
+  { t0: 46.42, draw: alt(1, 0, 0, 0) },
+  { t0: 51.0, draw: alt(1.5, -50, -40, 2) },
+  { t0: 54.0, draw: alt(1.3, 60, -20, -2) },
+  { t0: 58.6, draw: alt(1.4, 0, -40, 1.5) },
+  { t0: 62.2, draw: alt(1.35, 40, -30, -2) },
+  { t0: 66.7, draw: alt(1.3, -40, -30, 2) },
+  { t0: 79.86, draw: alt(1.25, 30, -40, -3) },
+  { t0: 81.8, draw: alt(0.88, -30, 20, 2) },
+  { t0: 83.22, draw: alt(1.35, 20, -50, -4) },
+  { t0: 87.7, draw: alt(1.4, -20, -50, 2) },
+  { t0: 102.12, draw: alt(1.4, 60, -40, -1.5) },
+  { t0: 106.35, draw: alt(0.85, 0, 30, 1) },
+  { t0: 108.6, draw: alt(1.3, 0, -40, 0) },
+);
+
 // fluidez: entrada/saída com movimento em todos os cortes
+SHOTS.forEach(s => { if (s.draw && s.draw.name === '' && s.draw.toString().includes('me.t0')) s._isAlt = true; });
 applyCutMoves(113.36);

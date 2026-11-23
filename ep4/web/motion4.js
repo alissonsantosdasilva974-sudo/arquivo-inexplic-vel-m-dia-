@@ -30,6 +30,7 @@ function act(T, base, o = {}) {
     if (arms === 'L' || arms === 'both') set('L', prev, cur);
     if (i >= 0) { const nod = pulse(T, beats[i] + 0.06, 0.14); d.headTilt += 5 * nod * (i % 2 ? 1 : -1); d.squash = (base.squash || 0) - 0.025 * nod; }
   }
+  d._acted = true;
   return d;
 }
 // figurantes sempre vivos
@@ -68,7 +69,9 @@ function crumbs(T, t0, x, y, n = 10, c = '#d8a860') {
 }
 // aplica cutMove a todos os SHOTS (chamado no fim do shots.js)
 function applyCutMoves(total) {
-  SHOTS.forEach((s, i) => { const f = s.draw, d = (SHOTS[i + 1] ? SHOTS[i + 1].t0 : total) - s.t0; s.draw = function (t, T) { const r = f.call(s, t, T); if (!s.still) r.cam = cutMove(r.cam, t, d); return r; }; });
+  SHOTS.sort((a, b) => a.t0 - b.t0);
+  SHOTS.forEach((s, i) => { s._raw = s._raw || s.draw; });
+  SHOTS.forEach((s, i) => { const f = s.draw, d = (SHOTS[i + 1] ? SHOTS[i + 1].t0 : total) - s.t0; s.draw = function (t, T) { const r = f.call(s, t, T); if (!s.still) { if (s.t0 >= 17.1) r.cam = drift(r.cam, t, d, s.t0); r.cam = cutMove(r.cam, t, d); } return r; }; });
 }
 // "Peso nos ombros" natural: em vez de dobrar o tronco inteiro no quadril (dobradiça), distribui a curva:
 // quadril compensa para trás (tilt), tronco curva (lean menor), cabeça volta quase reta (olhos nivelados),
@@ -79,7 +82,17 @@ function slump(L, dir = 1) {
 }
 // PS = P_ com o lean convertido em postura curvada (somado ao que a cena já define)
 function PS(id, o = {}) {
+  if (!o._acted && !o.side && !o.back && o.t != null) { const iv = o._talk; o = act(o.t, o, { talk: iv || [], arms: o.holdR ? (o.holdL ? 'none' : 'L') : 'R', seed: (o.x | 0) % 7 + 1 }); o._acted = true; }
   if (!o.lean) return P_(id, o);
   const L = Math.abs(o.lean), sl = slump(L, Math.sign(o.lean));
   return P_(id, Object.assign({}, o, { lean: sl.lean, tilt: (o.tilt || 0) + sl.tilt, headTilt: (o.headTilt || 0) + sl.headTilt, squash: (o.squash || 0) + sl.squash, ly: o.ly != null ? o.ly : sl.ly }));
+}
+// câmera viva para as cenas antigas: dolly lento contínuo, pan leve e tremor de mão
+function drift(c, t, d, sd) {
+  const p = clamp(t / d), dir = (Math.round(sd * 10) % 2) ? 1 : -1;
+  return { ...c, x: c.x + dir * (p - 0.5) * 26 + Math.sin(t * 1.9) * 2.2 + Math.sin(t * 3.7 + 1) * 1.1, y: c.y + Math.sin(t * 2.3 + 2) * 2, z: c.z * (1 + 0.07 * E.sine(p)), r: (c.r || 0) + dir * 0.8 * (p - 0.5) };
+}
+// sub-corte: mesmo momento da cena anterior com outro enquadramento (k zoom, dx/dy tela, r rotação)
+function alt(k, dx = 0, dy = 0, r = 0) {
+  return function (t, T) { const me = this, src = SHOTS.filter(s => s.t0 < me.t0 && !s._isAlt).pop(); const o = (src._raw || src.draw).call(src, T - src.t0, T); o.cam = { ...o.cam, x: o.cam.x + dx, y: o.cam.y + dy, z: o.cam.z * k, r: (o.cam.r || 0) + r }; return o; };
 }
