@@ -86,7 +86,7 @@ SHOTS.push(
     const pf = P_('prefeito', { x: 1000, y: fy, s: 0.66, t: T, three4: 1, lean, expr: 'worried', mouth: talk(T, [[17.8, 19.4]]), armL: 25, bendL: 20, armR: 25, bendR: 20 });
     const sg = (x, f, i) => P_('seguranca', { x, y: fy, s: 0.66, t: T, three4: f, expr: 'angry', armL: f > 0 ? 18 : 62, bendL: 30, armR: f > 0 ? 62 : 18, bendR: 30, jump: Math.abs(Math.sin(T * 9 + i)) * 2 });
     const crowd = [0, 1, 2, 3, 4].map(i => P_(NPC_IDS[(i * 5 + 2) % 24], { x: 640 + i * 190, y: 960, s: 0.5, t: T, back: true, expr: 'happy' })).join('');
-    const ex = palanque(1000, 880, T) + sg(800, 1, 0) + pf + sg(1200, -1, 1) + mic(1130, fy - 0.66 * 290) + speech(1010, fy - 0.66 * 500, 'Vou arrumar a rua!', { w: 380, h: 84, k: 0.8, ap: I(T, 17.8, 18.05) * (1 - I(T, 19.3, 19.6)) }) + crowd;
+    const ex = palanque(1000, 880, T) + sg(800, 1, 0) + pf + sg(1200, -1, 1) + mic(1130, fy - 0.66 * 290) + speech(1010, fy - 0.66 * 430, 'Vou arrumar a rua!', { w: 380, h: 84, k: 0.8, ap: I(T, 17.8, 18.05) * (1 - I(T, 19.3, 19.6)) }) + crowd;
     const bgl = [...backDay(t), Lr(0.12, hillsSkyline(t, 0) + haze('#e4ecee', 380, 760, 0.55)), Lr(0.3, rooftops(t, 0, -3000) + haze('#e4ecee', 300, 800, 0.4)), Lr(0.75, cityRow(T, { base: 760, seed: 21, signs: ['LIVRARIA', 'BAZAR', 'RELÓGIOS', 'SAPATARIA'], shops: 0.7, noTrees: true }) + walkers(T, 800, 0.46, 61, 7, 4200)), Lr(0.9, plazaGround(880))];
     return { cam: push(focus(1000, 580, 1.65, 960), t, 4.5, 0.05), layers: [...bgl, Lr(1, ex)] };
   } },
@@ -116,7 +116,7 @@ SHOTS.push(
   { t0: 39.44, draw(t, T) {
     const polo = P_('polo', POLO({ x: 310, y: GY + 10, s: 0.8, t: T, three4: 1, expr: 'thinking', mouth: talk(T, [[41.4, 43.3]]), armR: 20, bendR: 20 }));
     const ant = polo + ANT(T, { x: 580, y: GY, s: 0.66, face: -1, expr: T < 44.4 ? 'neutral' : 'happy', mouth: talk(T, [[44.5, 46.2]]), armL: 14, armR: 14 });
-    const bal = speech(400, GY - 0.8 * 500, 'Tá tudo bem, Seu Antônio?', { w: 440, h: 84, k: 0.6, fs: 30, ap: I(T, 41.45, 41.7) * (1 - I(T, 43.3, 43.6)) }) + speech(590, GY - 0.66 * 520, 'Tô ótimo, Polo!', { w: 360, h: 80, k: 0.62, ap: I(T, 44.5, 44.75) * (1 - I(T, 46.2, 46.5)) });
+    const bal = speech(400, GY - 0.8 * 440, 'Tá tudo bem, Seu Antônio?', { w: 440, h: 84, k: 0.6, fs: 30, ap: I(T, 41.45, 41.7) * (1 - I(T, 43.3, 43.6)) }) + speech(610, GY - 0.66 * 470, 'Tô ótimo, Polo!', { w: 360, h: 80, k: 0.62, ap: I(T, 44.5, 44.75) * (1 - I(T, 46.2, 46.5)) });
     const c = T < 46.42 ? push(focus(440, GY - 0.7 * 220, 1.75, 1000), t, 7, 0.05) : push(focus(560, GY - 0.66 * 260, 3.2, 980), T - 46.42, 2.1, 0.05);
     return { cam: c, layers: dayShop(T, t, ant + bal + (T > 46.42 ? emote('sweat', 640, GY - 0.66 * 360, T - 46.5, 0.8) : ''), {}, { avoidX: 560 }) };
   } },
@@ -165,7 +165,7 @@ SHOTS.push(
       return { cam: c, layers: [Lr(0.9, workshopInterior(T, { night: 1 })), Lr(1, bench4(1250, 780, 520) + plate(1480, 770, 1.0)), Lr(1.03, `<rect x="-800" y="-600" width="3600" height="2600" fill="#0e0a20" opacity="0.2"/>`)], tint: NIGHT_IN };
     }
     const ph = phoneScreen(0, 0, 1.0, T, { mouth: talk(T, [[75.95, 77.1]]) * 0 + 0.35 * Math.abs(Math.sin(T * 6)), expr: 'happy' });
-    return { cam: push(focus(960, 640, 1.0), T - 73.53, 3.8, 0.05), layers: [povBg('#1c1838'), pov(T, ph, { k: 1.55, spread: 320, dy: 40 }), Lr(1.05, dust(T, 500, 300, 900, 600, 14, 9, '#ffe7a0'))], tint: NIGHT_IN };
+    return { cam: push(focus(960, 640, 1.0), T - 73.53, 3.8, 0.05), layers: [povBg('#1c1838'), povAnt(T, ph, { k: 1.55, spread: 320, dy: 40 }), Lr(1.05, dust(T, 500, 300, 900, 600, 14, 9, '#ffe7a0'))], tint: NIGHT_IN };
   } },
   // 15 (77.31) close dramático em Antônio; a cada "tô ótimo" os ombros descem mais um nível (música corta seco)
   { t0: 77.31, draw(t, T) {

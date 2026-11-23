@@ -125,3 +125,9 @@ function salonInterior(t) {
 }
 function salonChair(x, y) { return `<g transform="translate(${x} ${y})"><rect x="-70" y="-120" width="140" height="120" rx="20" fill="#c8443c" stroke="${INK}" stroke-width="5"/><rect x="-60" y="-260" width="120" height="150" rx="24" fill="#c8443c" stroke="${INK}" stroke-width="5"/><path d="M 0 0 V 50 M -50 50 h 100" stroke="${INK}" stroke-width="12"/></g>`; }
 // portinhas de carro de fila (trânsito parado na rua da oficina)
+
+// POV com as mãos do Seu Antônio (mangas azuis + mãos marrons): é ele quem segura o celular. Deriva do povHands do rig sem alterá-lo.
+function povHandsAnt(x, y, k, inner, o = {}) {
+  return povHands(x, y, k, inner, o).replace(/#ffc928/g, '#5a7ab0').replace(/#e0a514/g, '#3f5e90').replace(/#1d1a22/g, '#b9784c').replace(/#4a4458/g, '#8a5230');
+}
+const povAnt = (T, inner, o = {}) => Lr(1, povHandsAnt(960, 820 + (o.dy || 0), o.k || 2.2, inner, { spread: o.spread || 300, lift: Math.sin(T * 2) * 4 }));
