@@ -58,6 +58,7 @@ function head2(P, d, fx, dir, side) {
     : `M 0 ${H2 - 84} C 56 ${H2 - 84} 84 ${H2 - 46} 84 ${H2 + 2} C 84 ${H2 + 58} 50 ${H2 + 84} 0 ${H2 + 84} C -50 ${H2 + 84} -84 ${H2 + 58} -84 ${H2 + 2} C -84 ${H2 - 46} -56 ${H2 - 84} 0 ${H2 - 84} Z`;
   s += `<path d="${skull}" fill="${skD}"/>`;
   s += `<clipPath id="ck${P.seed}${side ? 's' : ''}"><path d="${skull}"/></clipPath><g clip-path="url(#ck${P.seed}${side ? 's' : ''})"><circle cx="${-dir * 14 - 6}" cy="${H2 - 14}" r="${HR2 + 2}" fill="${sk}"/><ellipse cx="-30" cy="${H2 - 44}" rx="28" ry="16" fill="#fff" opacity="0.22" transform="rotate(-28 -30 ${H2 - 44})"/><rect x="-100" y="${H2 - 100}" width="200" height="200" fill="url(#pSkin)"/></g>`;
+  if (P.poloFace) { const cx = -dir * 8; s += `<g clip-path="url(#ck${P.seed}${side ? 's' : ''})"><path d="M ${cx - 66} ${H2 - 18} A 70 70 0 0 1 ${cx - 14} ${H2 - 72}" stroke="#ffffff" stroke-width="13" fill="none" opacity="0.8" stroke-linecap="round"/><circle cx="${cx + 8}" cy="${H2 - 74}" r="6" fill="#ffffff" opacity="0.9"/><ellipse cx="${cx - 38}" cy="${H2 - 52}" rx="30" ry="12" fill="#ffffff" opacity="0.28" transform="rotate(-40 ${cx - 38} ${H2 - 52})"/><path d="M ${dir * 70} ${H2 - 20} A ${HR2 - 6} ${HR2 - 6} 0 0 1 ${dir * 40} ${H2 + 70}" stroke="#fff4dc" stroke-width="6" fill="none" opacity="0.45" stroke-linecap="round"/></g>`; }
   s += `<path d="${skull}" fill="none" stroke="${OL}" stroke-width="${LW}"/>`;
   s += P.poloFace ? poloFace2(P, d, fx, side) : face2(P, d, fx, dir, side);
   s += hairFront2(P, d, dir, fx);
@@ -261,6 +262,7 @@ function torso2(P, d, k = 1) {
   s += `<path d="M 10 -260 C 40 -220 50 -140 34 0 L 140 0 L 140 -260 Z" fill="${P.topD}" opacity="0.45"/>`;
   s += `<path d="M -50 -236 Q -60 -190 -54 -150" stroke="#fff" stroke-width="8" fill="none" opacity="0.18" stroke-linecap="round"/>`;
   s += `<rect x="-140" y="-260" width="280" height="260" fill="url(#pFabric)"/>`;
+  if (P.topType === 'hoodie') s += `<path d="M -40 -240 Q -10 -250 20 -238 Q -6 -228 -38 -228 Z" fill="#fff8d8" opacity="0.7"/><path d="M -46 -214 Q -52 -170 -46 -130" stroke="#fffbe6" stroke-width="10" fill="none" opacity="0.55" stroke-linecap="round"/><path d="M -44 -206 Q -48 -190 -46 -176" stroke="#ffffff" stroke-width="5" fill="none" opacity="0.85" stroke-linecap="round"/><ellipse cx="-24" cy="-118" rx="16" ry="5" fill="#fff6c8" opacity="0.5"/><path d="M ${f2(B.hip - 8)} -200 Q ${f2(B.hip - 2)} -150 ${f2(B.hip - 10)} -110" stroke="#fff1b0" stroke-width="5" fill="none" opacity="0.4" stroke-linecap="round"/>`;
   s += '</g>';
   s += `<path d="${B.d}" fill="none" stroke="${OL}" stroke-width="${LW}" stroke-linejoin="round"/>`;
   if (P.topType === 'hoodie') {
@@ -301,6 +303,7 @@ function limb2(P, side, a, b, shortSleeve, pose, holdSvg, dir) {
     const p = `M ${sx} ${sy} L ${f2(ex)} ${f2(ey)} L ${f2(hx)} ${f2(hy)}`;
     s += `<path d="${p}" stroke="${OL}" stroke-width="40" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${p}" stroke="${sl}" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
     s += `<path d="M ${f2(sx + side * 4)} ${sy + 6} L ${f2(ex + side * 5)} ${f2(ey)}" stroke="${slD}" stroke-width="8" stroke-linecap="round" opacity="0.6"/>`;
+    if (P.topType === 'hoodie') s += `<path d="M ${f2(sx - side * 6)} ${sy - 4} L ${f2(ex - side * 7)} ${f2(ey - 2)}" stroke="#fff8d8" stroke-width="6" stroke-linecap="round" opacity="0.6"/><circle cx="${f2(ex - side * 6)}" cy="${f2(ey - 4)}" r="4" fill="#ffffff" opacity="0.7"/>`;
     s += `<circle cx="${f2(hx - (hx - ex) * 0.28)}" cy="${f2(hy - (hy - ey) * 0.28)}" r="16" fill="${slD}" stroke="${OL}" stroke-width="4"/>`;
   }
   s += mitt(hx, hy, ex, ey, P.hands || P.skin, pose);
@@ -336,7 +339,7 @@ function legs2(P, lA, rA, dir, fb) {
 
 function person(id, o = {}) {
   const __out = person__(id, o);
-  return (id === 'polo' && o.rim !== false) ? `<g filter="url(#rimPolo)">${__out}</g>` : __out; // __rim: contorno de luz e brilho no Polo
+  return (id === 'polo' && o.rim === true) ? `<g filter="url(#rimPolo)">${__out}</g>` : __out; // __rim: contorno de luz e brilho no Polo
 }
 function person__(id, o = {}) {
   const key = id === 'padeira' && o.old ? 'padeiraV' : id;
