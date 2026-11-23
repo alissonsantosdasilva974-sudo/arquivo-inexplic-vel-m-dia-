@@ -6,7 +6,7 @@ Narração original como trilha mestre (só limitador de pico, −1,5 dBFS). Tri
 |---|---|---|---|
 | 0.00 | 1.20 | brilho | gancho |
 | 0.00 | 82.44 | vento noturno | cidade vazia (som contínuo) |
-| 0.76 | 0.16 | whoosh de corte | borrão de movimento em cada corte |
+| 3.23 | 0.16 | whoosh de corte | borrão de movimento em cada corte |
 | 4.30 | 0.05 | clique | Polo aperta o chapéu |
 | 7.18 | 0.09 | passos | homem de casaco chegando |
 | 9.50 | 0.50 | impacto | revelação do homem de casaco |
