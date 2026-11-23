@@ -148,8 +148,8 @@ function face2(P, d, fx, dir, side) {
   const ey = H2 - 8, sep = side ? 18 : 30, rx = 15, ry = 17;
   const bl = Math.max(d.blink, autoBlink(d.t, P.seed));
   let s = '';
-  const baseLid = { neutral: 0.34, happy: 0.38, smug: 0.5, worried: 0.18, sad: 0.42, angry: 0.4, surprised: 0, joy: 0, laugh: 0 }[e] ?? 0.3;
-  const bw = { neutral: [0, 0], happy: [-2, 0], surprised: [-14, 0], worried: [-4, 10], angry: [3, -10], smug: [-1, -6], laugh: [-6, 0], joy: [-8, 0], sad: [0, 10] }[e] || [0, 0];
+  const baseLid = { neutral: 0.34, happy: 0.38, smug: 0.5, worried: 0.18, sad: 0.42, angry: 0.4, surprised: 0, joy: 0, laugh: 0, scared: 0, thinking: 0.3, determined: 0.45, tired: 0.62, shy: 0.4 }[e] ?? 0.3;
+  const bw = { neutral: [0, 0], happy: [-2, 0], surprised: [-14, 0], worried: [-4, 10], angry: [3, -10], smug: [-1, -6], laugh: [-6, 0], joy: [-8, 0], sad: [0, 10], scared: [-12, 12], thinking: [-5, -6], determined: [3, -12], tired: [2, 8], shy: [-2, 6] }[e] || [0, 0];
   const browC = P.hair === 'cloud' || P.hair === 'long' || P.hair === 'short' || P.hair === 'cap' ? (P.hairC || OL) : OL;
   for (const k of [-1, 1]) {
     const cx = fx + k * sep;
@@ -159,23 +159,29 @@ function face2(P, d, fx, dir, side) {
       s += `<path d="M ${f2(cx - 14)} ${ey + 4} Q ${f2(cx)} ${ey - 12} ${f2(cx + 14)} ${ey + 4}" stroke="${OL}" stroke-width="6" fill="none" stroke-linecap="round"/>`;
       continue;
     }
-    const big = e === 'surprised' ? 1.15 : 1;
+    const big = e === 'surprised' ? 1.15 : e === 'scared' ? 1.1 : 1;
     s += `<ellipse cx="${f2(cx)}" cy="${ey}" rx="${f2(rx * big)}" ry="${f2(ry * big)}" fill="#fffdf6" stroke="${OL}" stroke-width="4.5"/>`;
-    const px = cx + d.lx * 6 + (side ? dir * 5 : d.face * 3), py = ey + 2 + d.ly * 6;
-    s += `<circle cx="${f2(px)}" cy="${f2(py)}" r="${e === 'surprised' ? 4.5 : 6.5}" fill="${OL}"/><circle cx="${f2(px + 2)}" cy="${f2(py - 2.5)}" r="2" fill="#fff"/>`;
+    const lk = e === 'thinking' ? 0.7 : 0, px = cx + (d.lx + lk) * 6 + (side ? dir * 5 : d.face * 3), py = ey + 2 + (d.ly - lk) * 6;
+    s += `<circle cx="${f2(px)}" cy="${f2(py)}" r="${e === 'surprised' || e === 'scared' ? 4 : 6.5}" fill="${OL}"/><circle cx="${f2(px + 2)}" cy="${f2(py - 2.5)}" r="2" fill="#fff"/>`;
     s += lidPath(cx, ey, rx * big, ry * big, Math.max(bl, baseLid), skD);
     if (e === 'happy') s += `<path d="M ${f2(cx - 12)} ${ey + 14} Q ${f2(cx)} ${ey + 8} ${f2(cx + 12)} ${ey + 14}" stroke="${skD}" stroke-width="4" fill="none"/>`;
   }
+  if (e === 'tired') for (const k of [-1, 1]) s += `<path d="M ${f2(fx + k * sep - 13)} ${ey + 22} Q ${f2(fx + k * sep)} ${ey + 28} ${f2(fx + k * sep + 13)} ${ey + 22}" stroke="${skD}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
   if (P.glasses) { for (const k of [-1, 1]) s += `<circle cx="${f2(fx + k * sep)}" cy="${ey}" r="25" fill="#ffffff22" stroke="${P.glasses}" stroke-width="6"/>`; s += `<path d="M ${f2(fx - 6)} ${ey - 2} L ${f2(fx + 6)} ${ey - 2}" stroke="${P.glasses}" stroke-width="6"/>`; }
   // bulb nose
   const nx = fx + (side ? dir * 30 : d.face * 6), ny = H2 + 22;
   s += `<ellipse cx="${f2(nx)}" cy="${ny}" rx="15" ry="13" fill="${shade(sk, 0.12)}" stroke="${OL}" stroke-width="${LW - 1}"/><circle cx="${f2(nx - 4)}" cy="${ny - 5}" r="4" fill="#fff" opacity="0.4"/>`;
   // cheeks
-  if (P.blush || e === 'laugh' || e === 'joy') for (const k of [-1, 1]) s += `<ellipse cx="${f2(fx + k * 44)}" cy="${H2 + 28}" rx="15" ry="9" fill="#e85a5a" opacity="0.32"/>`;
+  if (P.blush || e === 'laugh' || e === 'joy' || e === 'shy') for (const k of [-1, 1]) s += `<ellipse cx="${f2(fx + k * 44)}" cy="${H2 + 28}" rx="15" ry="9" fill="#e85a5a" opacity="0.32"/>`;
   // mouth with lips
   const mx = fx * 0.9 + (side ? dir * 18 : 0), my = H2 + 52, m = clamp(d.mouth);
   const lip = shade(sk, 0.32);
-  if (e === 'surprised' || e === 'o') s += `<ellipse cx="${f2(mx)}" cy="${my}" rx="${f2(10 + m * 3)}" ry="${f2(12 + m * 5)}" fill="#6a1c28" stroke="${OL}" stroke-width="4.5"/><ellipse cx="${f2(mx)}" cy="${my + 6}" rx="6" ry="4" fill="#e0606a"/>`;
+  if (e === 'scared') s += `<path d="M ${f2(mx - 18)} ${my + 2} Q ${f2(mx - 9)} ${my - 6} ${f2(mx)} ${my + 2} Q ${f2(mx + 9)} ${my + 10} ${f2(mx + 18)} ${my + 2} Q ${f2(mx + 9)} ${my + 18} ${f2(mx)} ${my + 12} Q ${f2(mx - 9)} ${my + 18} ${f2(mx - 18)} ${my + 2} Z" fill="#6a1c28" stroke="${OL}" stroke-width="4.5" stroke-linejoin="round"/>`;
+  else if (e === 'thinking') s += `<path d="M ${f2(mx - 8)} ${my + 2} Q ${f2(mx + 6)} ${my - 4} ${f2(mx + 18)} ${my - 1}" stroke="${OL}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  else if (e === 'determined') s += `<path d="M ${f2(mx - 16)} ${my + 3} Q ${f2(mx)} ${my - 2} ${f2(mx + 16)} ${my + 3}" stroke="${OL}" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M ${f2(mx - 20)} ${my - 2} l 4 6 M ${f2(mx + 20)} ${my - 2} l -4 6" stroke="${skD}" stroke-width="3.5" stroke-linecap="round"/>`;
+  else if (e === 'tired') s += `<path d="M ${f2(mx - 14)} ${my + 3} Q ${f2(mx - 4)} ${my - 2} ${f2(mx + 14)} ${my + 5}" stroke="${OL}" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="${f2(mx + 18)}" cy="${my + 12}" rx="5" ry="3" fill="#7a2230" opacity="0.5"/>`;
+  else if (e === 'shy') s += `<path d="M ${f2(mx - 10)} ${my + 1} q 5 5 10 0 q 5 -5 10 0" stroke="${OL}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
+  else if (e === 'surprised' || e === 'o') s += `<ellipse cx="${f2(mx)}" cy="${my}" rx="${f2(10 + m * 3)}" ry="${f2(12 + m * 5)}" fill="#6a1c28" stroke="${OL}" stroke-width="4.5"/><ellipse cx="${f2(mx)}" cy="${my + 6}" rx="6" ry="4" fill="#e0606a"/>`;
   else if (e === 'laugh' || e === 'joy' || m > 0.05) {
     const op = e === 'laugh' || e === 'joy' ? Math.max(m, 0.75) : m;
     s += `<path d="M ${f2(mx - 22)} ${my - 6} Q ${f2(mx)} ${f2(my + 4 + op * 26)} ${f2(mx + 22)} ${my - 6} Q ${f2(mx)} ${my - 2} ${f2(mx - 22)} ${my - 6} Z" fill="#6a1c28" stroke="${OL}" stroke-width="4.5" stroke-linejoin="round"/>`;
@@ -190,7 +196,10 @@ function face2(P, d, fx, dir, side) {
 
 // Polo keeps the user's design: big round white eyes, tiny pupils, small curl nose, small mouth.
 function poloFace2(P, d, fx, side) {
-  const fdd = Object.assign({}, d, { sep: d.sep || (side ? 20 : 33), browW: 10 });
+  // extra expressions are mapped onto face9's set (neutral/happy/sad/angry/worried/surprised/smug) plus small overlays
+  const ALIAS = { scared: 'surprised', thinking: 'neutral', determined: 'angry', tired: 'sad', shy: 'happy' };
+  const ex = d.expr, fdd = Object.assign({}, d, { sep: d.sep || (side ? 20 : 33), browW: 10, expr: ALIAS[ex] || ex });
+  if (ex === 'thinking') { fdd.lx = (d.lx || 0) + 0.7; fdd.ly = (d.ly || 0) - 0.7; }
   const old = HY; // v1 face uses HY (-322); same placement works on the r=84 head
   let s = '';
   if (P.stubble) {   // barba rala: soft shadow + fine dots along the jaw and chin (clipped to the head)
@@ -200,7 +209,11 @@ function poloFace2(P, d, fx, side) {
     for (let i = 0; i < 70; i++) { const a = Math.PI * (0.08 + r() * 0.84), rr = 36 + r() * 22; const x = cx - Math.cos(a) * rr * 1.25, y = cy - 12 + Math.sin(a) * rr * 0.9; s += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(1.0 + r() * 0.8)}" fill="#5a4038" opacity="${f2(0.28 + r() * 0.25)}"/>`; }
     s += '</g>';
   }
-  return s + face9(fdd, CAST.polo, fx);
+  s += face9(fdd, CAST.polo, fx);
+  if (ex === 'scared') s += `<path d="M ${f2(fx + 58)} ${H2 - 30} q 10 18 0 26 q -10 -8 0 -26 Z" fill="#8fd0f0" stroke="${OL}" stroke-width="3.5"/>`;
+  if (ex === 'shy') for (const k of [-1, 1]) s += `<ellipse cx="${f2(fx + k * 48)}" cy="${H2 + 26}" rx="14" ry="8" fill="#e85a5a" opacity="0.35"/>`;
+  if (ex === 'tired') for (const k of [-1, 1]) s += `<path d="M ${f2(fx + k * fdd.sep - 12)} ${HY + 24} Q ${f2(fx + k * fdd.sep)} ${HY + 30} ${f2(fx + k * fdd.sep + 12)} ${HY + 24}" stroke="${shade(P.skin, 0.25)}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  return s;
 }
 
 function hairBack2(P, dir) {
@@ -274,6 +287,7 @@ function torso2(P, d, k = 1) {
 function limb2(P, side, a, b, shortSleeve, pose, holdSvg, dir) {
   // shoulder angle a (0 down, 90 out, 180 up); elbow bend b
   const sx = side * 46 * (P.w || 1), sy = -228;
+  b = clamp(b, -6, 150);   // elbow only bends one way (no hyper-extension)
   const A = a * Math.PI / 180, B2 = (a + b) * Math.PI / 180;
   const ex = sx + side * Math.sin(A) * 58, ey = sy + Math.cos(A) * 58;
   const hx = ex + side * Math.sin(B2) * 52, hy = ey + Math.cos(B2) * 52;
@@ -287,6 +301,15 @@ function limb2(P, side, a, b, shortSleeve, pose, holdSvg, dir) {
     s += `<path d="${p}" stroke="${OL}" stroke-width="40" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${p}" stroke="${sl}" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
     s += `<path d="M ${f2(sx + side * 4)} ${sy + 6} L ${f2(ex + side * 5)} ${f2(ey)}" stroke="${slD}" stroke-width="8" stroke-linecap="round" opacity="0.6"/>`;
     s += `<circle cx="${f2(hx - (hx - ex) * 0.28)}" cy="${f2(hy - (hy - ey) * 0.28)}" r="16" fill="${slD}" stroke="${OL}" stroke-width="4"/>`;
+  }
+  // articulated elbow: joint cap + inner-side fabric creases that grow with the bend
+  const ux = side * Math.sin(A), uy = Math.cos(A), vx = side * Math.sin(B2), vy = Math.cos(B2);
+  const ix = vx - ux, iy = vy - uy, il = Math.hypot(ix, iy) || 1, nx = ix / il, ny = iy / il;
+  if (!shortSleeve) s += `<circle cx="${f2(ex)}" cy="${f2(ey)}" r="14.5" fill="${sl}"/>`;
+  if (b > 18) {
+    const k = Math.min(1, b / 90), cx = ex + nx * 9, cy = ey + ny * 9, px = -ny, py = nx;
+    s += `<path d="M ${f2(cx - px * 9)} ${f2(cy - py * 9)} Q ${f2(cx + nx * 3)} ${f2(cy + ny * 3)} ${f2(cx + px * 9)} ${f2(cy + py * 9)}" stroke="${shortSleeve ? shade(P.skin, 0.3) : slD}" stroke-width="${f2(3 + 2 * k)}" fill="none" stroke-linecap="round" opacity="0.8"/>`;
+    if (b > 55) s += `<path d="M ${f2(cx - px * 6 - nx * 6)} ${f2(cy - py * 6 - ny * 6)} Q ${f2(cx - nx * 3)} ${f2(cy - ny * 3)} ${f2(cx + px * 6 - nx * 6)} ${f2(cy + py * 6 - ny * 6)}" stroke="${shortSleeve ? shade(P.skin, 0.3) : slD}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>`;
   }
   s += mitt(hx, hy, ex, ey, P.hands || P.skin, pose);
   if (holdSvg) s += `<g transform="translate(${f2(hx)} ${f2(hy)})">${holdSvg}</g>`;
@@ -328,6 +351,8 @@ function person(id, o = {}) {
   const s = d.s * (P.scale || 1);
   if (d.side) return personSide2(P, d, s);
   if (d.back) return personBack2(P, d, s);
+  const t4 = d.three4 ? (d.three4 > 0 ? 1 : -1) : 0;      // 3/4 pose: body turned toward the interlocutor
+  if (t4 && o.face === undefined) d.face = t4 * 0.7;
   const dir = d.face >= 0 ? 1 : -1, fx = d.face * 24;
   const breath = Math.sin(d.t * 2.3 + P.seed) * 2.2;
   let bob = 0, lA = 0, rA = 0;
@@ -337,18 +362,23 @@ function person(id, o = {}) {
   let g = '';
   if (d.shadow) g += `<ellipse cx="0" cy="4" rx="${f2(84 * (P.w || 1) * (1 - d.jump / 400))}" ry="15" fill="#1b1424" opacity="0.24"/>`;
   g += `<g transform="translate(0 ${f2(bob - d.jump)}) rotate(${f2(d.tilt)} 0 -100) scale(${f2(1 - d.squash * 0.5)} ${f2(1 + d.squash)})">`;
-  g += legs2(P, lA, rA, dir, 'front');
+  g += t4 ? `<g transform="translate(${t4 * 7} 0) scale(0.9 1)">${legs2(P, lA, rA, dir, 'front')}</g>` : legs2(P, lA, rA, dir, 'front');
   const aL = limb2(P, -1, d.armL, d.bendL, shortS, poseOf(d.armL, d.handL), d.holdL, dir);
   const aR = limb2(P, 1, d.armR, d.bendR, shortS, poseOf(d.armR, d.handR), d.holdR, dir);
+  // upper body group: lean (torso pivots at the hips, head and arms follow) + 3/4 squeeze
+  const upT = `translate(${f2(t4 * 8)} 0) rotate(${f2(d.lean || 0)} 0 -110) scale(${t4 ? 0.88 : 1} 1)`;
+  g += `<g transform="${upT}">`;
   g += `<g transform="translate(0 ${f2(breath * 0.4)})">`;
-  const backL = d.armL < 20 && !d.holdL, backR = d.armR < 20 && !d.holdR;
-  if (backL) g += aL.svg; if (backR) g += aR.svg;
+  const farS = -t4;   // the arm on the far side of the turn hides behind the torso, shortened
+  const farW = (svg, side) => side === farS ? `<g transform="translate(${f2(side * 46 * (P.w || 1))} 0) scale(0.62 1) translate(${f2(-side * 46 * (P.w || 1))} 0)">${svg}</g>` : svg;
+  const backL = (d.armL < 20 && !d.holdL) || farS === -1, backR = (d.armR < 20 && !d.holdR) || farS === 1;
+  if (backL) g += farW(aL.svg, -1); if (backR) g += farW(aR.svg, 1);
   g += torso2(P, d).svg;
   if (!backL) g += aL.svg; if (!backR) g += aR.svg;
   if (P.cane) g += `<path d="M ${f2(aR.hx)} ${f2(aR.hy)} L ${f2(aR.hx + 12)} 0" stroke="${OL}" stroke-width="15" stroke-linecap="round"/><path d="M ${f2(aR.hx)} ${f2(aR.hy)} L ${f2(aR.hx + 12)} 0" stroke="#8a5a34" stroke-width="8" stroke-linecap="round"/>`;
   g += '</g>';
-  g += `<g transform="translate(0 ${f2(breath)}) rotate(${f2(d.headTilt)} 0 ${H2 + 70})">${head2(P, d, fx, dir, false)}</g>`;
-  g += '</g>';
+  g += `<g transform="translate(${f2(t4 * 6)} ${f2(breath)}) rotate(${f2(d.headTilt)} 0 ${H2 + 70})">${head2(P, d, fx, dir, false)}</g>`;
+  g += '</g></g>';
   return `<g transform="translate(${f2(d.x)} ${f2(d.y)}) scale(${f2(s * (d.flip ? -1 : 1) * (1 - 0.45 * (d.turn || 0)))} ${f2(s)})"${d.fade != null ? ` opacity="${f2(d.fade)}"` : ''}>${g}</g>`;
 }
 
