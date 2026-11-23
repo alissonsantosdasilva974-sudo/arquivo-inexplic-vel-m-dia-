@@ -171,7 +171,30 @@ function commentPanel(T) {
 
 // ---------- gancho (também o último plano: o loop) ----------
 // u = tempo local; no quadro 0 e no último quadro u = 0, então os dois quadros são idênticos
-const HOOK_END = 82.4;
+// Abertura opção A: o áudio novo tem o gancho ("E ela tinha o nome do Polo!") de 0,15 a 1,39 s e o resto da narração 2,18 s antes do original.
+// mapT: tempo real do vídeo → tempo da linha de cenas (os tempos escritos abaixo são da narração original).
+const MAP_B = 1.11, MAP_OFF = 2.18;
+function mapT(Tr) { return Tr < MAP_B ? Tr * 3.29 / MAP_B : Tr + MAP_OFF; }
+function unmapT(To) { return To < 3.29 ? To * MAP_B / 3.29 : To - MAP_OFF; }
+const DUR_REAL = 80.26, LAST_REAL = (Math.round(DUR_REAL * 30) - 1) / 30;
+const HOOK_END = LAST_REAL + MAP_OFF;
+// banner da abertura (3–5 palavras), igual no 1º e no último quadro
+function bannerA(op = 1) {
+  if (op <= 0) return '';
+  return `<g transform="translate(540 400)" opacity="${f2(op)}"><rect x="-480" y="-90" width="960" height="180" rx="30" fill="#ffd23f" stroke="#211c26" stroke-width="12"/>` +
+    `<text y="30" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="80" fill="#211c26">A NOTA TEM <tspan fill="#c8361c">SEU NOME</tspan></text></g>`;
+}
+function OVER_REAL(Tr) { const op = Tr < 2.0 ? 1 : Tr < 2.25 ? 1 - (Tr - 2.0) / 0.25 : Tr > LAST_REAL - 0.6 ? clamp((Tr - (LAST_REAL - 0.6)) / 0.3) : 0; return bannerA(op); }
+// gancho em tempo real ur: o Polo já entra andando no quadro 0 e se assusta; ur < 0 (fim do vídeo) = ele vindo da esquerda (loop contínuo)
+function hookA(ur) {
+  const stop = 0.6, walking = ur < stop;
+  const x = ur < 0 ? 400 + ur * 260 : walking ? lerp(400, PX0, E.out(ur / stop)) : PX0;
+  const sur = ur > 0.72;
+  const polo = walking ? P_('polo', { x, y: G, s: 0.62, t: ur, face: 0.8, side: true, walk: ur * 11, hat: null, pocketNote: true, expr: 'neutral' })
+    : P_('polo', { x, y: G, s: 0.62, t: ur, face: 0.15, lx: 0.3, hat: null, pocketNote: true, expr: sur ? 'surprised' : 'neutral', mouth: sur ? 0.6 : 0, armL: 40, bendL: 50, holdL: HAT(-10), armR: sur ? 150 : 20, bendR: 30, handR: sur ? 'open' : null, jump: sur ? Math.max(0, Math.sin((ur - 0.72) * 9)) * 18 * Math.max(0, 1 - (ur - 0.72) * 2) : 0 });
+  const z = lerp(2.4, 3.2, E.inOut(clamp((ur + 0.65) / 1.6)));
+  return { cam: { ...focus(x, PH, z, 960), r: Math.sin(ur * 0.8) * 1 }, layers: nightSet(ur, ur, lampLight(900, 940, 1) + polo, { avoidX: PX0 }), tint: NIGHT, over: comic(ur, 0.75, '!?', 820, 600, { size: 130, life: 1.4, fill: '#ff7a45' }) };
+}
 function hook(u, z = 3.0) {
   const polo = P_('polo', { x: PX0, y: G, s: 0.62, t: u, face: 0.15, expr: 'worried', pocketNote: true, hat: null, armL: 52, bendL: 60, holdL: HAT(-8) });
   return { cam: { ...focus(PX0, PH - 10, z + 0.08 * E.sine(clamp(u / 3)), 980), r: 0 }, layers: nightSet(u, u, lampLight(720, 940, 1) + polo), tint: NIGHT, over: banner(1) };
@@ -179,7 +202,7 @@ function hook(u, z = 3.0) {
 
 // ======================= CENAS =======================
 // 1 · 0–3,3 s: Polo em close, chapéu na mão, banner do gancho
-beat(0, 3.29, ['HOOK'], (t, T, k) => {
+beat(0, 3.29, ['HOOK'], (t, T, k) => { if (k === 'HOOK') return hookA(T * MAP_B / 3.29);
   if (k === 'HOOK') return hook(T);
   if (k === 'HOOK2') { const r = hook(T, 4.2); r.cam = { ...focus(PX0 - 40, PH + 40, 4.0, 980), r: 0 }; return r; }
   if (k === 'HOOK3') { const r = hook(T, 2.2); return r; }
@@ -295,7 +318,7 @@ beat(75.99, 81.76, ['P', 'MX', 'W', 'PX', 'DUT', 'P'], (t, T, k) => std(t, T, k,
   man: { expr: 'smug' }, polo: { expr: T > 80.2 ? 'neutral' : 'worried', armR: T > 78.2 && T < 80 ? 110 : 70, handR: T > 78.2 && T < 80 ? 'point' : null },
   over: comic(T, 78.6, 'CONFIA', 300, 1000, { size: 96, life: 1.2, fill: '#7ac0ff', rot: -8 }) + comic(T, 79.2, 'DESCONFIA', 760, 1060, { size: 96, life: 1.0, fill: '#ff7a45', rot: 8 }) + comic(T, 80.4, 'PARTE 4?', 540, 1040, { size: 110, life: 1.2, fill: '#ffd23f' }) }));
 // último plano = primeiro quadro (loop)
-SHOTS.push({ t0: 81.76, k: 'HOOK', pc: true, draw(t, T) { return hook(T - HOOK_END); } });
+SHOTS.push({ t0: 81.76, k: 'HOOK', pc: true, draw(t, T) { return hookA(T - HOOK_END); } });
 
 // overlay global: painel de comentário nos últimos 5 s
 const _comic = comic;

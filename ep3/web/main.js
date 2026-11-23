@@ -63,7 +63,7 @@ function badge() {
    <text x="46" y="14" font-family="Fredoka" font-weight="700" font-size="44" fill="#ffffff" stroke="#211c26" stroke-width="10" paint-order="stroke" letter-spacing="2">POLO</text></g>`;
 }
 function renderFrame(f) {
-  const T = f / FPS;
+  const Tr = f / FPS, T = typeof mapT === 'function' ? mapT(Tr) : Tr;
   const i = shotAt(T), sh = SHOTS[i], t = T - sh.t0;
   let { s: body, over } = compose(sh, t, T);
   if (sh.xf && t < sh.xf && i > 0) {
@@ -82,8 +82,8 @@ function renderFrame(f) {
    <rect width="1080" height="1920" fill="url(#gVig)"/>
    <image href="paper.png" x="0" y="0" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>
    <image href="noise.png" x="${(f * 37) % 7 - 7}" y="${(f * 53) % 9 - 9}" width="1096" height="1936" opacity="0.07" style="mix-blend-mode:overlay"/>
-   ${window.LAYER === 'body' ? '' : `${over}${captionSVG(T)}${badge()}${typeof HUD === 'function' ? HUD(T) : ''}`}</svg>`;
-  if (window.LAYER === 'overlay') { document.body.style.background = 'transparent'; document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${over}${captionSVG(T)}${badge()}${typeof HUD === 'function' ? HUD(T) : ''}</svg>`; return i; }
+   ${window.LAYER === 'body' ? '' : `${over}${typeof OVER_REAL === 'function' ? OVER_REAL(Tr) : ''}${typeof LAST_REAL !== "undefined" && Tr > LAST_REAL - 0.2 ? "" : captionSVG(Tr)}${badge()}${typeof HUD === 'function' ? HUD(T) : ''}`}</svg>`;
+  if (window.LAYER === 'overlay') { document.body.style.background = 'transparent'; document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${over}${typeof OVER_REAL === 'function' ? OVER_REAL(Tr) : ''}${typeof LAST_REAL !== "undefined" && Tr > LAST_REAL - 0.2 ? "" : captionSVG(Tr)}${badge()}${typeof HUD === 'function' ? HUD(T) : ''}</svg>`; return i; }
   document.getElementById('stage').innerHTML = svg;
   return i;
 }
