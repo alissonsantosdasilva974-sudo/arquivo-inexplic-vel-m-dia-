@@ -50,3 +50,4 @@ ep_hospital/work/preview/
 ep_hospital/audio/*.wav
 !ep_hospital/audio/sfx_stem.wav
 ep_hospital/work/preview*/
+ep_hospital/work/render.log
