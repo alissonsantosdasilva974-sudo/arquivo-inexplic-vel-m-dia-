@@ -8,7 +8,7 @@ const torch = (r = 0) => `<g transform="scale(0.55)">${flashlightProp(r)}</g>`;
 const povBg = c => Lr(0.3, `<rect x="-800" y="-800" width="3600" height="3200" fill="${c}"/><circle cx="960" cy="560" r="460" fill="${WARM}" opacity="0.1"/>`);
 const pov = (T, inner, o = {}) => Lr(1, povHandsPB(960, 820 + (o.dy || 0), o.k || 2.2, inner, { spread: o.spread || 300, lift: Math.sin(T * 2) * 4, only: o.only }));
 const CL = (x, z = 2.8, sy = 950) => focus(x, HEAD(GY), z, sy);     // close de cabeça e peito
-const MD = (x, z = 2.0) => frameG(x, GY, z, 1430);                  // plano médio (corpo inteiro)
+const MD = (x, z = 2.0) => frameG(x, GY, z, 1250);  // pés acima da legenda                  // plano médio (corpo inteiro)
 
 SHOTS.push(
   // 0 — GANCHO: fachada sob chuva, alarme piscando na janela
@@ -88,10 +88,10 @@ SHOTS.push(
   { t0: 36.7, draw(t, T) { return { cam: push(CL(900, 3.0), t, 1.0, 0.08), layers: [...surgerySet(T, t, PB({ x: 900, y: GY, t: T, face: 0.8, lx: 1, expr: 'surprised', pale: 0.4, armR: 60, bendR: 20, holdR: torch(60) }) + emote('sweat', 860, GY - S6 * 400, T - 36.8, 0.9), { monitor: 1, fg: false }), L0(rect(-600, -600, 2280, 3120, HC.red, 'opacity="0.1"'))], tint: HD }; } },
   // 18 — uma sombra passa correndo atrás da cortina
   { t0: 37.72, draw(t, T) {
-    const sx = lerp(100, 1500, clamp((t - 0.4) / 1.3));
+    const sx = lerp(300, 1400, clamp((t - 0.3) / 1.6));
     const shadow = '';
     const cur = `<g transform="translate(0 0)">${curtain(240, 160, 1200, GY - 140, 0, T)}</g>`;
-    return { cam: push(MD(840, 1.75), t, 2.6, 0.05), layers: [...surgerySet(T, t, cur + `<g opacity="0.5">${CR(sx, T, { run: 1, dark: 1, k: 0.5 })}</g>`, { monitor: 1, fg: false }), Lr(1.3, ivStand(300, 1.3))], tint: HD };
+    return { cam: push(MD(840, 1.75), t, 2.6, 0.05), layers: [...surgerySet(T, t, cur + `<g opacity="0.55" filter="none">${CR(sx, T, { run: 1, dark: 1, k: 0.5 }).replace(/fill="#[0-9a-fA-F]{6}"/g, 'fill="#14101a"').replace(/stroke="#[0-9a-fA-F]{6}"/g, 'stroke="#14101a"')}</g>`, { monitor: 1, fg: false }), Lr(1.3, ivStand(300, 1.3))], tint: HD };
   } },
   // 19 — "Polo puxou o pano com força": POV, a mão agarra a cortina e puxa
   { t0: 40.35, draw(t, T) {
@@ -143,14 +143,14 @@ SHOTS.push(
   // 28 — caiu na frente de Polo (plano médio, os dois)
   { t0: 58.73, draw(t, T) {
     const land = E.out(clamp(t / 0.35)), y = lerp(GY - 350, GY, land);
-    const c = push(MD(820, 1.75), t, 1.6, 0.05);
+    const c = push(MD(820, 1.45), t, 1.6, 0.05);
     return { cam: { ...c, y: c.y + (t > 0.3 && t < 0.55 ? Math.sin(T * 60) * 10 : 0) }, layers: [...hallSet(T, t, PB({ x: 600, y: GY, t: T, side: true, face: 1, expr: 'surprised', armL: 120, armR: 110, holdR: torch(80), tilt: -6 }) + CR(980, T, { y, dark: 0.25, reach: t > 0.6, glow: 1, k: 0.52 }), { lights: 0, fg: false }), darkLight(560, 880, 700, 0.45)], tint: HD, over: comic(T, 59.0, 'TÓIM!', 760, 420, { size: 100, fill: '#cdd6f0' }) };
   } },
   // 29 — Polo empurra a maca nela
   { t0: 60.37, draw(t, T) {
     const gx = lerp(820, 1100, E.in(clamp(t / 0.6))), hit = t > 0.6, cx = 1250 + (hit ? 90 * E.out(clamp((t - 0.6) / 0.4)) : 0);
     const sc = PB({ x: gx - 240, y: GY, t: T, side: true, face: 1, expr: 'angry', run: 1, walk: T * 10, armR: 90, armL: 90, bendR: 0 }) + gurney(gx, GY, 0.62) + CR(cx, T, { dark: 0.25, tilt: hit ? -24 : 12, k: 0.52 });
-    return { cam: push(MD(1000, 1.75), t, 1.6, 0.05), layers: [...hallSet(T, t, sc, { lights: 0, fg: false }), darkLight(560, 880, 720, 0.45)], tint: HD, over: comic(T, 61.0, 'POW!', 700, 460, { size: 140 }) };
+    return { cam: push(MD(1000, 1.45), t, 1.6, 0.05), layers: [...hallSet(T, t, sc, { lights: 0, fg: false }), darkLight(560, 880, 720, 0.45)], tint: HD, over: comic(T, 61.0, 'POW!', 700, 460, { size: 140 }) };
   } },
   // 30 — arromba a porta lateral
   { t0: 62.0, draw(t, T) {

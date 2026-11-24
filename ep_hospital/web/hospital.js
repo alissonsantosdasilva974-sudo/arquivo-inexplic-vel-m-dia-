@@ -78,6 +78,18 @@ function corridor(T, o = {}) {
   for (let i = -6; i <= 6; i++) s += `<path d="M ${vx + i * 25} ${vy + bh} L ${vx + i * 260} 2300" stroke="${OLh}" stroke-width="2.5" opacity="0.35"/>`;
   for (let k = 1; k < 9; k++) { const p = Math.pow(k / 9, 2.2), y = vy + bh + p * 1700, hw = bw + p * (1380 - bw - vx + 540); s += `<path d="M ${vx - hw} ${f2(y)} H ${vx + hw}" stroke="${OLh}" stroke-width="2" opacity="0.3"/>`; }
   for (const sd of [-1, 1]) s += `<path d="M ${vx + sd * bw} ${vy + bh - 40} L ${vx + sd * 1300} ${vy + bh + 900}" stroke="${mix(HC.cream, '#20242e', dark)}" stroke-width="22" opacity="0.8"/>`;
+  // piso xadrez em perspectiva
+  { const y0 = vy + bh, yb = 2300, X = (i, y) => vx + i * (25 + (y - y0) / (yb - y0) * 235), Y = k => y0 + Math.pow(k / 9, 2.2) * (yb - y0) * 0.9;
+    for (let k = 0; k < 10; k++) for (let i = -6; i < 6; i++) if ((i + k) % 2 === 0) { const ya = Y(k), yc = Y(k + 1); s += `<path d="M ${f2(X(i, ya))} ${f2(ya)} L ${f2(X(i + 1, ya))} ${f2(ya)} L ${f2(X(i + 1, yc))} ${f2(yc)} L ${f2(X(i, yc))} ${f2(yc)} Z" fill="${mix('#5a6680', '#14161e', dark)}" opacity="0.7"/>`; } }
+  // lambri creme com faixa vermelha nas duas paredes
+  for (const sd of [-1, 1]) {
+    const bx = vx + sd * bw, fx = sd < 0 ? -300 : 1380, tb = vy + bh - 0.32 * 2 * bh, tf = 2300 - 0.32 * 2600;
+    s += `<path d="M ${bx} ${f2(tb)} L ${fx} ${f2(tf)} L ${fx} 2300 L ${bx} ${vy + bh} Z" fill="${mix('#d8ccb0', '#1a1814', dark)}" opacity="0.95"/>`;
+    s += `<path d="M ${bx} ${f2(tb)} L ${fx} ${f2(tf)}" stroke="${mix('#8a2a32', '#1a0a0c', dark)}" stroke-width="14"/>`;
+    s += `<path d="M ${bx} ${f2(tb)} L ${fx} ${f2(tf)} L ${fx} ${f2(tf - 900)} L ${bx} ${f2(tb - 140)} Z" fill="url(#pPlaster)"/>`;
+  }
+  // poças de luz quente no chão
+  if (!dark || dark < 0.5) for (let k = 0; k < 3; k++) { const p = 0.15 + k * 0.3, y = vy + bh + p * p * 1300; s += `<ellipse cx="${vx}" cy="${f2(y)}" rx="${f2(120 + p * 700)}" ry="${f2(20 + p * 120)}" fill="url(#gPool)" opacity="${f2(0.5 * (1 - dark))}"/>`; }
   // portas laterais
   for (let k = 0; k < 3; k++) for (const sd of [-1, 1]) {
     const p0 = 0.18 + k * 0.28, p1 = p0 + 0.12, X = p => vx + sd * (bw + p * 1200), Yt = p => vy - bh + 40 - p * 900 * 0.4 + p * 260, Yb = p => vy + bh + p * 760;
@@ -91,6 +103,7 @@ function corridor(T, o = {}) {
   }
   if (o.debris) s += debris(o.seed || 4, vx, vy + bh, dark);
   if (o.alarm) s += rect(-600, -600, 2280, 3120, HC.red, `opacity="${f2(0.22 * ak)}"`) + `<circle cx="${vx}" cy="${vy - bh - 30}" r="26" fill="${mix(HC.redD, HC.red, ak)}" stroke="${OLh}" stroke-width="5"/>`;
+  s += rect(-600, -600, 640, 3120, '#0c0e18', `stroke="${OLh}" stroke-width="8"`) + rect(1040, -600, 640, 3120, '#0c0e18', `stroke="${OLh}" stroke-width="8"`);
   return s;
 }
 function debris(seed, vx, fy, dark = 0) {
