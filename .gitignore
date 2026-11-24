@@ -41,3 +41,11 @@ pilot/frames_ref/
 # simple-workflow plugin artifacts (local-only; delete entries to share via git)
 .simple-workflow/
 .simple-workflow
+ep_hospital/frames/
+ep_hospital/frames_ref/
+ep_hospital/frames_body/
+ep_hospital/frames_ovl/
+ep_hospital/renders/
+ep_hospital/work/preview/
+ep_hospital/audio/*.wav
+!ep_hospital/audio/sfx_stem.wav
