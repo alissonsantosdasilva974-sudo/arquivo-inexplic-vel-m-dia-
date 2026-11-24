@@ -2,19 +2,19 @@
 <style>@font-face{font-family:'Fredoka';font-weight:700;src:url(fonts/fredoka-latin-700-normal.woff2)}html,body{margin:0;background:#000}#stage{width:1080px;height:1920px;overflow:hidden}</style></head><body><div id="stage"></div>
 <script src="lib.js"></script><script src="words.js"></script><script src="characters_v1.js"></script><script src="characters.js"></script><script src="characters2.js"></script><script src="environments.js"></script>
 <script src="city.js"></script>
-<script src="city2.js"></script><script src="scenes.js"></script><script src="shots.js"></script><script src="main.js"></script>
+<script src="city2.js"></script><script src="scenes.js"></script><script src="hospital.js"></script><script src="hospital2.js"></script><script src="shots.js"></script><script src="main.js"></script>
 <script>
 window.renderCover = () => {
   const T = 3, t = 1;
-  const cam = frameG(700, 905, 1.62, 1600);
-  const polo = person('polo', { x: 680, y: 905, s: 0.68, t: 0.4, face: 0.25, expr: 'smug', wink: true, hat: 'fedora', armR: 95, bendR: 10, holdR: noteNamed('?', 1, { s: 0.5 }) });
-  const man = person('terno', { x: 905, y: 905, s: 0.62, t: 0.4, face: -0.4, lx: -1, expr: 'smug', fade: 0.6 });
-  const layers = nightSet(T, t, man + lampLight(760, 940, 1.0) + polo);
+  const cam = frameG(860, GY, 1.2, 1720);
+  const polo = person('poloPB', { x: 780, y: GY, s: 0.7, t: 0.4, face: 0.3, lx: -0.6, expr: 'surprised', armR: 80, bendR: 10, holdR: torch(70) });
+  const monster = `<g opacity="0.85">${creature(1040, GY, 0.6, 2, { dark: 0.3, glow: 1, reach: 1, tilt: 16 })}</g>`;
+  const layers = [...hallSet(T, t, monster + polo + torchBeam(870, GY - 190, 1010, GY - 300, 90, 0.3), { debris: 1, lights: 0, fg: false }), darkLight(560, 1100, 760, 0.5)];
   let body = ''; for (const L of layers) body += `<g transform="${layerT(cam, L.d)}">${L.svg}</g>`;
-  body += `<rect width="1080" height="1920" fill="#3a4a8a" opacity="0.22" style="mix-blend-mode:multiply"/>`;
+  body += `<rect width="1080" height="1920" fill="#1e2656" opacity="0.22" style="mix-blend-mode:multiply"/>`;
   const title = (txt, y, size, fill) => `<text x="540" y="${y}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="${size}" fill="${fill}" stroke="#211c26" stroke-width="22" stroke-linejoin="round" paint-order="stroke">${txt}</text>`;
-  const head = `<g transform="rotate(-4 540 560)">${title('QUEM DEVOLVE', 470, 100, '#ffffff')}${title('A NOTA VIRA', 575, 100, '#ffffff')}${title('O COBRADOR!', 700, 128, '#ffd23f')}</g>`;
-  const part = `<g transform="translate(820 340) rotate(8)"><rect x="-150" y="-50" width="300" height="100" rx="24" fill="#ff7a45" stroke="#211c26" stroke-width="10"/><text x="0" y="22" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="64" fill="#fff">PARTE 2</text></g>`;
+  const head = `<g transform="rotate(-4 540 560)">${title('NINGUÉM ENTRA', 470, 96, '#ffffff')}${title('HÁ 30 ANOS...', 575, 96, '#ffffff')}${title('HOSPITAL', 710, 132, '#ff5a4a')}${title('SANTA CLARA', 840, 120, '#ffd23f')}</g>`;
+  const part = `<g transform="translate(820 340) rotate(8)"><rect x="-150" y="-50" width="300" height="100" rx="24" fill="#e8323a" stroke="#211c26" stroke-width="10"/><text x="0" y="22" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="64" fill="#fff">PARTE 1</text></g>`;
   document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${body}<rect width="1080" height="1920" fill="url(#gGlow)"/><rect width="1080" height="1920" fill="url(#gVig)"/><image href="paper.png" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>${head}${part}${badge()}</svg>`;
 };
 </script></body></html>
