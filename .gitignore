@@ -52,3 +52,5 @@ ep_hospital/audio/*.wav
 ep_hospital/work/preview*/
 ep_hospital/work/render.log
 ep_hospital/work/rev/
+ep_hospital/work/prevC/
+ep_hospital/work/wlog.txt
