@@ -29,6 +29,7 @@ bash padrao/novo_episodio.sh N nome_curto caminho/narracao.wav
 |---|---|---|
 | 1 — "Já volto" | `video/` (motor em `video/web9/`) | v5 entregue (`video/out/ja_volto_v5_tiktok*.mp4`). **Usa o Polo antigo** (moletom `#F2C230`, sapato preto, sem jeans). Re-renderizar se quiser a série uniforme. |
 | 2 — "Quem devolve a nota vira o cobrador" (parte 2) | `ep2/` | v4: cidade v3 (ruas em 5 camadas, rua em perspectiva, drone), Polo sem barba, placar de notas (HUD em `shots.js`), música com ducking, "whoosh" nos cortes e capa centralizada (`ep2/out/cobrador_ep2_tiktok*.mp4`). |
+| Especial — "Hospital Santa Clara" (série paralela, parte 1) | `ep_hospital/` | v1 entregue (`ep_hospital/out/hospital_santa_clara_tiktok*.mp4`, capa `capa_hospital.png`). Polo com figurino estilo anos 20: boina, paletó, colete e calça risca de giz (`CAST2.poloPB`). Fora da premissa "voltar pra casa". Termina com "Comente Parte 2". |
 | 3 | — | O usuário vai decidir pelos comentários (COBRA ou AVISA). |
 | Piloto da cidade v3 | `pilot/` (kit em `video/web9/city2.js`, **aprovado e aplicado no ep. 2**) | Cena-piloto entregue (`pilot/out/piloto_cidade.mp4`): descida de drone, rua da padaria em 5 camadas, rua em perspectiva com quarteirões, carros, fios e pedestres, de dia e de noite. Estilo de cidade escolhido pelo usuário: **misto** (casas e lojas baixas na rua, prédios de 5 a 10 andares atrás). O usuário pediu **ajustes antes de aplicar**; aguardando quais. |
 
