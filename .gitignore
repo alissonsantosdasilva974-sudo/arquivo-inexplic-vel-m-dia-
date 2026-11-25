@@ -50,3 +50,4 @@ ep_santaclara/work/preview/
 ep_santaclara/audio/*.wav
 !ep_santaclara/audio/sfx_stem.wav
 ep_santaclara/*_v1_antigo/
+ep_santaclara/work/preview*/
