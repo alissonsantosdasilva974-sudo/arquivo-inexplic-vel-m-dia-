@@ -33,8 +33,8 @@ SHOTS.push(
   } },
   // 4 — o feixe revela o médico
   { t0: 4.7, draw(t, T) {
-    const bx = lerp(500, 880, E.inOut(clamp(t / 1.2)));
-    return { cam: push(frameG(640, GROUND, 1.12, 1460), t, 2.5), layers: [Lr(1, elevatorBack(T) + doc({ x: 880, y: GROUND, s: 0.64, t: T, face: -0.5, expr: 'neutral' }) + poloTorch(360, 0.6, T)), Lr(1.05, torch(bx, 680, 330, 0.88, 'h4'))], tint: DARK };
+    const bx = lerp(500, 880, E.inOut(clamp(t / 1.2))) + Math.sin(T * 13) * 6;
+    return { cam: dutch(push(frameG(640, GROUND, 1.12, 1460), t, 2.5, 0.1), -4, T), layers: [Lr(1, elevatorBack(T) + doc({ x: 880, y: GROUND, s: 0.64, t: T, face: -0.5, expr: 'neutral' }) + poloTorch(360, 0.6, T)), Lr(1.05, torch(bx, 680, 330, 0.9, 'h4')), Lr(1.25, fgPillar(lerp(900, 640, t / 2.5)))], tint: DARK };
   } },
   // 5 — jaleco sujo: a seringa no bolso (pista)
   { t0: 7.2, draw(t, T) {
@@ -74,7 +74,8 @@ SHOTS.push(
   } },
   // 13 — a criatura em cima da cabine (poço)
   { t0: 24.1, draw(t, T) {
-    return { cam: lerpCam(focus(675, 500, 1.1), focus(675, 380, 1.6), E.inOut(clamp(t / 1.9))), layers: [Lr(0.6, shaftBg(T, 500)), Lr(1, cabinTop(675, 760, 900) + creature(675, 760, 0.62, T))], tint: DARK };
+    if (t < 1.0) return { cam: dutch(lerpCam(focus(675, 560, 1.0), focus(675, 470, 1.25), E.inOut(clamp(t))), 6, T), layers: [Lr(0.6, shaftBg(T, 500)), Lr(1, cabinTop(675, 760, 900) + creature(675, 760, 0.62, T))], tint: DARK };
+    return { cam: dutch(push(focus(686, 312, 5.0, 900), t - 1, 0.9, 0.08), -5, T), layers: [Lr(0.6, shaftBg(T, 500)), Lr(1, cabinTop(675, 760, 900) + creature(675, 760, 0.62, T))], tint: DARK };
   } },
   // 14 — o alçapão arrancado
   { t0: 26.0, draw(t, T) {
@@ -84,8 +85,8 @@ SHOTS.push(
   // 15 — o braço desce atrás do Polo
   { t0: 28.1, draw(t, T) {
     const r = E.inOut(clamp(t / 2.4)), ax = lerp(680, 470, r), ay = lerp(330, 660, r);
-    const arm = `<path d="M 680 300 Q 620 ${f2(ay - 120)} ${f2(ax)} ${f2(ay)}" stroke="${OL}" stroke-width="44" fill="none" stroke-linecap="round"/><path d="M 680 300 Q 620 ${f2(ay - 120)} ${f2(ax)} ${f2(ay)}" stroke="#2b2236" stroke-width="30" fill="none" stroke-linecap="round"/>` + [-18, 0, 18].map(f => `<path d="M ${f2(ax + f)} ${f2(ay)} q ${f2(f * 0.6 - 10)} 30 ${f2(f - 20)} 56" stroke="${OL}" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M ${f2(ax + f)} ${f2(ay)} q ${f2(f * 0.6 - 10)} 30 ${f2(f - 20)} 56" stroke="#efe6d2" stroke-width="6" fill="none" stroke-linecap="round"/>`).join('');
-    return { cam: push(focus(500, 600, 2.1, 900), t, 3), layers: [Lr(1, elevatorBack(T, { dent: 110, hatch: 1 }) + poloTorch(400, 0.6, T, { expr: 'surprised', face: 0.8, armL: 60, bendL: 60 }) + arm), Lr(1.05, torch(450, 620, 420, 0.75, 'h15'))], tint: DARK };
+    const arm = `<path d="M 680 300 Q 620 ${f2(ay - 120)} ${f2(ax)} ${f2(ay)}" stroke="${OL}" stroke-width="40" fill="none" stroke-linecap="round"/><path d="M 680 300 Q 620 ${f2(ay - 120)} ${f2(ax)} ${f2(ay)}" stroke="#1d1726" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 676 300 Q 616 ${f2(ay - 124)} ${f2(ax - 6)} ${f2(ay)}" stroke="#8a9ad8" stroke-width="3" fill="none" opacity="0.5"/>` + [-24, -8, 8, 24].map(f => `<path d="M ${f2(ax + f * 0.6)} ${f2(ay)} q ${f2(f * 0.4 - 8)} 34 ${f2(f - 16)} 70" stroke="${OL}" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M ${f2(ax + f * 0.6)} ${f2(ay)} q ${f2(f * 0.4 - 8)} 34 ${f2(f - 16)} 70" stroke="#1d1726" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M ${f2(ax + f * 1.6 - 16)} ${f2(ay + 70)} l -3 20" stroke="#d9cfbd" stroke-width="6" stroke-linecap="round"/>`).join('');
+    return { cam: dutch(push(focus(480, 610, 2.3, 980), t, 3, 0.1), 7, T), layers: [Lr(1, elevatorBack(T, { dent: 110, hatch: 1 }) + poloTorch(400, 0.6, T, { expr: 'surprised', face: 0.8, armL: 60, bendL: 60, pale: 0.3 }) + arm), Lr(1.05, torch(450, 620, 400, 0.8, 'h15'))], tint: DARK };
   } },
   // 16 — só ele: o médico nem é tocado
   { t0: 31.2, draw(t, T) {
@@ -114,12 +115,13 @@ SHOTS.push(
   // 21 — a criatura salta atrás deles
   { t0: 43.1, draw(t, T) {
     const p = clamp(t / 1.6), sq = p < 0.15 ? 0.12 : (p > 0.95 ? 0.15 : -0.08);
-    return { cam: push(frameG(675, GROUND, 1.05, 1500), t, 2.7, 0.08), layers: [Lr(1, morgue(T) + `<rect x="0" y="330" width="320" height="580" fill="#0a0910" stroke="${OL}" stroke-width="8"/>` + creature(lerp(160, 900, p), GROUND - Math.sin(p * Math.PI) * 330, 0.48, T, { squash: sq }))], tint: DARK, over: comic(T, 44.0, 'GRRR!', 700, 500, { fill: '#ff5a4a' }) };
+    if (t > 1.7) return { cam: dutch(push(focus(900, 610, 2.4, 960), t - 1.7, 1, 0.1), 8, T), layers: [Lr(1, morgue(T) + creature(900, GROUND, 0.5, T, { reach: 0.3 }))], tint: DARK };
+    return { cam: dutch(push(frameG(675, GROUND, 1.0, 1640), t, 2.7, 0.08), -6, T), layers: [Lr(1, morgue(T) + `<rect x="0" y="330" width="320" height="580" fill="#0a0910" stroke="${OL}" stroke-width="8"/>` + creature(lerp(160, 900, p), GROUND - Math.sin(p * Math.PI) * 330, 0.5, T, { squash: sq, reach: Math.sin(p * Math.PI) * 0.6 }))], tint: DARK, over: comic(T, 44.0, 'GRRR!', 700, 500, { fill: '#ff5a4a' }) };
   } },
   // 22 — corre pelo necrotério derrubando estantes
   { t0: 45.8, draw(t, T) {
-    const ang = clamp((t - 0.6) / 0.6) * 75;
-    return { cam: push(frameG(600, GROUND, 1.8, 1440), t, 1.8), layers: [Lr(1, morgue(T, { scroll: T * 520 }) + shelf(820 - t * 300, ang) + polo({ x: 600, y: GROUND, s: 0.6, t: T, side: true, face: 1, walk: T * 11, run: 1, expr: 'surprised' })), Lr(1.3, `<rect x="${f2(1400 - (T * 1600) % 2600)}" y="-200" width="120" height="1500" fill="#0c0f16" filter="url(#fgBlur)" opacity="0.9"/>`), Lr(1.05, torch(700, 700, 600, 0.6, 'h22'))], tint: DARK, over: comic(T, 46.7, 'CRASH!', 760, 560, { size: 90 }) };
+    const ang = E.in(clamp((t - 0.55) / 0.45)) * 90;
+    return { cam: push(frameG(600, GROUND, 1.8, 1440), t, 1.8), layers: [Lr(1, morgue(T, { scroll: T * 520 }) + shelf(900 - t * 520, -ang) + polo({ x: 600, y: GROUND, s: 0.6, t: T, side: true, face: 1, walk: T * 11, run: 1, expr: 'surprised' })), Lr(1.3, `<rect x="${f2(1400 - (T * 1600) % 2600)}" y="-200" width="120" height="1500" fill="#0c0f16" filter="url(#fgBlur)" opacity="0.9"/>`), Lr(1.05, torch(700, 700, 600, 0.6, 'h22'))], tint: DARK, over: comic(T, 46.7, 'CRASH!', 760, 560, { size: 90 }) };
   } },
   // 23 — close do rosto correndo
   { t0: 47.6, draw(t, T) {
@@ -127,11 +129,12 @@ SHOTS.push(
   } },
   // 24 — lá atrás, os passos calmos do médico
   { t0: 49.3, draw(t, T) {
-    return { cam: push(frameG(620, GROUND, 1.5, 1440), t, 2.1, 0.08), layers: [Lr(1, morgue(T, { scroll: T * 60 }) + shelf(380, 75) + doc({ x: 620, y: GROUND, s: 0.62, t: T, side: true, face: 1, walk: T * 3.5, expr: 'neutral' }))], tint: ['#2a3266', 0.34] };
+    return { cam: dutch(push(frameG(620, GROUND, 1.5, 1440), t, 2.1, 0.08), -3, T), layers: [Lr(1, morgue(T, { scroll: T * 60 }) + shelf(380 - t * 60, -90) + doc({ x: 620, y: GROUND, s: 0.62, t: T, side: true, face: 1, walk: T * 3.5, expr: 'neutral' })), Lr(1.3, fgPillar(1100 - t * 300))], tint: ['#2a3266', 0.34] };
   } },
   // 25 — pés calmos (detalhe) e a criatura na sombra
   { t0: 51.4, draw(t, T) {
-    return { cam: push(focus(640, 760, 2.4, 900), t, 2, 0.06), layers: [Lr(1, morgue(T, { scroll: T * 60 }) + creature(1000, GROUND, 0.45, T, { fade: 0.6 }) + doc({ x: 620, y: GROUND, s: 0.62, t: T, side: true, face: 1, walk: T * 3.5, expr: 'smug' }))], tint: ['#2a3266', 0.36] };
+    const ey = clamp((t - 0.6) / 0.4);
+    return { cam: dutch(push(focus(700, 700, 2.2, 960), t, 2, 0.1), 5, T), layers: [Lr(1, morgue(T, { scroll: T * 60 }) + doc({ x: 620, y: GROUND, s: 0.62, t: T, side: true, face: 1, walk: T * 3.5, expr: 'smug' })), Lr(1.05, torch(620, 700, 300, 0.95, 'h25') + eyesInDark(900, 560, 0.8, T, ey))], tint: ['#2a3266', 0.36] };
   } },
   // 26 — a placa de SAÍDA brilha no fim do corredor
   { t0: 53.3, draw(t, T) {
@@ -155,24 +158,24 @@ SHOTS.push(
   } },
   // 30 — o médico parado no escuro
   { t0: 63.9, draw(t, T) {
-    return { cam: push(frameG(675, GROUND, 1.4, 1440), t, 2, 0.06), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: 'neutral' })), Lr(1.05, torch(675, 680, 330, 0.9, 'h30'))], tint: DARK };
+    return { cam: dutch(push(frameG(675, GROUND, 1.4, 1440), t, 2, 0.1), -4, T), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: 'neutral' })), Lr(1.05, torch(675, 760, 300, 0.95, 'h30') + underLight(675, 900, 360, 'u30'))], tint: DARK };
   } },
   // 31 — "estava parado no escuro" (mais perto)
   { t0: 65.9, draw(t, T) {
-    return { cam: push(focus(675, 700, 2.6, 900), t, 1.8, 0.06), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: 'smug' })), Lr(1.05, torch(675, 680, 300, 0.9, 'h31'))], tint: DARK };
+    return { cam: dutch(push(focus(675, 720, 2.8, 960), t, 1.8, 0.1), 4, T), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: 'smug' })), Lr(1.05, torch(675, 760, 260, 0.95, 'h31') + underLight(675, 860, 300, 'u31'))], tint: DARK };
   } },
   // 32 — gira a seringa entre os dedos
   { t0: 67.7, draw(t, T) {
-    return { cam: push(focus(700, 740, 3.6, 900), t, 2.5, 0.05), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: 'smug', noSyringe: 1, armR: 70, bendR: 80, holdR: syringe(T * 260, 0.9) })), Lr(1.05, torch(700, 740, 280, 0.9, 'h32'))], tint: DARK };
+    return { cam: push(focus(700, 740, 3.6, 900), t, 2.5, 0.05), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: 'smug', noSyringe: 1, armR: 70, bendR: 80, holdR: syringe(20 + Math.sin(T * 3.2) * 28, 0.9) })), Lr(1.05, torch(700, 740, 280, 0.9, 'h32'))], tint: DARK };
   } },
   // 33 — a criatura chega
   { t0: 70.2, draw(t, T) {
-    const x = lerp(1500, 960, E.out(clamp(t / 1.5)));
-    return { cam: push(frameG(800, GROUND, 1.0, 1500), t, 1.8), layers: [Lr(1, morgue(T) + creature(x, GROUND, 0.5, T) + doc({ x: 640, y: GROUND, s: 0.6, t: T, face: 0, expr: 'smug', noSyringe: 1, armR: 70, bendR: 80, holdR: syringe(T * 260, 0.9) }))], tint: DARK };
+    const x = lerp(1500, 940, E.out(clamp(t / 1.5)));
+    return { cam: dutch(push(frameG(780, GROUND, 1.0, 1640), t, 1.8, 0.06), -7, T), layers: [Lr(1, morgue(T) + doc({ x: 620, y: GROUND, s: 0.58, t: T, face: 0, expr: 'smug', noSyringe: 1, armR: 70, bendR: 80, holdR: syringe(20 + Math.sin(T * 3.2) * 28, 0.9) }) + creature(x, GROUND + 40, 0.62, T))], tint: DARK };
   } },
   // 34 — e para mansamente atrás dele
   { t0: 72.0, draw(t, T) {
-    return { cam: push(frameG(700, GROUND, 1.2, 1500), t, 1.8), layers: [Lr(1, morgue(T) + creature(820, GROUND, 0.5, T, { calm: 1 }) + doc({ x: 640, y: GROUND, s: 0.6, t: T, face: 0.2, expr: 'happy', noSyringe: 1, armR: 70, bendR: 80, holdR: syringe(T * 260, 0.9) }))], tint: DARK };
+    return { cam: push(frameG(700, GROUND, 1.2, 1500), t, 1.8), layers: [Lr(1, morgue(T) + creature(820, GROUND, 0.5, T, { calm: 1 }) + doc({ x: 640, y: GROUND, s: 0.6, t: T, face: 0.2, expr: 'happy', noSyringe: 1, armR: 70, bendR: 80, holdR: syringe(20 + Math.sin(T * 3.2) * 28, 0.9) }))], tint: DARK };
   } },
   // 35 — como um cão de guarda (o médico afaga a garra)
   { t0: 73.8, draw(t, T) {
@@ -190,7 +193,7 @@ SHOTS.push(
   } },
   // 38 — o médico sorri
   { t0: 79.7, draw(t, T) {
-    return { cam: push(focus(675, 700, 3.8, 860), t, 2.8, 0.06), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: t > 0.8 ? 'smug' : 'neutral', noSyringe: 1 })), Lr(1.05, torch(675, 700, 300, 0.9, 'h38'))], tint: DARK };
+    return { cam: dutch(push(focus(675, 700, 4.2, 900), t, 2.8, 0.1), -5, T), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: t > 0.8 ? 'smug' : 'neutral', noSyringe: 1 })), Lr(1.05, torch(675, 720, 260, 0.95, 'h38') + underLight(675, 820, 260, 'u38'))], tint: DARK };
   } },
   // 39 — "Obrigado por trazer..."
   { t0: 82.5, draw(t, T) {
@@ -198,12 +201,12 @@ SHOTS.push(
   } },
   // 40 — "...um novo paciente."
   { t0: 84.3, draw(t, T) {
-    return { cam: push(focus(675, 690, 3.9, 880), t, 2.1, 0.07), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: 'smug', mouth: talk(T, DOCTALK), noSyringe: 1 })), Lr(1.05, torch(675, 690, 280, 0.92, 'h40'))], tint: DARK };
+    return { cam: dutch(push(focus(675, 690, 4.4, 880), t, 2.1, 0.12), 6, T), layers: [Lr(1, morgue(T) + doc({ x: 675, y: GROUND, s: 0.64, t: T, face: 0, expr: 'smug', mouth: talk(T, DOCTALK), noSyringe: 1 })), Lr(1.05, torch(675, 720, 250, 0.95, 'h40') + underLight(675, 820, 260, 'u40'))], tint: DARK };
   } },
   // 41 — a lanterna se apaga
   { t0: 86.4, draw(t, T) {
     const on = t < 1.0 || (t < 1.3 && Math.floor(t * 20) % 2);
-    return { cam: push(focus(560, 640, 3.0, 860), t, 1.9, 0.05), layers: [Lr(1, exitDoor(T, 0) + poloTorch(560, 0.62, T, { expr: 'surprised', pale: 0.4, on })), Lr(1.05, on ? torch(560, 620, 360, 0.85, 'h41') : darkBg('#05040a'))], tint: DARK, over: comic(T, 87.4, 'click', 540, 520, { size: 70, fill: '#d0d0e0' }) };
+    return { cam: dutch(push(focus(560, 640, 3.0, 860), t, 1.9, 0.08), on ? 3 : 0, T), layers: [Lr(1, exitDoor(T, 0) + poloTorch(560, 0.62, T, { expr: 'surprised', pale: 0.4, on })), Lr(1.05, (on ? torch(560, 620, 360, 0.85, 'h41') : darkBg('#05040a')) + (on ? '' : eyesInDark(600, 600, 0.45, T, clamp((t - 1.3) / 0.3))))], tint: DARK, over: comic(T, 87.4, 'click', 540, 520, { size: 70, fill: '#d0d0e0' }) };
   } },
   // 42 — Hospital Santa Clara (fachada na chuva)
   { t0: 88.3, draw(t, T) {

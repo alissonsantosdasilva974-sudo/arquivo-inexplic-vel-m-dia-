@@ -42,28 +42,65 @@ torso2 = function (P, d, k = 1) {
 // seringa na mão
 const syringe = (rot = 0, k = 1) => `<g transform="rotate(${f2(rot)}) scale(${k})"><rect x="-6" y="-58" width="12" height="62" rx="3" fill="#e2eef6" stroke="${OL}" stroke-width="3.5"/><rect x="-3" y="-40" width="6" height="34" fill="#d06a8a" opacity="0.8"/><rect x="-11" y="-66" width="22" height="8" rx="2" fill="#9aa2ae" stroke="${OL}" stroke-width="3"/><path d="M 0 4 V 30" stroke="#8a8f98" stroke-width="3"/></g>`;
 
-// criatura: alta, roxo-escura, braços longos, garras, olhos vermelhos (sem verde)
+// criatura v2: magra e curvada, costelas, coluna saltada, dedos longos com garras, crânio alongado,
+// olhos vermelhos com brilho, boca rasgada com dentes e baba. Luz de recorte fria nas bordas. Sem verde.
 function creature(x, y, s, t, o = {}) {
-  const br = Math.sin(t * 3) * 6, reach = o.reach || 0, calm = o.calm || 0;
-  const C = '#2b2236', C2 = '#3d3150', claw = '#efe6d2';
-  let g = `<ellipse cx="0" cy="4" rx="110" ry="16" fill="#0a0810" opacity="0.35"/>`;
-  for (const sd of [-1, 1]) g += `<path d="M ${sd * 34} -250 Q ${sd * 70} -130 ${sd * 46} -6" stroke="${OL}" stroke-width="50" fill="none" stroke-linecap="round"/><path d="M ${sd * 34} -250 Q ${sd * 70} -130 ${sd * 46} -6" stroke="${C}" stroke-width="36" fill="none" stroke-linecap="round"/>`;
-  g += `<path d="M -110 ${-560 + br} Q 0 ${-610 + br} 110 ${-560 + br} L 76 -230 Q 0 -200 -76 -230 Z" fill="${C}" stroke="${OL}" stroke-width="${LW}"/>`;
-  for (let i = 0; i < 4; i++) g += `<path d="M -52 ${-500 + i * 52 + br} Q 0 ${-488 + i * 52 + br} 52 ${-500 + i * 52 + br}" stroke="${C2}" stroke-width="7" fill="none"/>`;
+  const br = Math.sin(t * 2.4) * 7, reach = o.reach || 0, calm = o.calm || 0, twitch = calm ? 0 : Math.sin(t * 23) * Math.max(0, Math.sin(t * 1.7)) * 4;
+  const C = '#1d1726', C2 = '#2e2440', RIM = '#8a9ad8', BONE = '#d9cfbd', id = 'cr' + Math.round(x) + Math.round(y);
+  let g = `<defs><radialGradient id="${id}e"><stop offset="0" stop-color="#ff3a2a" stop-opacity="0.9"/><stop offset="1" stop-color="#ff3a2a" stop-opacity="0"/></radialGradient>
+   <linearGradient id="${id}b" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${C2}"/><stop offset="0.55" stop-color="${C}"/><stop offset="1" stop-color="#0e0b14"/></linearGradient></defs>`;
+  g += `<ellipse cx="0" cy="6" rx="140" ry="18" fill="#000" opacity="0.45"/>`;
+  // pernas finas com joelho dobrado para trás
   for (const sd of [-1, 1]) {
-    const sw = Math.sin(t * 2.2 + sd) * 14 * (1 - calm);
-    const ex = sd * (170 + reach * 120), ey = -380 - reach * 60, hx = sd * (150 + reach * 300) + sw, hy = -150 - reach * 260;
-    g += `<path d="M ${sd * 100} ${-540 + br} Q ${ex} ${ey} ${f2(hx)} ${f2(hy)}" stroke="${OL}" stroke-width="40" fill="none" stroke-linecap="round"/><path d="M ${sd * 100} ${-540 + br} Q ${ex} ${ey} ${f2(hx)} ${f2(hy)}" stroke="${C}" stroke-width="28" fill="none" stroke-linecap="round"/>`;
-    for (const f of [-16, 0, 16]) g += `<path d="M ${f2(hx + f)} ${f2(hy + 8)} q ${f2(f * 0.5 + sd * 6)} 30 ${f2(f * 0.8)} 58" stroke="${OL}" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M ${f2(hx + f)} ${f2(hy + 8)} q ${f2(f * 0.5 + sd * 6)} 30 ${f2(f * 0.8)} 58" stroke="${claw}" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+    const p = `M ${sd * 40} -300 L ${sd * 74} -150 L ${sd * 40} -70 L ${sd * 66} -4`;
+    g += `<path d="${p}" stroke="${OL}" stroke-width="40" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="${p}" stroke="${C}" stroke-width="28" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M ${sd * 44} -290 L ${sd * 76} -152" stroke="${RIM}" stroke-width="4" opacity="0.5"/>`;
+    for (const f of [-14, 6, 26]) g += `<path d="M ${sd * 66 + f} -4 l ${sd * 10} 10" stroke="${BONE}" stroke-width="6" stroke-linecap="round"/>`;
   }
-  const hy = -660 + br;
-  g += `<ellipse cx="0" cy="${hy}" rx="104" ry="94" fill="${C}" stroke="${OL}" stroke-width="${LW}"/>`;
-  const eh = calm ? 5 : 13;
-  for (const sd of [-1, 1]) g += `<ellipse cx="${sd * 40}" cy="${hy - 8}" rx="24" ry="${eh + 6}" fill="#ff5a4a" opacity="0.35"/><ellipse cx="${sd * 40}" cy="${hy - 8}" rx="19" ry="${eh}" fill="#ff5a4a" stroke="${OL}" stroke-width="3"/>`;
-  g += `<path d="M -56 ${hy + 40} Q 0 ${hy + 58} 56 ${hy + 40}" stroke="${OL}" stroke-width="6" fill="#140e1c"/>`;
-  for (let i = 0; i < 6; i++) { const tx = -46 + i * 18; g += `<path d="M ${tx} ${hy + 44} l 9 18 l 9 -18 Z" fill="${claw}" stroke="${OL}" stroke-width="2"/>`; }
-  return `<g transform="translate(${f2(x)} ${f2(y)}) scale(${f2(s * (o.flip ? -1 : 1))} ${f2(s * (1 - (o.squash || 0)) )})"${o.fade != null ? ` opacity="${f2(o.fade)}"` : ''}>${g}</g>`;
+  // tronco curvado para frente (corcunda), costelas e vértebras
+  const hunch = 30 + reach * 20;
+  g += `<g transform="translate(0 ${f2(br)}) rotate(${f2(-hunch * 0.25 + twitch * 0.3)} 0 -300)">`;
+  g += `<path d="M -70 -300 C -110 -420 -120 -520 -60 -600 C -20 -650 60 -650 96 -590 C 130 -520 110 -410 74 -300 Q 0 -280 -70 -300 Z" fill="url(#${id}b)" stroke="${OL}" stroke-width="${LW}"/>`;
+  for (let i = 0; i < 5; i++) { const yy = -560 + i * 46; g += `<path d="M -66 ${yy} Q 0 ${yy + 16 + i * 2} 70 ${yy - 4}" stroke="${C2}" stroke-width="7" fill="none"/><path d="M -60 ${yy + 3} Q 0 ${yy + 18 + i * 2} 64 ${yy}" stroke="${RIM}" stroke-width="2" fill="none" opacity="0.25"/>`; }
+  for (let i = 0; i < 6; i++) g += `<circle cx="${f2(92 - i * 3)}" cy="${-600 + i * 50}" r="${9 - i * 0.6}" fill="${C2}" stroke="${OL}" stroke-width="3"/>`;
+  g += `<path d="M -100 -420 C -110 -520 -70 -610 -30 -630" stroke="${RIM}" stroke-width="5" fill="none" opacity="0.55"/>`;
+  // braços longos e articulados, mãos com 4 dedos e garras
+  for (const sd of [-1, 1]) {
+    const sw = Math.sin(t * 2.1 + sd) * 16 * (1 - calm);
+    const sx = sd * 90, sy = -580, ex = sd * (160 + reach * 150), ey = -410 - reach * 150, hx = sd * (140 + reach * 330) + sw, hy = -170 - reach * 330;
+    const p = `M ${sx} ${sy} L ${f2(ex)} ${f2(ey)} L ${f2(hx)} ${f2(hy)}`;
+    g += `<path d="${p}" stroke="${OL}" stroke-width="34" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="${p}" stroke="${C}" stroke-width="22" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M ${sx} ${sy} L ${f2(ex)} ${f2(ey)}" stroke="${RIM}" stroke-width="3" opacity="0.45"/>`;
+    g += `<circle cx="${f2(ex)}" cy="${f2(ey)}" r="15" fill="${C2}" stroke="${OL}" stroke-width="4"/><ellipse cx="${f2(hx)}" cy="${f2(hy)}" rx="22" ry="18" fill="${C}" stroke="${OL}" stroke-width="5"/>`;
+    for (const [k, f] of [[0, -24], [1, -8], [2, 8], [3, 24]]) {
+      const len = 70 + (k === 1 || k === 2 ? 18 : 0), curl = Math.sin(t * 3 + k) * 6 * (1 - calm);
+      const fp = `M ${f2(hx + f * 0.6)} ${f2(hy + 10)} q ${f2(f * 0.4)} ${f2(len * 0.5)} ${f2(f * 0.9 + sd * curl)} ${len}`;
+      g += `<path d="${fp}" stroke="${OL}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="${fp}" stroke="${C}" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+      g += `<path d="M ${f2(hx + f * 0.6 + f * 0.9 + sd * curl)} ${f2(hy + 10 + len)} l ${f2(sd * 4)} 22" stroke="${BONE}" stroke-width="7" stroke-linecap="round"/>`;
+    }
+  }
+  // cabeça: crânio alongado inclinado para frente
+  const hy = -690, hx = 18;
+  g += `<g transform="rotate(${f2(Math.sin(t * 1.3) * 6 + twitch)} ${hx} ${hy + 60})">`;
+  g += `<path d="M ${hx - 80} ${hy + 30} C ${hx - 96} ${hy - 70} ${hx - 40} ${hy - 140} ${hx + 20} ${hy - 136} C ${hx + 90} ${hy - 130} ${hx + 104} ${hy - 50} ${hx + 84} ${hy + 30} C ${hx + 70} ${hy + 90} ${hx - 66} ${hy + 90} ${hx - 80} ${hy + 30} Z" fill="url(#${id}b)" stroke="${OL}" stroke-width="${LW}"/>`;
+  g += `<path d="M ${hx - 84} ${hy - 10} C ${hx - 80} ${hy - 90} ${hx - 30} ${hy - 130} ${hx + 20} ${hy - 132}" stroke="${RIM}" stroke-width="5" fill="none" opacity="0.6"/>`;
+  for (let i = 0; i < 5; i++) g += `<path d="M ${hx - 60 + i * 26} ${hy - 120 + Math.abs(i - 2) * 8} q ${-6 + i * 3} -30 ${-14 + i * 6} -46" stroke="#0e0b14" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  const eh = calm ? 4 : 12 + Math.max(0, Math.sin(t * 0.9)) * 4;
+  for (const sd of [-1, 1]) {
+    const ex = hx + sd * 36, ey = hy - 30;
+    g += `<circle cx="${ex}" cy="${ey}" r="46" fill="url(#${id}e)" opacity="${calm ? 0.35 : 0.8}"/>`;
+    g += `<path d="M ${ex - 26} ${ey + 2} Q ${ex} ${ey - eh * 2} ${ex + 26} ${ey + 2 - sd * 4} Q ${ex} ${ey + eh} ${ex - 26} ${ey + 2} Z" fill="#ff4030" stroke="${OL}" stroke-width="4"/><ellipse cx="${ex + 2}" cy="${ey}" rx="4" ry="${f2(Math.max(2, eh * 0.7))}" fill="#1a0000"/><circle cx="${ex - 8}" cy="${ey - 4}" r="3" fill="#ffe0d0"/>`;
+    g += `<path d="M ${ex - 30} ${ey - 20} L ${ex + 24} ${ey - 10 + sd * 2}" stroke="${OL}" stroke-width="7" stroke-linecap="round"/>`;
+  }
+  // boca rasgada, dentes irregulares, baba
+  const open = calm ? 0.25 : 0.55 + 0.45 * Math.abs(Math.sin(t * 2.6));
+  const my = hy + 30, mw = 70, mh = 30 * open;
+  g += `<path d="M ${hx - mw} ${my} Q ${hx} ${my + mh * 2.2} ${hx + mw} ${my - 6} Q ${hx} ${my + mh * 0.6} ${hx - mw} ${my} Z" fill="#12020a" stroke="${OL}" stroke-width="5"/>`;
+  for (let i = 0; i < 9; i++) { const tx = hx - mw + 12 + i * 14.5, up = i % 2; g += `<path d="M ${f2(tx)} ${f2(my + (up ? 2 : mh * 1.1))} l 6 ${f2(up ? 14 + (i % 3) * 4 : -12 - (i % 3) * 3)} l 6 ${f2(up ? -14 - (i % 3) * 4 : 12 + (i % 3) * 3)} Z" fill="${BONE}" stroke="${OL}" stroke-width="2"/>`; }
+  if (!calm) { const dl = 20 + ((t * 40) % 50); g += `<path d="M ${hx + 30} ${my + mh} q 3 ${f2(dl * 0.5)} -2 ${f2(dl)}" stroke="#c8d0e8" stroke-width="4" fill="none" opacity="0.7" stroke-linecap="round"/><circle cx="${hx + 28}" cy="${f2(my + mh + dl)}" r="5" fill="#c8d0e8" opacity="0.7"/>`; }
+  g += `</g></g>`;
+  return `<g transform="translate(${f2(x)} ${f2(y)}) scale(${f2(s * (o.flip ? -1 : 1))} ${f2(s * (1 - (o.squash || 0)))})"${o.fade != null ? ` opacity="${f2(o.fade)}"` : ''}>${g}</g>`;
 }
+// silhueta da criatura com olhos acesos (para aparições no escuro)
+const creatureShadow = (x, y, s, t, op = 0.85) => `<g opacity="${op}" style="filter:brightness(0)">${creature(x, y, s, t)}</g>` + `<g transform="translate(${f2(x)} ${f2(y)}) scale(${s})"><circle cx="-18" cy="-720" r="10" fill="#ff4030"/><circle cx="54" cy="-720" r="10" fill="#ff4030"/><circle cx="-18" cy="-720" r="30" fill="#ff4030" opacity="0.25"/><circle cx="54" cy="-720" r="30" fill="#ff4030" opacity="0.25"/></g>`;
 // garras pela fresta da porta
 const clawsGap = (x, y, k, t) => { let s = ''; for (let i = 0; i < 4; i++) s += `<path d="M ${x} ${y + i * 26 * k} q ${-30 * k} ${8 * k} ${-74 * k} ${(14 + Math.sin(t * 9 + i) * 6) * k}" stroke="${OL}" stroke-width="${16 * k}" fill="none" stroke-linecap="round"/><path d="M ${x} ${y + i * 26 * k} q ${-30 * k} ${8 * k} ${-74 * k} ${(14 + Math.sin(t * 9 + i) * 6) * k}" stroke="#efe6d2" stroke-width="${8 * k}" fill="none" stroke-linecap="round"/>`; return s; };
 
@@ -128,7 +165,7 @@ function morgue(t, o = {}) {
   for (let i = -6; i < 30; i++) s += `<path d="M ${f2(((i * 160 - scroll) % 4800 + 4800) % 4800 - 1200)} 900 l -60 500" stroke="#262b36" stroke-width="4"/>`;
   return s;
 }
-const shelf = (x, ang, k = 1) => `<g transform="translate(${f2(x)} ${GROUND}) rotate(${f2(ang)}) scale(${k})"><rect x="-10" y="-380" width="14" height="380" fill="#8a909c" stroke="${OL}" stroke-width="4"/><rect x="150" y="-380" width="14" height="380" fill="#8a909c" stroke="${OL}" stroke-width="4"/>${[0, 1, 2, 3].map(i => `<rect x="-14" y="${-370 + i * 110}" width="182" height="14" fill="#a4aab6" stroke="${OL}" stroke-width="4"/><rect x="${10 + i * 20}" y="${-412 + i * 110}" width="40" height="42" rx="4" fill="${['#c8b48e', '#d8d0c0', '#b0a0c8', '#e0a080'][i]}" stroke="${OL}" stroke-width="3"/>`).join('')}</g>`;
+const shelf = (x, ang, k = 1) => `<g transform="translate(${f2(x)} ${f2(GROUND - 14 * clamp(ang / 90))}) rotate(${f2(ang)} ${ang < 0 ? -10 : 164} 0) scale(${k})"><rect x="-10" y="-380" width="14" height="380" fill="#8a909c" stroke="${OL}" stroke-width="4"/><rect x="150" y="-380" width="14" height="380" fill="#8a909c" stroke="${OL}" stroke-width="4"/>${[0, 1, 2, 3].map(i => `<rect x="-14" y="${-370 + i * 110}" width="182" height="14" fill="#a4aab6" stroke="${OL}" stroke-width="4"/><rect x="${10 + i * 20}" y="${-412 + i * 110}" width="40" height="42" rx="4" fill="${['#c8b48e', '#d8d0c0', '#b0a0c8', '#e0a080'][i]}" stroke="${OL}" stroke-width="3"/>`).join('')}</g>`;
 function exitSign(x, y, k, glow) {
   return `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-150" y="-120" width="300" height="240" fill="#ff5a4a" opacity="${f2(0.12 * glow)}"/><rect x="-110" y="-44" width="220" height="88" rx="10" fill="${mix('#7a1c22', '#ff4a3a', glow)}" stroke="${OL}" stroke-width="6"/><text x="0" y="16" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="52" fill="#fff4e8">SAÍDA</text></g>`;
 }
@@ -164,3 +201,12 @@ const hookBanner = (T, t0) => { const p = E.back(clamp((T - t0) / 0.25)); return
 // boina também nas vistas de costas
 const _pb2 = personBack2;
 personBack2 = function (P, d, s) { const r = _pb2(P, d, s); return d.hat === 'flatcap' ? r.replace(/<\/g>$/, flatcap(1) + '</g>') : r; };
+
+// câmera de terror: ângulo holandês (inclinação) e respiração lenta
+const dutch = (c, deg, T) => ({ ...c, r: deg + Math.sin(T * 0.9) * 0.8 });
+// luz de baixo para cima (rosto iluminado por baixo)
+const underLight = (x, y, r, id) => `<defs><radialGradient id="${id}" cx="${x}" cy="${y}" r="${r}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffb070" stop-opacity="0.35"/><stop offset="1" stop-color="#ffb070" stop-opacity="0"/></radialGradient></defs><rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#${id})"/>`;
+// olhos vermelhos no escuro
+const eyesInDark = (x, y, k, t, op = 1) => { const bl = (t % 3.1) < 0.12 ? 0.15 : 1; return `<g transform="translate(${x} ${y}) scale(${k})" opacity="${f2(op)}">${[-1, 1].map(sd => `<circle cx="${sd * 34}" cy="0" r="40" fill="#ff3020" opacity="0.18"/><ellipse cx="${sd * 34}" cy="0" rx="16" ry="${f2(9 * bl)}" fill="#ff4030"/>`).join('')}</g>`; };
+// pilar escuro desfocado em primeiro plano
+const fgPillar = (x) => `<rect x="${f2(x)}" y="-400" width="150" height="2000" fill="#07060c" filter="url(#fgBlur)" opacity="0.92"/>`;

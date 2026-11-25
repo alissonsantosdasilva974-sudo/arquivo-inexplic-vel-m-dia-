@@ -26,6 +26,14 @@ def motion(img, sigma, dx):
     out = box(box(a, r), r)
     out = np.roll(out, int(round(dx * sc)), axis=1)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(sigma * sc * 0.08))
+import subprocess
+frames = sorted(plan)
+base_env = dict(os.environ, WEBDIR=WEB, VW='1080', VH='1920', DSF='2', JPG='1', NOBLUR='1')
+if '--render' in sys.argv:   # renderiza as camadas body/overlay (como o post_blur.py)
+    for layer, outd in [('body', D + '_body'), ('overlay', D + '_ovl')]:
+        os.makedirs(outd, exist_ok=True)
+        procs = [subprocess.Popen(['node', 'video/tools/render9.js', outd, ','.join(map(str, frames)), str(w), '2'], env=dict(base_env, LAYER=layer), stdout=subprocess.DEVNULL) for w in range(2)]
+        for p_ in procs: p_.wait()
 for f, (b, dx) in sorted(plan.items()):
     p, raw = f'{D}/f{f:05d}.jpg', f'{D}/f{f:05d}.raw.jpg'
     if not os.path.exists(raw): shutil.copy(p, raw)

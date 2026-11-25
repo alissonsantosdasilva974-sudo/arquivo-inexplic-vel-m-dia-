@@ -32,7 +32,7 @@ function _pat() {
 const DEFS = `<defs>${_pat()}
  <linearGradient id="gWallShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.10"/><stop offset="1" stop-color="#2a2233" stop-opacity="0.14"/></linearGradient>
  <radialGradient id="gFace" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#fff" stop-opacity="0.5"/><stop offset="1" stop-color="#c9a56a" stop-opacity="0.25"/></radialGradient>
- <radialGradient id="gVig" cx="0.5" cy="0.47" r="0.72"><stop offset="0.5" stop-color="#2a1a14" stop-opacity="0"/><stop offset="0.85" stop-color="#2a1a14" stop-opacity="0.28"/><stop offset="1" stop-color="#1a1010" stop-opacity="0.6"/></radialGradient>
+ <radialGradient id="gVig" cx="0.5" cy="0.47" r="0.72"><stop offset="0.5" stop-color="#2a1a14" stop-opacity="0"/><stop offset="0.85" stop-color="#2a1a14" stop-opacity="0.45"/><stop offset="1" stop-color="#0a0608" stop-opacity="0.85"/></radialGradient>
  <linearGradient id="gGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2d0" stop-opacity="0.22"/><stop offset="0.45" stop-color="#fff2d0" stop-opacity="0"/></linearGradient>
 </defs>`;
 function compose(shot, t, T) {
@@ -80,7 +80,7 @@ function renderFrame(f) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${body}
    <rect width="1080" height="1920" fill="url(#gGlow)"/>
    <rect width="1080" height="1920" fill="url(#gVig)"/>
-   <image href="paper.png" x="0" y="0" width="1080" height="1920" opacity="0.5" style="mix-blend-mode:multiply"/>
+   <image href="paper.png" x="0" y="0" width="1080" height="1920" opacity="0.25" style="mix-blend-mode:multiply"/>
    <image href="noise.png" x="${(f * 37) % 7 - 7}" y="${(f * 53) % 9 - 9}" width="1096" height="1936" opacity="0.07" style="mix-blend-mode:overlay"/>
    ${window.LAYER === 'body' ? '' : `${over}${captionSVG(T)}${badge()}${typeof HUD === 'function' ? HUD(T) : ''}`}</svg>`;
   if (window.LAYER === 'overlay') { document.body.style.background = 'transparent'; document.getElementById('stage').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">${DEFS}${over}${captionSVG(T)}${badge()}${typeof HUD === 'function' ? HUD(T) : ''}</svg>`; return i; }
