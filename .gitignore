@@ -41,3 +41,11 @@ pilot/frames_ref/
 # simple-workflow plugin artifacts (local-only; delete entries to share via git)
 .simple-workflow/
 .simple-workflow
+ep_santaclara/frames/
+ep_santaclara/frames_ref/
+ep_santaclara/frames_body/
+ep_santaclara/frames_ovl/
+ep_santaclara/renders/
+ep_santaclara/work/preview/
+ep_santaclara/audio/*.wav
+!ep_santaclara/audio/sfx_stem.wav
