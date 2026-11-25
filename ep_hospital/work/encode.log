@@ -1,16 +1,16 @@
-== out/hospital_santa_clara_tiktok.mp4 43417443
+== out/hospital_santa_clara_tiktok.mp4 43401482
 stream|codec_name=h264|width=1080|height=1920|duration=102.033333|nb_frames=3061
 stream|codec_name=aac|duration=102.040000|nb_frames=4785
 black: 0 freeze: 
     I:         -14.5 LUFS
     Peak:       -1.2 dBFS
-== out/hospital_santa_clara_tiktok_sem_musica.mp4 43326207
+== out/hospital_santa_clara_tiktok_sem_musica.mp4 43310246
 stream|codec_name=h264|width=1080|height=1920|duration=102.033333|nb_frames=3061
 stream|codec_name=aac|duration=102.040000|nb_frames=4785
 black: 0 freeze: 
     I:         -14.3 LUFS
     Peak:       -1.2 dBFS
-== renders/hospital_santa_clara_hq.mp4 46924564
+== renders/hospital_santa_clara_hq.mp4 39972435
 stream|codec_name=h264|width=1080|height=1920|duration=102.033333|nb_frames=3061
 stream|codec_name=aac|duration=102.040000|nb_frames=4785
 black: 0 freeze: 
