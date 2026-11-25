@@ -153,8 +153,8 @@ function oldElevator(x, open = 0, T = 0, o = {}) {
   // grade pantográfica que recolhe
   const gw = w * (1 - open * 0.88);
   s += `<g>${Array.from({ length: 9 }, (_, i) => { const xx = x - w / 2 + (gw / 8) * i; return `<path d="M ${f2(xx)} ${y - h} V ${y}" stroke="#c9a24a" stroke-width="8"/>`; }).join('')}${Array.from({ length: 8 }, (_, i) => { const xa = x - w / 2 + (gw / 8) * i, xb = xa + gw / 8; return `<path d="M ${f2(xa)} ${y - h} L ${f2(xb)} ${y} M ${f2(xb)} ${y - h} L ${f2(xa)} ${y}" stroke="#a8823a" stroke-width="5"/>`; }).join('')}<path d="M ${x - w / 2} ${y - h + 6} H ${f2(x - w / 2 + gw)} M ${x - w / 2} ${y - 6} H ${f2(x - w / 2 + gw)}" stroke="#c9a24a" stroke-width="10"/></g>`;
-  const bx = x + w / 2 + 34, lit = o.press ? (Math.sin(T * 20) > 0 ? 1 : 0.3) : (o.lit || 0);
-  s += rect(bx - 22, y - h / 2 - 70, 44, 140, '#c9a24a', `stroke="${OLh}" stroke-width="5" rx="8"`) + `<circle cx="${bx}" cy="${y - h / 2 - 22}" r="14" fill="${lit ? mix('#6a2a14', '#ffb04a', lit) : '#5a3a20'}" stroke="${OLh}" stroke-width="4"/><circle cx="${bx}" cy="${y - h / 2 + 26}" r="14" fill="#5a3a20" stroke="${OLh}" stroke-width="4"/>`;
+  const bx = x + w / 2 + 34 + (o.btnDx || 0), by0 = (o.btnDy || 0), lit = o.pressOn !== undefined ? (o.pressOn ? 1 : 0.3) : o.press ? (Math.sin(T * 20) > 0 ? 1 : 0.3) : (o.lit || 0);
+  s += rect(bx - 22, y - h / 2 - 70 + by0, 44, 140, '#c9a24a', `stroke="${OLh}" stroke-width="5" rx="8"`) + `<circle cx="${bx}" cy="${y - h / 2 - 22 + by0}" r="14" fill="${lit ? mix('#6a2a14', '#ffb04a', lit) : '#5a3a20'}" stroke="${OLh}" stroke-width="4"/><circle cx="${bx}" cy="${y - h / 2 + 26 + by0}" r="14" fill="#5a3a20" stroke="${OLh}" stroke-width="4"/>`;
   return s;
 }
 function elevatorSet(T, t, extra, o = {}) {

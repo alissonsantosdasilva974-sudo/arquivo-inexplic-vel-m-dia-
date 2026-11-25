@@ -171,10 +171,12 @@ SHOTS.push(
   { t0: 80.14, draw(t, T) {
     const press = Math.sin(t * 14) > 0;
     const panel = `<g transform="translate(1180 560) scale(2.2)">${rect(-30, -100, 60, 200, '#c9a24a', `stroke="${OLh}" stroke-width="5" rx="10"`)}<circle cx="0" cy="-36" r="20" fill="${press ? '#ffb04a' : '#6a2a14'}" stroke="${OLh}" stroke-width="5"/><circle cx="0" cy="36" r="20" fill="#5a3a20" stroke="${OLh}" stroke-width="5"/>${press ? `<circle cx="0" cy="-36" r="60" fill="#ffb04a" opacity="0.25"/>` : ''}</g>`;
-    return { cam: push(focus(960, 640, 1.0), t, 1.8, 0.06), layers: [povBg('#4a3a34'), Lr(1, panel), Lr(1, `<g transform="translate(${press ? 30 : 0} ${press ? -10 : 0})">${povHandsPB(1000, 900, 1, '', { spread: 0, only: 'R' })}</g>`)], over: comic(T, 80.21, 'CLIC CLIC CLIC', 540, 360, { life: 1.6, size: 80, rot: -4 }) };
+    const d = press ? 0 : 70, tx = 1180 + d * 0.55, ty = 481 + d;
+    const arm = `<path d="M ${f2(tx + 260)} ${f2(ty + 1500)} L ${f2(tx + 70)} ${f2(ty + 230)}" stroke="${OL}" stroke-width="170" stroke-linecap="round"/><path d="M ${f2(tx + 260)} ${f2(ty + 1500)} L ${f2(tx + 70)} ${f2(ty + 230)}" stroke="#3a3a46" stroke-width="152" stroke-linecap="round"/><g transform="translate(${f2(tx + 70)} ${f2(ty + 230)}) rotate(-8)"><rect x="-80" y="-14" width="160" height="44" rx="14" fill="#f4f1ea" stroke="${OL}" stroke-width="7"/></g><g transform="translate(${f2(tx + 40)} ${f2(ty + 140)})"><ellipse cx="0" cy="0" rx="82" ry="92" fill="#1d1a22" stroke="${OL}" stroke-width="8"/><path d="M -34 -60 L -40 -140" stroke="${OL}" stroke-width="50" stroke-linecap="round"/><path d="M -34 -60 L -40 -140" stroke="#1d1a22" stroke-width="36" stroke-linecap="round"/><path d="M 60 -20 Q 100 -40 90 10" fill="#1d1a22" stroke="${OL}" stroke-width="8"/><ellipse cx="-30" cy="-30" rx="20" ry="11" fill="#fff" opacity="0.2"/></g>`;
+    return { cam: push(focus(960, 640, 1.0), t, 1.8, 0.06), layers: [povBg('#4a3a34'), Lr(1, panel), Lr(1, arm)], over: comic(T, 80.21, 'CLIC CLIC CLIC', 540, 360, { life: 1.6, size: 80, rot: -4 }) };
   } },
   // 35 — close no Polo apertando, olha para trás desesperado
-  { t0: 80.96, draw(t, T) { const p = Math.sin(t * 14) > 0; return { cam: push(CL(900, 2.7), t, 2.0, 0.08), layers: [...elevatorSet(T, t, PB({ x: 960, y: GY, t: T, face: -0.9, lx: -1.3, expr: 'worried', pale: 0.3, armL: p ? 96 : 84, bendL: 0, handL: 'point' }) + emote('sweat', 930, GY - S6 * 420, T - 81.03, 0.9), { elX: 700, press: 1 }), darkLight(560, 820, 620, 0.45)], tint: HD }; } },
+  { t0: 80.96, draw(t, T) { const p = Math.sin(t * 14) > 0; return { cam: push(CL(900, 2.7), t, 2.0, 0.08), layers: [...elevatorSet(T, t, PB({ x: 960, y: GY, t: T, face: -0.9, lx: -1.3, expr: 'worried', pale: 0.3, armL: p ? 142 : 134, bendL: 0, handL: 'point' }) + emote('sweat', 930, GY - S6 * 420, T - 81.03, 0.9), { elX: 700, press: 1, pressOn: !p, btnDx: -20, btnDy: 45 }), darkLight(560, 820, 620, 0.45)], tint: HD }; } },
   // 36 — a coisa dobra a esquina correndo na direção dele (perspectiva)
   { t0: 82.34, draw(t, T) {
     const k = lerp(0.45, 1.3, E.in(clamp(t / 3.4)));
@@ -184,15 +186,20 @@ SHOTS.push(
   { t0: 86.03, draw(t, T) { return { cam: push(CL(760, 3.3, 920), t, 1.9, 0.08), layers: [...elevatorSet(T, t, PB({ x: 760, y: GY, t: T, expr: 'worried', blink: 1, headTilt: -5, pale: 0.4 }), { floor: 0 }), darkLight(540, 760, 560, 0.55)], tint: HD }; } },
   // 38 — as portas se abrem: luz quente invade
   { t0: 88.1, draw(t, T) { const op = E.out(clamp(t / 1.0)); return { cam: push(focus(760, GY - 260, 1.9, 900), t, 1.6, 0.06), layers: elevatorSet(T, t, PB({ x: 760, y: GY + 120, s: 0.7, t: T, back: true }), { open: op, floor: 0, lit: 1 }), over: comic(T, 88.26, 'DING!', 540, 360, { size: 110, fill: '#fff4cc', rot: 0 }) }; } },
-  // 39 — uma mão agarra o sobretudo dele
+  // 39 — de dentro do elevador, uma silhueta escura estica o braço e agarra o sobretudo
   { t0: 89.04, draw(t, T) {
-    const ext = E.back(clamp((t - 0.3) / 0.4));
-    return { cam: push(focus(760, GY - 220, 2.3, 950), t, 2.6, 0.06), layers: elevatorSet(T, t, PB({ x: 800, y: GY + 60, s: 0.7, t: T, back: true, tilt: t > 0.7 ? -6 : 0 }) + `<g transform="translate(700 ${GY - 160}) scale(0.5)">${grabHand(0, 0, 1, ext, 30)}</g>`, { open: 1, floor: 0, lit: 1 }), over: comic(T, 89.71, 'TCHAP!', 760, 440, { size: 120 }) };
+    const ext = E.back(clamp((t - 0.3) / 0.45)), grab = t > 0.75;
+    const sh = [845, GY + 60 - 175];
+    const pol = PB({ x: 800, y: GY + 60, s: 0.7, t: T, back: true, tilt: grab ? -5 + Math.sin(T * 30) * 2 : 0, armL: grab ? 150 : 10, armR: grab ? 150 : 10, bendL: 20, bendR: 20 });
+    return { cam: push(focus(780, GY - 220, 2.3, 950), t, 2.6, 0.06), layers: elevatorSet(T, t, pol + shadowFig(865, GY - 10, 0.62, ext, sh, 'arm'), { open: 1, floor: 0, lit: 1, light: 0, inner: shadowFig(865, GY - 10, 0.62, ext, sh) }), over: comic(T, 89.71, 'TCHAP!', 760, 440, { size: 120 }) };
   } },
-  // 40 — puxado para dentro; a grade fecha
+  // 40 — a silhueta puxa o Polo de costas para dentro; a grade fecha na frente dos dois e a luz apaga
   { t0: 91.92, draw(t, T) {
-    const pull = E.in(clamp(t / 0.4)), close = E.inOut(clamp((t - 0.4) / 0.7));
-    return { cam: push(focus(760, GY - 260, 1.9, 900), t, 1.2, 0.04), layers: elevatorSet(T, t, '', { open: 1 - close, floor: 0, inner: `<g opacity="${f2(1 - pull * 0.6)}">${PB({ x: lerp(800, 760, pull), y: GY - 20, s: lerp(0.7, 0.5, pull), t: T, back: true, tilt: -10 })}</g>` }) };
+    const pull = E.inOut(clamp(t / 0.55)), close = E.inOut(clamp((t - 0.6) / 0.7)), dim = clamp((t - 1.4) / 0.4);
+    const px = lerp(800, 770, pull), py = lerp(GY + 60, GY - 20, pull), fl = Math.sin(T * 26);
+    const pol = PB({ x: px, y: py, s: lerp(0.7, 0.64, pull), t: T, back: true, tilt: lerp(-6, -16, pull), armL: 135 + fl * 25, armR: 135 - fl * 25, bendL: 30, bendR: 30, walk: close < 0.6 ? T * 9 : null });
+    const sc = lerp(0.7, 0.64, pull), sh = [px + 45 * sc / 0.7, py - 175 * sc / 0.7], fx = lerp(865, 840, pull);
+    return { cam: push(focus(760, GY - 260, 1.9, 900), t, 1.2, 0.04), layers: [...elevatorSet(T, t, '', { open: 1 - close, floor: 0, lit: 1 - dim, light: 0, inner: shadowFig(fx, GY - 10, 0.62, 1, sh) + pol + shadowFig(fx, GY - 10, 0.62, 1, sh, 'arm') }), L0(rect(-600, -600, 2280, 3120, '#05060c', `opacity="${f2(dim * 0.35)}"`))] };
   } },
   // 41 — quem estava naquele elevador? ponteiro descendo, "?"
   { t0: 94.38, draw(t, T) {
@@ -213,4 +220,13 @@ function HUD(T) {
   const m = Math.min(59, Math.floor(T / 102.04 * 13));
   const ak = alarmK(T);
   return `<g transform="translate(870 210)"><rect x="-130" y="-46" width="260" height="92" rx="18" fill="#14101a" opacity="0.8" stroke="${HC.red}" stroke-width="5"/><circle cx="-96" cy="0" r="12" fill="${HC.red}" opacity="${f2(0.4 + 0.6 * ak)}"/><text x="16" y="22" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="62" fill="#ff8a8a" letter-spacing="4">03:${String(m).padStart(2, '0')}</text></g>`;
+}
+
+// silhueta escura sem rosto (mistério da parte 2). part: 'body' (dentro da cabine) ou 'arm' (braço até o alvo, por cima do Polo)
+function shadowFig(x, y, k, ext, tgt, part = 'body') {
+  const sx = x - 60 * k, sy = y - 320 * k, hx = lerp(sx, tgt[0], ext), hy = lerp(sy + 30, tgt[1], ext);
+  const ex = (sx + hx) / 2 + 30 * k, ey = Math.min(sy, hy) - 30 * k, c = '#0b0810';
+  if (part === 'arm') return `<path d="M ${f2(sx)} ${f2(sy)} Q ${f2(ex)} ${f2(ey)} ${f2(hx)} ${f2(hy)}" stroke="${c}" stroke-width="${f2(46 * k)}" stroke-linecap="round" fill="none"/>` +
+    `<g transform="translate(${f2(hx)} ${f2(hy)})"><ellipse rx="${f2(36 * k)}" ry="${f2(30 * k)}" fill="${c}"/>${[-1, 0, 1].map(i => `<path d="M ${f2(16 * k)} ${f2(i * 16 * k)} l ${f2(26 * k)} ${f2(22 * k)}" stroke="${c}" stroke-width="${f2(15 * k)}" stroke-linecap="round"/>`).join('')}</g>`;
+  return `<path d="M ${f2(x - 90 * k)} ${f2(y)} C ${f2(x - 110 * k)} ${f2(y - 200 * k)} ${f2(x - 90 * k)} ${f2(y - 340 * k)} ${f2(x - 30 * k)} ${f2(y - 360 * k)} L ${f2(x + 50 * k)} ${f2(y - 350 * k)} C ${f2(x + 100 * k)} ${f2(y - 300 * k)} ${f2(x + 100 * k)} ${f2(y - 160 * k)} ${f2(x + 80 * k)} ${f2(y)} Z" fill="${c}"/><ellipse cx="${f2(x)}" cy="${f2(y - 430 * k)}" rx="${f2(62 * k)}" ry="${f2(74 * k)}" fill="${c}"/>`;
 }
