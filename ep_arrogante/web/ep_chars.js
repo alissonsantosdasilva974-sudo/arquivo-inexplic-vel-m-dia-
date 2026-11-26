@@ -89,3 +89,43 @@ function fence(y0, y1) {
   for (let x = -1400; x < 3300; x += 300) s += `<path d="M ${x} ${y0 - 10} V ${y1}" stroke="#4a4458" stroke-width="10"/>`;
   return s + `<path d="M -1400 ${y0} H 3300" stroke="#4a4458" stroke-width="8"/></g>`;
 }
+
+// --- v2: cabelo cacheado curto do Saci ---
+CAST2.saci.hair = 'curlyShort'; CAST2.saciSem.hair = 'curlyShort';
+CAST2.saciGL = Object.assign({}, CAST2.saci, { gloveOff: { '-1': 1 }, seed: 24 });   // sem a luva esquerda (lado da tela)
+const _hb2 = hairBack2, _hf2 = hairFront2;
+hairBack2 = function (P, dir) {
+  if (P.hair !== 'curlyShort') return _hb2(P, dir);
+  let s = ''; for (let i = 0; i < 9; i++) { const a = Math.PI * (1.02 + i * 0.12); s += `<circle cx="${f2(Math.cos(a) * 80)}" cy="${f2(H2 + Math.sin(a) * 80 + 4)}" r="17" fill="${P.hairC}" stroke="${OL}" stroke-width="${LW - 1}"/>`; }
+  return s;
+};
+hairFront2 = function (P, d, dir, fx) {
+  if (P.hair !== 'curlyShort') return _hf2(P, d, dir, fx);
+  const c = P.hairC, hl = lite(c, 0.35);
+  let s = `<path d="M -82 ${H2 - 10} C -88 ${H2 - 100} 88 ${H2 - 100} 82 ${H2 - 10} Q 50 ${H2 - 46} 0 ${H2 - 44} Q -50 ${H2 - 46} -82 ${H2 - 10} Z" fill="${c}" stroke="${OL}" stroke-width="${LW}"/>`;
+  for (let i = 0; i < 7; i++) s += `<circle cx="${-54 + i * 18}" cy="${H2 - 74 + Math.abs(i - 3) * 6}" r="14" fill="${c}" stroke="${OL}" stroke-width="${LW - 2}"/>`;
+  for (let i = 0; i < 5; i++) s += `<path d="M ${-44 + i * 20} ${H2 - 82 + Math.abs(i - 2) * 5} q 5 -5 10 -1" stroke="${hl}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  return s;
+};
+// luva por mão: P.gloveOff[side] deixa aquela mão com cor de pele
+const _limb2 = limb2;
+limb2 = function (P, side, a, b, ss, pose, hold, dir) {
+  if (P.gloveOff && P.gloveOff[side]) P = Object.assign({}, P, { hands: P.skin });
+  return _limb2(P, side, a, b, ss, pose, hold, dir);
+};
+// luva solta (segurada pela outra mão ou caindo); peel 0..1 = quanto já saiu do punho
+function gloveLoose(rot = 0, peel = 1) {
+  return `<g transform="rotate(${f2(rot)}) translate(${f2(10 + 26 * peel)} 0)">${mitt(0, 0, -20, 0, GLOVE, 'open')}</g>`;
+}
+// sincronia labial pelo tipo de som (a = aberta, o/u = redonda, e/i = estreita, m/p/b = fechada)
+function lips(T, iv) {
+  if (!iv.some(([a, b]) => T >= a && T <= b)) return 0;
+  for (const c of CAPTIONS) for (const w of c.words) if (T >= w.s && T < w.e) {
+    const s = w.w.toLowerCase().normalize('NFD').replace(/[^a-z]/g, ''); if (!s) return 0.2;
+    const ch = s[Math.min(s.length - 1, Math.floor((T - w.s) / (w.e - w.s) * s.length))];
+    return 'a'.includes(ch) ? 0.9 : 'ou'.includes(ch) ? 0.6 : 'ei'.includes(ch) ? 0.38 : 'mpb'.includes(ch) ? 0.02 : 0.22;
+  }
+  return 0.05;
+}
+// linha do tempo de expressão: [[t, 'expr'], ...] → expressão + impulso (squash) na troca
+function exprAt(T, keys) { let e = keys[0][1], t0 = -9; for (const [t, x] of keys) if (T >= t) { e = x; t0 = t; } return { expr: e, pop: 0.06 * Math.max(0, 1 - (T - t0) / 0.18) * Math.sin(clamp((T - t0) / 0.18) * Math.PI) }; }

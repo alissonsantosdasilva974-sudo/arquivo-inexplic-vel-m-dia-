@@ -65,12 +65,16 @@ def yelp(amp=0.07):
     n = int(0.35 * SR); t = np.arange(n) / SR; f = 1400 - 700 * t / 0.35; return amp * np.sin(2*np.pi*np.cumsum(f)/SR) * np.sin(np.pi * t / 0.35)
 add(1.8, stretch(0.8), 'estica', 'Freitas cresce no gancho')
 add(4.75, whistle(0.45), 'apito', 'Polo apita')
-add(18.4, whoosh(0.6), 'giro', 'bicicleta'); add(18.95, kick(), 'chute', 'bicicleta'); add(19.2, impact(0.25), 'gol', 'bola na rede')
+steps(17.5, 17.95, 12, 0.1, 'passos', 'corrida da bicicleta'); add(18.15, whoosh(0.8), 'giro', 'bicicleta'); add(18.92, kick(0.4), 'TUM', 'contato'); add(19.25, impact(0.22), 'queda', 'cai de costas'); add(19.45, hiss(0.5, 0.08), 'rede', 'bola na rede')
+def crowd(d, amp=0.05):
+    n = int(d * SR); x = np.convolve(rng.standard_normal(n), np.ones(12) / 12, 'same'); return amp * x / np.abs(x).max() * np.sin(np.pi * np.arange(n) / n) ** 0.5
+add(19.5, crowd(3.6, 0.09), 'torcida', 'torcida comemora')
+add(12.6, knock(), 'defesa', 'Saci pega'); add(32.9, crowd(1.5, 0.06), 'torcida', 'segundo gol')
 add(27.1, stretch(0.3, 0.06), 'estica', '+2 cm'); add(29.8, hiss(0.6, 0.05), 'caneta', 'súmula')
 add(32.4, kick(), 'chute', 'segundo gol'); add(35.0, stretch(0.5), 'estica', '+10 cm')
 add(39.45, impact(0.3), 'TÓIN', 'cabeça na porta')
 add(42.2, kick(0.35), 'chute', 'chute com raiva'); add(44.2, impact(0.22), 'pof', 'bola na Mavie'); add(46.6, yelp(), 'ganido', 'Mavie gane')
-add(50.6, knock(), 'luvas', 'luvas no chão')
+add(49.9, hiss(0.25, 0.05), 'luva', 'tira a primeira'); add(50.3, hiss(0.25, 0.05), 'luva', 'tira a segunda'); add(50.95, knock(), 'luvas', 'luvas no chão'); add(51.0, knock(), None)
 add(54.5, stretch(1.4, 0.09), 'estica', '+1 metro')
 add(66.3, wind(2.7, 0.06), 'vento', 'silêncio e vento')
 add(77.7, stretch(4.4, 0.07, up=False), 'encolhe', 'Freitas encolhe')
