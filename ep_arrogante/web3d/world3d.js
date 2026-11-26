@@ -90,7 +90,7 @@ const WORLD = { trees: [], cars: [], goals: {}, ppl: [] };
   WORLD.goals.far = goal3(FL, 1); WORLD.goals.near = goal3(-FL, -1);
   // alambrado atrás dos gols
   const mesh = canvasTex(128, 128, (g, w, h) => { g.strokeStyle = 'rgba(70,64,80,0.7)'; g.lineWidth = 3; for (let i = -128; i < 256; i += 16) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + 128, 128); g.stroke(); g.beginPath(); g.moveTo(i + 128, 0); g.lineTo(i, 128); g.stroke(); } }, [30, 2]);
-  for (const s of [-1, 1]) { const f = new THREE.Mesh(new THREE.PlaneGeometry(2 * FW + 6, 4), new THREE.MeshBasicMaterial({ map: mesh, transparent: true, side: THREE.DoubleSide, depthWrite: false })); f.position.set(0, 2, s * (FL + 3)); SCENE.add(f); for (let x = -FW - 3; x <= FW + 3; x += 4) at(cyl(0.05, 0.05, 4, '#4a4458'), x, 2, s * (FL + 3)); }
+  for (const s of [1]) { const f = new THREE.Mesh(new THREE.PlaneGeometry(2 * FW + 6, 4), new THREE.MeshBasicMaterial({ map: mesh, transparent: true, side: THREE.DoubleSide, depthWrite: false })); f.position.set(0, 2, s * (FL + 3)); SCENE.add(f); for (let x = -FW - 3; x <= FW + 3; x += 4) at(cyl(0.05, 0.05, 4, '#4a4458'), x, 2, s * (FL + 3)); }
   // arquibancada (lado esquerdo)
   for (let i = 0; i < 3; i++) at(box(2, 0.5 * (i + 1), 30, mix('#c8bca8', '#ffffff', i * 0.08)), -FW - 2.5 - i * 2, 0.25 * (i + 1), 0);
   // bancos, postes, ipês, lixeira
@@ -101,6 +101,12 @@ const WORLD = { trees: [], cars: [], goals: {}, ppl: [] };
   at(cyl(0.3, 0.25, 0.9, '#e07a3a'), FW + 3.2, 0.45, 2);
   // banca de jornal e pipoca
   at(box(2.4, 2.4, 1.8, '#3c6aa8'), FW + 4, 1.2, 16).add(box(2.8, 0.2, 2.4, '#c8443c').translateY(1.3));
+  // vestiário da praça (porta baixa: 1,85 m)
+  { const v = new THREE.Group(); v.add(box(7, 3.2, 4, '#9fc3d8').translateY(1.6)); v.add(box(7.4, 0.3, 4.4, '#c8643c').translateY(3.3));
+    v.add(box(1.1, 1.85, 0.12, '#3a2a30').translateY(0.925).translateZ(2.02)); v.add(box(1.4, 0.16, 0.2, '#efe2c4').translateY(1.93).translateZ(2.05));
+    for (const sx of [-0.62, 0.62]) v.add(box(0.16, 1.95, 0.2, '#efe2c4').translateX(sx).translateY(0.97).translateZ(2.05));
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.6), new THREE.MeshBasicMaterial({ map: canvasTex(512, 120, (g, W2, H2) => { g.fillStyle = '#f2c230'; g.fillRect(0, 0, W2, H2); g.strokeStyle = '#1e1820'; g.lineWidth = 10; g.strokeRect(5, 5, W2 - 10, H2 - 10); g.fillStyle = '#1e1820'; g.font = 'bold 74px Fredoka, sans-serif'; g.textAlign = 'center'; g.fillText('VESTIÁRIO', W2 / 2, 88); }) }));
+    sign.position.set(0, 2.55, 2.04); v.add(sign); at(v, 9, 0, -29); }
   // ruas e prédios em volta (cidade v3)
   const r = rng(77), PAL = PAL3;
   for (const s of [-1, 1]) { let z = -60; while (z < 60) { const w = 6 + r() * 5, fl = r() < 0.4 ? 2 : r() < 0.7 ? 3 : r() < 0.9 ? 5 : 8; bldg3(s * (FW + 27), z + w / 2, 8, w, fl, PAL[Math.floor(r() * PAL.length)], r() < 0.6, Math.floor(r() * 1e5), s > 0 ? -Math.PI / 2 : Math.PI / 2); z += w + 0.3; } }
@@ -138,6 +144,11 @@ async function place(name, svg, x, y, z, o = {}) {
   // de frente para a câmera (só em volta do eixo vertical) — igual aos recortes da referência
   const dx = CAM.position.x - x, dz = CAM.position.z - z; K.root.rotation.set(0, Math.atan2(dx, dz), 0);
   const hip = (o.hip || 0.85); K.pivot.position.y = hip; K.m.position.y = -hip; K.pivot.rotation.z = -(o.rot || 0) * Math.PI / 180;
+  if (o.ground) {   // nada do corpo passa do chão: mede cabeça e pés do recorte girado
+    K.root.updateMatrixWorld(true); let lo = 1e9;
+    for (const yy of [0.05, 0.6, 1.2, 1.85]) lo = Math.min(lo, K.m.localToWorld(new THREE.Vector3(0, yy, 0)).y);
+    if (lo < 0.12) K.root.position.y += 0.12 - lo;
+  }
   K.shadow.position.set(x, 0.02, z); const lift = Math.max(0, y); K.shadow.scale.set(k * (o.sw || 1) / (1 + lift), k * 0.55 * (o.sw || 1) / (1 + lift), 1); K.shadow.material.opacity = 0.28 / (1 + lift * 0.8);
   return K;
 }
