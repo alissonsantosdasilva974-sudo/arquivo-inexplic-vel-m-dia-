@@ -49,10 +49,24 @@ mitt = function (hx, hy, ex, ey, col, pose) {
 
 // --- Mavie: cachorrinha creme com orelha caramelo e laço rosa ---
 function mavie(x, y, o = {}) {
-  let s = dog(x, y, Object.assign({ s: 0.62 }, o));
+  // hurt 0..1: olhos apertados, boca chorando, orelha baixa, lágrima; knock: empurrão/tombo; lick 0..1: língua para fora
+  const t = o.t || 0, hurt = clamp(o.hurt === true ? 1 : o.hurt || 0), kn = o.knock || 0, k = o.s || 0.62, dir = o.face < 0 ? -1 : 1;
+  let s = dog(0, 0, Object.assign({}, o, { s: k, wag: hurt > 0.3 ? 0 : o.wag }));
   s = s.replace(/#b8763e/g, '#f6ecd8').replace(/#a8683a/g, '#e8dcc4').replace(/#7a4626/g, '#c8844a').replace(/#e8c49a/g, '#fffaf0').replace(/#c8443c/g, '#e8609a');
-  if (o.hurt) s += `<g transform="translate(${f2(x + (o.face < 0 ? -40 : 40) * (o.s || 0.62) * 1.6)} ${f2(y - 120 * (o.s || 0.62))})">${starBurst(o.t || 0)}</g>`;
-  return s;
+  let ov = '';
+  if (hurt > 0.2) {
+    ov += `<g transform="translate(52 -82)"><circle cx="6" cy="-8" r="9" fill="#f6ecd8"/><path d="M -2 -14 L 12 -8 L -2 -2" stroke="${OL}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+    ov += `<path d="M 14 18 Q 28 8 40 18 Q 28 34 14 18 Z" fill="#6a1c28" stroke="${OL}" stroke-width="3.5"/>`;
+    const tq = (t * 1.8) % 1; ov += `<ellipse cx="${f2(2 - tq * 6)}" cy="${f2(4 + tq * 40)}" rx="4" ry="6" fill="#8fd0f0" stroke="${OL}" stroke-width="2" opacity="${f2(1 - tq)}"/>`;
+    ov += `<path d="M -30 -10 Q -52 10 -40 36 Q -26 14 -18 -6 Z" fill="#c8844a" stroke="${OL}" stroke-width="4.5"/></g>`;
+    ov += `<path d="M -56 -48 q -8 -6 -16 0 M -60 -38 q -10 -4 -18 4" stroke="${OL}" stroke-width="3" fill="none" opacity="${f2(Math.abs(Math.sin(t * 30)))}"/>`;   // tremendo
+  }
+  if (o.lick) ov += `<g transform="translate(52 -82)"><path d="M 26 22 Q ${f2(40 + 50 * o.lick)} ${f2(30 - 40 * o.lick)} ${f2(34 + 70 * o.lick)} ${f2(-10 - 50 * o.lick)} Q ${f2(46 + 56 * o.lick)} ${f2(-26 - 50 * o.lick)} ${f2(56 + 64 * o.lick)} ${f2(-4 - 46 * o.lick)} Q ${f2(54 + 40 * o.lick)} ${f2(30 - 20 * o.lick)} 34 28 Z" fill="#f07a98" stroke="${OL}" stroke-width="4"/><path d="M ${f2(36 + 40 * o.lick)} ${f2(10 - 30 * o.lick)} q 8 -10 16 -12" stroke="#c84a6a" stroke-width="3" fill="none"/></g>`;
+  s = s.replace(/<\/g>$/, ov + '</g>');
+  const shiver = hurt > 0.2 ? Math.sin(t * 60) * 2.5 * hurt : 0;
+  let g = `<g transform="translate(${f2(x + shiver - dir * kn * 60 * k)} ${f2(y)}) rotate(${f2(-dir * kn * 35)}) scale(1 ${f2(1 - 0.12 * hurt * Math.abs(Math.sin(t * 9)))})">${s}</g>`;
+  if (o.hurtStars) g += `<g transform="translate(${f2(x + dir * 40 * k * 1.6)} ${f2(y - 120 * k)})">${starBurst(t)}</g>`;
+  return g;
 }
 function starBurst(t) {
   let s = '';

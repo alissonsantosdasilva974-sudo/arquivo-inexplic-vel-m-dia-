@@ -202,11 +202,34 @@ SHOTS.push(
     const c = camOn(0, GD - 80, 4.8, 1800, 140, 0, 620, 6);
     return scene3(T, c, { actors: [act(GD - 80, () => S3(c, T, 0, GD - 80, { face: -0.2, expr: 'laugh', mouth: 0.8, squash: 0.04 * Math.sin(T * 22), armL: 30, bendL: 120 }))] }, ORANGE, comic(T, 28.5, 'HAHA', 760, 520, { size: 90 }));
   } },
-  // 20 — Polo anota na súmula (câmera de cima)
+  // 20 — Polo levanta a súmula
   { t0: 29.1, draw(t, T) {
     const c = camOn(680, 1100, 3.4, 1900, 520, 40);
-    const w = Math.sin(T * 14) * 5;
-    return scene3(T, c, { actors: [act(1100, () => P3o(c, T, 680, 1100, { face: 0.2, expr: 'neutral', ly: 1, lx: 0.3, armL: 40, bendL: 90, holdL: clipboard(-10, 1.1), armR: 45 + w * 0.5, bendR: 95 }))] }, ORANGE, comic(T, 29.8, 'RISC RISC', 540, 480, { size: 70, fill: '#fff6e0' }));
+    const up = E.back(clamp(t / 0.4));
+    return scene3(T, c, { actors: [act(1100, () => P3o(c, T, 680, 1100, { face: 0.2, expr: 'neutral', ly: 1, lx: 0.3, armL: 20 + 25 * up, bendL: 40 + 60 * up, holdL: clipboard(-10, 1.1), armR: 20 + 30 * up, bendR: 40 + 60 * up }))] }, ORANGE);
+  } },
+  // 20b — detalhe: o lápis escreve na súmula
+  { t0: 29.7, draw(t, T) {
+    const c = camOn(680, 1100, 3.0, 2300, 600, 40);
+    const prog = clamp((T - 29.8) / 0.95);
+    const px = 330 + prog * 420 + Math.sin(T * 40) * 6, py = 1000 + Math.abs(Math.sin(T * 26)) * -10;
+    const txt = 'FREITAS  +2 cm';
+    const card = `<g transform="translate(540 ${f2(990 + Math.sin(T * 2) * 6)}) rotate(-4)">
+      <rect x="-380" y="-470" width="760" height="980" rx="30" fill="#a8703e" stroke="${INK}" stroke-width="12"/><rect x="-330" y="-400" width="660" height="860" fill="#fffaf0" stroke="${INK}" stroke-width="6"/>
+      <rect x="-140" y="-500" width="280" height="80" rx="14" fill="#8a8e9a" stroke="${INK}" stroke-width="8"/>
+      <text x="0" y="-320" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="58" fill="#c8443c">SÚMULA</text>
+      ${[0, 1, 2, 3, 4, 5].map(i => `<path d="M -280 ${-200 + i * 100} H 280" stroke="#b8b0c0" stroke-width="4"/>`).join('')}
+      <text x="-270" y="-120" font-family="Fredoka" font-weight="600" font-size="44" fill="#4a4458">GOL: bicicleta</text>
+      <clipPath id="wr"><rect x="-280" y="-80" width="${f2(560 * prog)}" height="90"/></clipPath>
+      <text x="-270" y="-18" clip-path="url(#wr)" font-family="Fredoka" font-weight="700" font-size="62" fill="#2a3a8a">${txt}</text>
+      <path d="M -270 10 H ${f2(-270 + 540 * prog)}" stroke="#2a3a8a" stroke-width="4" opacity="${f2(prog > 0.95 ? 1 : 0)}"/></g>`;
+    // mão esquerda (luva) segurando a prancheta, mão direita com o lápis
+    const pencil = `<g transform="translate(${f2(px)} ${f2(py)}) rotate(-35)"><rect x="-10" y="-190" width="20" height="170" fill="#f2c230" stroke="${INK}" stroke-width="5"/><path d="M -10 -20 L 0 6 L 10 -20 Z" fill="#f4d8b0" stroke="${INK}" stroke-width="4"/><path d="M -3 -2 L 0 6 L 3 -2 Z" fill="${INK}"/><rect x="-10" y="-206" width="20" height="18" fill="#e88aaa" stroke="${INK}" stroke-width="4"/></g>`;
+    const handR = `<g transform="translate(${f2(px + 60)} ${f2(py - 60)}) scale(3)">${mitt(0, 0, 30, 30, '#1d1a22', 'fist')}</g><path d="M ${f2(px + 90)} ${f2(py - 40)} L ${f2(px + 420)} ${f2(py + 380)}" stroke="${INK}" stroke-width="96" stroke-linecap="round"/><path d="M ${f2(px + 90)} ${f2(py - 40)} L ${f2(px + 420)} ${f2(py + 380)}" stroke="#ffc928" stroke-width="80" stroke-linecap="round"/>`;
+    const handL = `<path d="M -40 1500 L 160 1340" stroke="${INK}" stroke-width="96" stroke-linecap="round"/><path d="M -40 1500 L 160 1340" stroke="#ffc928" stroke-width="80" stroke-linecap="round"/><g transform="translate(190 1310) scale(3)">${mitt(0, 0, -30, 30, '#1d1a22', 'open')}</g>`;
+    const sc = scene3(T, c, { actors: [] }, ORANGE);
+    sc.over = `<rect width="1080" height="1920" fill="#2a1a14" opacity="0.25"/>` + card + handL + pencil + handR + comic(T, 29.9, 'RISC RISC', 540, 320, { size: 70, fill: '#fff6e0', life: 1.0 });
+    return sc;
   } },
   // 21 — semana seguinte: outro gol (vista alta de trás)
   { t0: 30.9, draw(t, T) {
@@ -265,7 +288,7 @@ SHOTS.push(
     const c = camOn(FW + 200, 1700, 6.0, 1500, 30, -40);
     c.x += shake(T, 44.25, 16);
     const hit = T > 44.25, bq = inv(44.25, 44.9, T);
-    return scene3(T, c, { night: 0.6, actors: [act(1700, () => M3(c, FW + 200, 1700, { t: T, face: -1, hurt: hit, wag: hit ? 0 : 0.6 })),
+    return scene3(T, c, { night: 0.6, actors: [act(1700, () => M3(c, FW + 200, 1700, { t: T, face: -1, hurt: hit ? 1 : 0, knock: hit ? Math.exp(-(T - 44.25) * 3) * Math.cos((T - 44.25) * 9) : 0, hurtStars: hit, wag: hit ? 0 : 0.6 })),
       act(1690, () => hit ? ballP(c, FW + 120 - bq * 160, Math.sin(bq * Math.PI) * 60 + 10, 1690 - bq * 80, T * 700) : ballP(c, FW + 120 - (1 - inv(44.2, 44.25, T)) * 120, 20, 1690, T * 700))] }, BLUE,
       comic(T, 44.25, 'POF!', 540, 520, { size: 130, fill: '#ff7a45' }) + popIcon(T, 44.9, `<rect x="-140" y="-50" width="280" height="90" rx="18" fill="#fffaf0" stroke="${INK}" stroke-width="7"/><text y="22" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="60" fill="#e8609a">MAVIE</text>`, 540, 400));
   } },
@@ -273,7 +296,7 @@ SHOTS.push(
   { t0: 46.2, draw(t, T) {
     const run = E.inOut(inv(47.4, 48.4, T)), mX = lerp(FW + 40, FW + 200, run), mD = lerp(1600, 1900, run);
     const c = camOn(FW + 160, 1750, 3.2, 1560, 110, 0);
-    return scene3(T, c, { night: 0.6, bench: { X: FW + 160, D: 1780 }, actors: [act(mD, () => M3(c, mX, mD, { t: T, face: 1, hurt: T < 47.4, wag: 0 }))] }, BLUE, comic(T, 46.6, 'CAIM!', 540, 520, { size: 110, fill: '#8fd0f0' }));
+    return scene3(T, c, { night: 0.6, bench: { X: FW + 160, D: 1780 }, actors: [act(mD, () => M3(c, mX, mD, { t: T, face: 1, hurt: T < 47.4 ? 1 : 0.6, knock: T < 47.4 ? 0.15 * Math.sin(T * 4) : 0, wag: 0 }))] }, BLUE, comic(T, 46.6, 'CAIM!', 540, 520, { size: 110, fill: '#8fd0f0' }));
   } },
   // 30 — Saci vê (choque) e tira as luvas, uma de cada vez
   { t0: 48.7, draw(t, T) {
@@ -375,14 +398,18 @@ SHOTS.push(
     const fr = () => { const p = PP(c, 30, 0, 1530); return person('freitas', { x: p.x, y: p.y + kneel * 75 * PS * p.k, s: PS * p.k, t: T, face: 0.6, expr: 'sad', mouth: talk(T, [[84.0, 84.8]]), armL: 40, armR: 60, bendL: 90, bendR: 70, handR: 'open', shadow: false }) + `<rect x="-400" y="${f2(p.y - 6)}" width="2800" height="2000" fill="#e2b47e"/><rect x="-400" y="${f2(p.y - 6)}" width="2800" height="2000" fill="url(#pPlaster)"/><ellipse cx="${f2(p.x)}" cy="${f2(p.y)}" rx="${f2(80 * p.k)}" ry="${f2(14 * p.k)}" fill="#1b1424" opacity="0.25"/>`; };
     return scene3(T, c, { actors: [act(1530, fr), act(1460, () => M3(c, 230, 1460, { t: T, face: -1, wag: inv(84.2, 85.0, T) * 0.7 }))] }, SEPIA, popIcon(T, 84.1, bubble('DESCULPA', 360, 58), 540, 380));
   } },
-  // 45 — a Mavie lambe a cara dele
+  // 45 — a Mavie lambe a cara dele (língua chega no rosto, ele fecha os olhos rindo)
   { t0: 85.5, draw(t, T) {
-    const lick = Math.max(0, Math.sin(T * 10)), c = camOn(100, 1500, 4.6, 1760, 60, 0);
-    const p = PP(c, 30, 0, 1530);
-    const fr = person('freitas', { x: p.x, y: p.y + 75 * PS * p.k, s: PS * p.k, t: T, face: 0.5, expr: 'laugh', mouth: 0.6, shadow: false }) + `<rect x="-400" y="${f2(p.y - 6)}" width="2800" height="2000" fill="#e2b47e"/>`;
-    const m = PP(c, 170, 0, 1490);
-    const mv = `<g transform="translate(${f2(m.x - lick * 20)} ${f2(m.y - 150 * PS * m.k)}) rotate(-22)">${mavie(0, 0, { t: T, face: -1, s: 0.36 * m.k, wag: 1 })}</g>`;
-    return scene3(T, c, { actors: [act(1530, () => fr), act(1490, () => mv)] }, SEPIA, comic(T, 85.8, 'SLURP!', 540, 440, { size: 110, fill: '#ee8aaa' }));
+    const c = camOn(100, 1500, 4.6, 1760, 60, 0);
+    const lk = Math.max(0, Math.sin((T - 85.6) * 9)), lick = T > 85.6 ? lk : 0;
+    const p = PP(c, 30, 0, 1530), sc = PS * p.k;
+    const fr = person('freitas', { x: p.x, y: p.y + 75 * sc, s: sc, t: T, face: 0.45, expr: T > 85.7 ? 'laugh' : 'surprised', mouth: 0.6, headTilt: -6 - lick * 8, shadow: false, armL: 60, armR: 60, bendL: 80, bendR: 80, handL: 'open', handR: 'open' }) + `<rect x="-400" y="${f2(p.y - 6)}" width="2800" height="2000" fill="#e2b47e"/>`;
+    // focinho da Mavie encostado na bochecha direita dele
+    const cheekX = p.x + 40 * sc, cheekY = p.y + 75 * sc + (H2 + 30) * sc;
+    const mk = 0.36 * PP(c, 170, 0, 1490).k, dogX = cheekX + 125 * mk + 40 * sc - lick * 14, dogY = cheekY + 70 * mk;
+    const mv = `<g transform="rotate(-18 ${f2(dogX)} ${f2(dogY)})">${mavie(dogX, dogY, { t: T, face: -1, s: mk, wag: 1, lick })}</g>`;
+    const wet = T > 85.8 ? `<g opacity="0.8"><ellipse cx="${f2(cheekX + 10 * sc)}" cy="${f2(cheekY)}" rx="${f2(26 * sc)}" ry="${f2(14 * sc)}" fill="#bfe6f6" opacity="0.6"/>${[0, 1, 2].map(i => `<circle cx="${f2(cheekX + (20 + i * 22) * sc * Math.cos(T * 3 + i))}" cy="${f2(cheekY - (30 + i * 18) * sc)}" r="${f2(5 * sc)}" fill="#8fd0f0" stroke="${INK}" stroke-width="2"/>`).join('')}</g>` : '';
+    return scene3(T, c, { actors: [act(1530, () => fr + wet), act(1490, () => mv)] }, SEPIA, comic(T, 85.8, 'SLURP!', 540, 440, { size: 110, fill: '#ee8aaa' }) + comic(T, 86.4, 'SLURP!', 600, 520, { size: 80, fill: '#ee8aaa', rot: 8 }));
   } },
   // 46 — Saci: "Arrogante."
   { t0: 87.2, xf: 0.35, draw(t, T) {
