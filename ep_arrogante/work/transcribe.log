@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/user/arquivo-inexplic-vel-m-dia-/ep_arrogante/work/transcribe.py", line 2, in <module>
+    from faster_whisper import WhisperModel
+ModuleNotFoundError: No module named 'faster_whisper'

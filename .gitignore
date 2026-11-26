@@ -51,3 +51,16 @@ ep_santaclara/audio/*.wav
 !ep_santaclara/audio/sfx_stem.wav
 ep_santaclara/*_v1_antigo/
 ep_santaclara/work/preview*/
+ep_arrogante/frames/
+ep_arrogante/frames_ref/
+ep_arrogante/frames_body/
+ep_arrogante/frames_ovl/
+ep_arrogante/renders/
+ep_arrogante/work/preview/
+ep_arrogante/audio/*.wav
+!ep_arrogante/audio/sfx_stem.wav
+ep_arrogante/frames/
+ep_arrogante/frames2/
+ep_arrogante/work/preview/
+ep_arrogante/work/prev2/
+ep_arrogante/out/*.mp4
