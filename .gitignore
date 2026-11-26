@@ -67,3 +67,7 @@ ep_arrogante/out/*.mp4
 ep_arrogante/frames3/
 ep_arrogante/work/p*/
 ep_arrogante/frames4*/
+ep_arrogante/web3d/node_modules/
+ep_arrogante/work/clip3d/
+ep_arrogante/work/g1/
+ep_arrogante/work/*.mp4
