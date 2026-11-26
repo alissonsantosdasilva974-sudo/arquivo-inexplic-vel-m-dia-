@@ -21,6 +21,7 @@ const SHOTS3 = [
     const e = exprAt(T, [[0, 'neutral'], [1.2, 'surprised']]);
     await place('polo', svgP(T, { face: 0.3, expr: e.expr, squash: e.pop, lx: T > 1.2 ? 0.9 : 0.2 }), PO3.x, 0, PO3.z);
     await place('freitas', svgF(T, { expr: 'smug', armL: 100, armR: 100, bendL: 0, bendR: 0, handL: 'open', handR: 'open' }), FR3.x + 1.5, 0, FR3.z + 4);
+    await players(T, { bx: 0, bz: 8, only: (x, z) => z > 0 });
     BALL.position.set(FR3.x + 2.2, 0.11, FR3.z + 4.5);
     return { mood: 'orange', over: ruleBanner(T, 0) };
   } },
@@ -40,6 +41,7 @@ const SHOTS3 = [
     const fx = Math.sin(T * 1.2) * 4, fz = 6 + Math.cos(T * 1.2) * 3;
     await place('freitas', svgF(T, { side: true, face: Math.cos(T * 1.2) > 0 ? -0.8 : 0.8, walk: T * 11, run: 1, expr: 'happy' }), fx, 0, fz);
     await place('saci', svgS(T, { armL: 50, armR: 50, bendL: 40, bendR: 40 }), Math.sin(T * 1.2) * 1.2, 0, 21);
+    await players(T, { bx: fx, bz: fz });
     BALL.position.set(fx + 0.35, 0.11 + Math.abs(Math.sin(T * 6)) * 0.15, fz - 0.2);
     return { mood: 'orange', over: comic(T, 4.75, 'PRIII!', 760, 520, { size: 100 }) };
   } },
@@ -52,6 +54,7 @@ const SHOTS3 = [
     await place('saci', svgS(T, { armL: 50, armR: 50, bendL: 40, bendR: 40 }), 0.5, 0, 21);
     await place('polo', svgP(T, { face: -0.4 }), PO3.x, 0, PO3.z);
     await place('mavie', mavie(0, 0, { t: T, face: -1, wag: 0.6, s: 0.55 }), WD.FW + 2.5, 0, -2.5, { sw: 0.8 });
+    await players(T, { bx: fx, bz: fz });
     BALL.position.set(fx + 0.35, 0.11, fz - 0.2);
     return { mood: 'orange' };
   } },
@@ -80,6 +83,7 @@ const SHOTS3 = [
     if (T < 18.9) { const q = inv(17.7, 18.9, T); BALL.position.set(lerp(X - 1, foot.x, q), lerp(2.2, foot.y, q) + Math.sin(q * Math.PI) * 1.4, lerp(Z - 6, foot.z, q)); }
     else { const q = inv(18.9, 19.3, T); BALL.position.set(foot.x, foot.y + q * 0.6, lerp(foot.z, Z + 8, q)); }
     BALL.rotation.x = T * 12;
+    await players(T, { bx: 0, bz: 16, only: (x, z) => z > 15 });
     await place('polo', svgP(T, { face: 0.4, expr: T > 18.9 ? 'surprised' : 'neutral', lx: 1 }), X - 3, 0, Z + 7);
     return { mood: 'orange', over: comic(T, 18.92, 'TUM!', 600, 560, { size: 120 }) };
   } },
@@ -92,6 +96,7 @@ const SHOTS3 = [
     await place('saci', svgS(T, { tilt: -60, armL: 160, armR: 160, bendL: 0, bendR: 0, handL: 'open', handR: 'open', expr: 'surprised' }), -1.6, 0.25, 21.2, { rot: -50, hip: 0.5 });
     const rise = E.out(inv(19.5, 19.95, T));
     await place('freitas', svgF(T, { expr: 'joy', armL: 150 * rise + 10, armR: 150 * rise + 10, bendL: 10, bendR: 10, handL: 'open', handR: 'open', jump: rise * 30 }), -2.2, 0, 16.6, { rot: lerp(80, 0, rise), hip: 0.4 });
+    await players(T, { mode: 'cheer', bx: 0, bz: 12, only: (x, z) => z < 20 });
     return { mood: 'orange', over: comic(T, 19.5, 'GOL!', 540, 520, { size: 160 }) };
   } },
   { t0: 20.6, async draw(t, T) { camSet(0, 30, -60, 0, 0, 0); return { mood: 'orange' }; } },

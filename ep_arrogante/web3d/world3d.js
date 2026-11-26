@@ -146,11 +146,21 @@ function hideCuts() { for (const k in CUTS) { CUTS[k].root.visible = false; CUTS
 const BALL = (() => { const t = canvasTex(256, 128, (g, w, h) => { g.fillStyle = '#fbf8f0'; g.fillRect(0, 0, w, h); g.fillStyle = '#1e1820'; for (let i = 0; i < 10; i++) { const x = (i % 5) * 52 + (i > 4 ? 26 : 0) + 10, y = i > 4 ? 88 : 36; g.beginPath(); for (let k = 0; k < 5; k++) { const a = k / 5 * Math.PI * 2; g.lineTo(x + Math.cos(a) * 14, y + Math.sin(a) * 14); } g.fill(); } }); const g = M(new THREE.SphereGeometry(0.11, 24, 16), '#ffffff', { mat: new THREE.MeshToonMaterial({ map: t, gradientMap: GRAD }), ol: 0.12 }); SCENE.add(g); return g; })();
 // ---------- clima (luz por cena) ----------
 function mood(name) {
-  const P = { orange: { sky: ['#d8705a', '#fde0b0'], sun: 0xffd2a0, si: 1.35, hemi: 0.75, fog: 0xf6c89a, exp: 1.05 }, blue: { sky: ['#1e2450', '#6a6aa8'], sun: 0x8aa0ff, si: 0.55, hemi: 0.45, fog: 0x3a3a70, exp: 0.95 }, sepia: { sky: ['#b8885a', '#f4dcb0'], sun: 0xffe0b0, si: 1.1, hemi: 0.8, fog: 0xe8c8a0, exp: 1.0 } }[name];
+  const P = { orange: { sky: ['#6fa8d8', '#a8c8e0', '#f8c8a0', '#fde8c0'], sun: 0xffe0b8, si: 1.3, hemi: 0.65, fog: 0xf4dcc0, exp: 1.0, cloud: ['#fff6ee', '#f8c8b8'] },
+    blue: { sky: ['#0e1236', '#22285a', '#3a3a78', '#5a5a96'], sun: 0x8aa0ff, si: 0.5, hemi: 0.42, fog: 0x2e3264, exp: 1.0, cloud: ['#4a4a80', '#3a3a6a'] },
+    sepia: { sky: ['#c8a070', '#dcb888', '#f0d4a8', '#f8e6c4'], sun: 0xffe2b4, si: 1.1, hemi: 0.75, fog: 0xead2ac, exp: 1.0, cloud: ['#fff2dc', '#f0d8b4'] } }[name];
+  if (mood.cur === name) return; mood.cur = name;
   SUN.color.setHex(P.sun); SUN.intensity = P.si; HEMI.intensity = P.hemi; SCENE.fog.color.setHex(P.fog); R3.toneMappingExposure = P.exp;
-  const g = SKY.image.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 512); gr.addColorStop(0, P.sky[0]); gr.addColorStop(1, P.sky[1]); g.fillStyle = gr; g.fillRect(0, 0, 8, 512); SKY.needsUpdate = true;
+  const g = SKY.image.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 512); P.sky.forEach((c, i) => gr.addColorStop([0, 0.35, 0.75, 1][i], c)); g.fillStyle = gr; g.fillRect(0, 0, 8, 512); SKY.needsUpdate = true;
+  for (const c of CLOUDS) c.children.forEach((m, i) => { if (m.material && m.material.color) m.material.color.set(i % 2 ? P.cloud[1] : P.cloud[0]); });
+  STARS.visible = name === 'blue';
 }
+// nuvens 3D macias e estrelas
+const CLOUDS = [];
+(function () { const r = rng(9); for (let i = 0; i < 14; i++) { const g = new THREE.Group(); for (let k = 0; k < 5; k++) { const m = new THREE.Mesh(new THREE.SphereGeometry(4 + r() * 4, 14, 10), new THREE.MeshBasicMaterial({ color: 0xffffff, fog: false })); m.scale.y = 0.55; m.position.set(k * 5 - 10, r() * 2, r() * 3); g.add(m); } g.position.set(-150 + r() * 300, 55 + r() * 30, 80 + r() * 120 * (r() < 0.5 ? 1 : -1)); g.userData.sp = 0.6 + r(); g.userData.x0 = g.position.x; CLOUDS.push(g); SCENE.add(g); } })();
+const STARS = (() => { const r = rng(4), p = []; for (let i = 0; i < 500; i++) { const a = r() * Math.PI * 2, e = 0.15 + r() * 1.2; p.push(Math.cos(a) * Math.cos(e) * 300, Math.sin(e) * 300, Math.sin(a) * Math.cos(e) * 300); } const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); const s = new THREE.Points(g, new THREE.PointsMaterial({ color: 0xfff6d8, size: 1.6, fog: false })); s.visible = false; SCENE.add(s); return s; })();
 function animateWorld(T) {
+  for (const c of CLOUDS) c.position.x = ((c.userData.x0 + 150 + T * c.userData.sp) % 300) - 150;
   for (const tr of WORLD.trees) tr.rotation.z = Math.sin(T * 0.9 + tr.userData.sway) * 0.015;
   for (const c of WORLD.cars) { const L = 120, z = ((c.ph * 7 + T * 9 * c.lane) % L + L) % L - 60; c.g.position.set(c.side * (WD.FW + 16) + c.lane * 2, 0, z); c.g.rotation.y = c.lane > 0 ? 0 : Math.PI; }
 }
