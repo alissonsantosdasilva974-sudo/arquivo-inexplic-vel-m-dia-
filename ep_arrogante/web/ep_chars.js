@@ -143,3 +143,7 @@ function lips(T, iv) {
 }
 // linha do tempo de expressão: [[t, 'expr'], ...] → expressão + impulso (squash) na troca
 function exprAt(T, keys) { let e = keys[0][1], t0 = -9; for (const [t, x] of keys) if (T >= t) { e = x; t0 = t; } return { expr: e, pop: 0.06 * Math.max(0, 1 - (T - t0) / 0.18) * Math.sin(clamp((T - t0) / 0.18) * Math.PI) }; }
+
+// crianças (lembrança): camiseta listrada e bermuda, sem uniforme
+CAST2.freitasKid = Object.assign({}, CAST2.freitas, { top: '#f2c230', topD: '#d8a818', pattern: 'pStripeH', num: null, socks: null, cleats: 0, shoes: '#f4f1ea', bottom: '#3d5a9e', scale: 0.62, seed: 25 });
+CAST2.saciKid = Object.assign({}, CAST2.saciSem, { top: '#e86a6a', topD: '#c24a4a', topType: 'tee', pattern: 'pDots', num: null, collar: null, bottom: '#4a4458', shorts: 1, shoes: '#e8e4dc', cleats: 0, scale: 0.62, seed: 26 });

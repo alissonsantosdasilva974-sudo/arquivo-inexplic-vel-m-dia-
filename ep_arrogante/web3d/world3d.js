@@ -152,7 +152,11 @@ async function place(name, svg, x, y, z, o = {}) {
   K.shadow.position.set(x, 0.02, z); const lift = Math.max(0, y); K.shadow.scale.set(k * (o.sw || 1) / (1 + lift), k * 0.55 * (o.sw || 1) / (1 + lift), 1); K.shadow.material.opacity = 0.28 / (1 + lift * 0.8);
   return K;
 }
-function hideCuts() { for (const k in CUTS) { CUTS[k].root.visible = false; CUTS[k].shadow.visible = false; } }
+// régua de pedreiro (só aparece no plano dos +2 cm)
+const RULER = (() => { const t = canvasTex(64, 1024, (g, W2, H2) => { g.fillStyle = '#f2c230'; g.fillRect(0, 0, W2, H2); g.fillStyle = '#1e1820'; for (let c = 0; c <= 220; c++) { const y = H2 - c / 220 * H2, L = c % 10 === 0 ? 40 : c % 5 === 0 ? 26 : 14; g.fillRect(0, y - 1, L, 2); if (c % 10 === 0) { g.font = 'bold 14px sans-serif'; g.fillText(String(c), 42, y + 5); } } });
+  const g = new THREE.Group(); g.add(M(new THREE.BoxGeometry(0.12, 2.2, 0.03), '#ffffff', { mat: new THREE.MeshBasicMaterial({ map: t }), ol: 0.03 }).translateY(1.1));
+  const mark = box(0.32, 0.025, 0.06, '#e8503a', { mo: { emissive: new THREE.Color('#e8503a'), emissiveIntensity: 0.4 } }); g.add(mark); g.userData.mark = mark; g.visible = false; SCENE.add(g); return g; })();
+function hideCuts() { RULER.visible = false; for (const k in CUTS) { CUTS[k].root.visible = false; CUTS[k].shadow.visible = false; } }
 // bola 3D
 const BALL = (() => { const t = canvasTex(256, 128, (g, w, h) => { g.fillStyle = '#fbf8f0'; g.fillRect(0, 0, w, h); g.fillStyle = '#1e1820'; for (let i = 0; i < 10; i++) { const x = (i % 5) * 52 + (i > 4 ? 26 : 0) + 10, y = i > 4 ? 88 : 36; g.beginPath(); for (let k = 0; k < 5; k++) { const a = k / 5 * Math.PI * 2; g.lineTo(x + Math.cos(a) * 14, y + Math.sin(a) * 14); } g.fill(); } }); const g = M(new THREE.SphereGeometry(0.11, 24, 16), '#ffffff', { mat: new THREE.MeshToonMaterial({ map: t, gradientMap: GRAD }), ol: 0.12 }); SCENE.add(g); return g; })();
 // ---------- clima (luz por cena) ----------

@@ -53,21 +53,24 @@ const SHOTS3 = [
   } },
   // 5 — "vi tudo isso de perto": close girando devagar
   { t0: 6.6, async draw(t, T) {
-    const a = -0.5 + 0.35 * ease(t, 0, 1.4), r = 1.9;
+    const a = -0.5 + 0.35 * ease(t, 0, 1.4), r = 2.8;
     camSet(PO3.x + Math.sin(a) * r, 1.5, PO3.z - Math.cos(a) * r, PO3.x, 1.4, PO3.z, 38, -3);
     await place('polo', svgP(T, { face: Math.sin(T * 2.4) * 0.5, expr: 'smug', lx: Math.sin(T * 2.4), headTilt: Math.sin(T * 2.4) * 6 }), PO3.x, 0, PO3.z);
     BALL.position.set(0, -5, 0);
     return { mood: 'orange' };
   } },
   // ================= resto do episódio (8 s → fim) =================
-  // 6 — amigos desde pequenos (lembrança, sépia)
+  // 6 — amigos desde pequenos (lembrança): os dois, crianças, correm atrás da bola e batem as mãos
   { t0: 8.0, async draw(t, T) {
-    orb(0, 0.7, -4, 3.2 - 0.3 * ease(t, 0, 2.7), 10, 0.9, 42);
-    const hi = pulse(T, 9.8, 0.3);
-    await place('freitas', svgF(T, { face: 0.6, expr: 'laugh', armR: 140 + hi * 25, bendR: 0, handR: 'open', jump: hi * 30, mouth: 0 }), -0.6, 0, -4, { k: 0.66 });
-    await place('saci', svgS(T, { face: -0.6, expr: 'laugh', armL: 140 + hi * 25, bendL: 0, handL: 'open', jump: hi * 30 }), 0.6, 0, -4, { k: 0.66 });
-    BALL.position.set(0, 0.11 + Math.abs(Math.sin(T * 5)) * 0.25, -4.4);
-    return { mood: 'sepia', over: flashBorder() + comic(T, 9.8, 'TOCA!', 540, 520, { size: 90 }) };
+    const run = clamp((T - 8.0) / 1.5), x = lerp(-7, -1.2, E.out(run)), stop = T > 9.5;
+    camSet(x + 0.15, 0.8, -8.4 + 0.8 * ease(t, 1.4, 2.7), x + 0.15, 0.5, -4, 44);
+    const hi = pulse(T, 9.85, 0.25), meet = E.out(inv(9.5, 9.75, T));
+    const kF = { face: stop ? 0.5 : 0.8, side: !stop, walk: stop ? null : T * 13, run: 1, expr: 'laugh', armR: stop ? 120 + hi * 30 : 20, bendR: 0, handR: 'open', mouth: 0, jump: hi * 25 };
+    const kS = { id: 'saciKid', face: stop ? -0.5 : 0.8, side: !stop, walk: stop ? null : T * 13 + 1.5, run: 1, expr: 'laugh', armL: stop ? 120 + hi * 30 : 20, bendL: 0, handL: 'open', jump: hi * 25 };
+    await place('freitas', person('freitasKid', Object.assign({ x: 0, y: 0, s: 1, t: T }, kF)), x - 0.15 - 0.3 * (1 - meet), 0, -4.1);
+    await place('saci', svgS(T, kS), x + 0.45 - 0.2 * meet, 0, -3.9);
+    BALL.position.set(stop ? x + 1.3 : x + 1.0 + Math.abs(Math.sin(T * 13)) * 0.1, 0.11 + (stop ? 0 : Math.abs(Math.sin(T * 6.5)) * 0.1), -4.3); BALL.rotation.z = stop ? 0 : -T * 12;
+    return { mood: 'sepia', over: flashBorder() + comic(T, 9.85, 'TOCA!', 540, 520, { size: 90 }) };
   } },
   // 7 — corrida com a bola: câmera lateral acompanhando
   { t0: 10.7, async draw(t, T) {
@@ -82,10 +85,14 @@ const SHOTS3 = [
   // 8 — por cima do ombro: Freitas chuta, Saci pega
   { t0: 12.0, async draw(t, T) {
     camSet(0.9, 1.9, 13.6, -0.2, 1.0, 21, 40);
-    const bp = inv(12.15, 12.6, T), dive = E.back(inv(12.4, 12.75, T));
+    const bp = inv(12.15, 12.6, T), got = E.back(inv(12.52, 12.68, T)), ready = E.out(inv(12.0, 12.3, T)), recoil = pulse(T, 12.62, 0.12);
     await place('freitas', svgF(T, { back: true, armL: 30, armR: 30 }), 0.3, 0, 15);
-    await place('saci', svgS(T, { expr: 'angry', armL: 80 + 70 * dive, armR: 80 + 70 * dive, bendL: 20, bendR: 20, handL: 'open', handR: 'open', jump: dive * 30, tilt: -dive * 12 }), -0.5 * dive, 0, 21);
-    BALL.position.set(lerp(0.2, -0.5, bp), 0.2 + Math.sin(bp * Math.PI) * 0.8 + bp * 0.7, lerp(15.4, 20.8, bp));
+    // antes: braços abertos esperando; no contato: as duas luvas fecham na bola, na altura do peito
+    const oS = got > 0.02 ? { armL: lerp(70, 40, got), armR: lerp(70, 40, got), bendL: lerp(20, -140, got), bendR: lerp(20, -140, got), handL: 'open', handR: 'open' } : { armL: lerp(15, 70, ready), armR: lerp(15, 70, ready), bendL: 20, bendR: 20, handL: 'open', handR: 'open' };
+    await place('saci', svgS(T, Object.assign({ expr: got > 0.5 ? 'happy' : 'angry', squash: -0.05 * recoil }, oS)), -0.2, 0, 21 + 0.12 * recoil);
+    const hand = { x: -0.2, y: 193 / UPM, z: 20.85 };
+    BALL.position.set(lerp(0.2, hand.x, bp), lerp(0.25, hand.y, bp) + Math.sin(bp * Math.PI) * 0.6, lerp(15.4, hand.z, bp));
+    if (T > 12.6) BALL.position.set(hand.x, hand.y - 0.03 * recoil, hand.z + 0.12 * recoil);
     await players(T, { only: (px, pz) => pz > 10 && Math.abs(px) > 1.5 });
     return { mood: 'orange', over: comic(T, 12.6, 'PEGOU!', 540, 560, { size: 80, fill: '#5ab0d8' }) };
   } },
@@ -98,7 +105,7 @@ const SHOTS3 = [
   } },
   // 10 — Freitas, o craque (de lado, inclinado)
   { t0: 14.1, async draw(t, T) {
-    orb(0, 1.4, -4, 2.0, -25 + 10 * ease(t, 0, 1.3), 1.25, 38, 5);
+    orb(0, 1.2, -4, 2.9, -25 + 10 * ease(t, 0, 1.3), 1.25, 40, 5);
     const e = exprAt(T, [[14.1, 'happy'], [14.7, 'smug']]), jug = Math.abs(Math.sin(T * 7));
     await place('freitas', svgF(T, { face: 0.5, expr: e.expr, wink: T > 14.7, squash: e.pop, armR: 30, bendR: 120, holdR: ball(0, -30 - jug * 20, 22, T * 200) }), 0, 0, -4);
     await players(T, { only: (px, pz) => pz > 4 });
@@ -106,7 +113,7 @@ const SHOTS3 = [
   } },
   // 11 — "mas o craque tinha um problema"
   { t0: 15.4, async draw(t, T) {
-    orb(PO3.x, 1.35, PO3.z, 2.1, 15, 2.2, 40);
+    orb(PO3.x, 1.2, PO3.z, 2.9, 15, 2.2, 42);
     const e = exprAt(T, [[15.4, 'neutral'], [16.1, 'worried']]);
     await place('polo', svgP(T, { face: -0.3, expr: e.expr, squash: e.pop, ly: -0.6, armL: 50, bendL: 110, handL: 'point' }), PO3.x, 0, PO3.z);
     return { mood: 'orange', over: popIcon(T, 16.3, `<text text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="200" fill="#ff7a45" stroke="${INK}" stroke-width="12" paint-order="stroke">?</text>`, 820, 520) };
@@ -152,35 +159,39 @@ const SHOTS3 = [
   } },
   // 15 — contraplano: ele olha a torcida, vaidoso
   { t0: 21.7, async draw(t, T) {
-    orb(2, 1.45, -0.5, 2.2 - 0.25 * ease(t, 0, 1.5), -70, 1.2, 40, -3);
+    orb(2, 1.25, -0.5, 3.1 - 0.25 * ease(t, 0, 1.5), -70, 1.2, 42, -3);
     await place('freitas', svgF(T, { face: -0.5 + Math.sin(T * 1.5) * 0.5, lx: -0.6 + Math.sin(T * 1.5) * 0.8, ly: -0.6, expr: 'smug', armL: 105, armR: 105, bendL: 0, bendR: 0, handL: 'open', handR: 'open', headTilt: -8 }), 2, 0, -0.5);
     await players(T, { mode: 'look', fx: 2, fz: -0.5, expr: 'happy', only: (px, pz) => pz > 3 });
     return { mood: 'orange' };
   } },
   // 16 — "Eu sou arrogante mesmo. E daí?" (câmera baixa, inclinada)
   { t0: 23.2, async draw(t, T) {
-    orb(0, 1.5, -4, 1.9, 5, 0.9, 40, -4);
+    orb(0, 1.3, -4, 2.8, 5, 0.9, 42, -4);
     const e = exprAt(T, [[23.2, 'smug'], [24.0, 'angry'], [24.4, 'happy'], [25.0, 'laugh']]), shrug = pulse(T, 24.6, 0.35);
     await place('freitas', svgF(T, { face: 0.2, expr: e.expr, squash: e.pop, armL: 40 + 20 * shrug, armR: 40 + 20 * shrug, bendL: 100 * shrug + 10, bendR: 100 * shrug + 10, handL: 'open', handR: 'open', headTilt: -8 + shrug * 10 }), 0, 0, -4);
     return { mood: 'orange', over: popIcon(T, 24.4, bubble('E DAÍ?', 340, 72), 640, 360) };
   } },
   // 17 — reação do Polo
   { t0: 25.0, async draw(t, T) {
-    orb(PO3.x, 1.4, PO3.z, 1.9, 25, 1.5, 38);
+    orb(PO3.x, 1.2, PO3.z, 2.8, 25, 1.5, 42);
     await place('polo', svgP(T, { face: -0.6, lx: -1, expr: T > 25.4 ? 'surprised' : 'worried', hatLift: 18 * pulse(T, 25.5, 0.2), mouth: 0 }), PO3.x, 0, PO3.z);
     return { mood: 'orange' };
   } },
-  // 18 — cresceu dois centímetros
+  // 18 — cresceu dois centímetros: estica de repente, régua ao lado, câmera vai ao topo da cabeça
   { t0: 26.0, async draw(t, T) {
-    orb(1.5, 1.0, -4, 5.2 - 0.6 * ease(t, 0, 2.4), -8, 1.2, 42);
+    const q = E.inOut(inv(27.25, 27.9, T));
+    camSet(lerp(1.0, 0.7, q), lerp(1.2, 1.78, q), lerp(-7.6, -5.4, q), lerp(0.3, 0.25, q), lerp(1.0, 1.74, q), -4, lerp(42, 30, q));
     const e = exprAt(T, [[26, 'smug'], [27.05, 'surprised']]);
-    await place('freitas', svgF(T, { expr: e.expr, squash: -0.15 * pulse(T, 27.2, 0.2) }), 0, 0, -4, { k: HGT(T) / 1.75 });
-    await place('polo', svgP(T, { face: -0.6, expr: T > 27.1 ? 'surprised' : 'neutral', mouth: 0 }), 2.6, 0, -3.6);
-    return { mood: 'orange', over: popIcon(T, 27.1, `<rect x="-150" y="-60" width="300" height="110" rx="22" fill="#ffd23f" stroke="${INK}" stroke-width="8"/><text y="28" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="76" fill="${INK}">+2 cm</text>`, 540, 420) + HUD3(T) };
+    const st = 1 + 0.22 * Math.sin(clamp((T - 27.05) / 0.35) * Math.PI) * (T < 27.4 ? 1 : 0);
+    const K = await place('freitas', svgF(T, { expr: e.expr }), 0, 0, -4, { k: HGT(T) / 1.75 });
+    K.m.scale.set(1 / Math.sqrt(st), st, 1);
+    RULER.visible = true; RULER.position.set(0.55, 0, -4.05); RULER.userData.mark.position.y = HGT(T);
+    await place('polo', svgP(T, { face: -0.6, expr: T > 27.1 ? 'surprised' : 'neutral', mouth: 0, lx: -1 }), 2.6, 0, -3.6);
+    return { mood: 'orange', over: popIcon(T, 27.1, `<rect x="-150" y="-60" width="300" height="110" rx="22" fill="#ffd23f" stroke="${INK}" stroke-width="8"/><text y="28" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="76" fill="${INK}">+2 cm</text>`, 540, 420) + comic(T, 27.05, 'TCHUM!', 760, 640, { size: 80 }) + HUD3(T) };
   } },
   // 19 — Saci riu
   { t0: 28.4, async draw(t, T) {
-    orb(0, 1.4, 21, 1.8, 0, 1.3, 38, 6);
+    orb(0, 1.2, 21, 2.8, 0, 1.3, 42, 6);
     await place('saci', svgS(T, { face: -0.2, expr: 'laugh', mouth: 0.8, squash: 0.04 * Math.sin(T * 22), armL: 30, bendL: 120 }), 0, 0, 21);
     return { mood: 'orange', over: comic(T, 28.5, 'HAHA', 760, 520, { size: 90 }) + HUD3(T) };
   } },
@@ -202,21 +213,22 @@ const SHOTS3 = [
     await players(T);
     return { mood: 'orange', over: `<rect width="1080" height="1920" fill="#2a1a14" opacity="0.3"/>` + card + handL + pencil + handR + comic(T, 29.9, 'RISC RISC', 540, 320, { size: 70, fill: '#fff6e0', life: 1.0 }) };
   } },
-  // 21 — semana seguinte: outro gol (vista alta de trás)
+  // 21 — semana seguinte: outro gol, chute de lado, bola entra
   { t0: 30.9, async draw(t, T) {
-    camSet(0.5, 5.5, 4, 0, 0.5, 18, 44);
-    const kick = pulse(T, 32.35, 0.3), bp = inv(32.4, 32.9, T), dive = E.out(inv(32.5, 32.9, T));
-    bulgeNet(WORLD.goals.far, T > 32.9 ? 1.0 * Math.exp(-(T - 32.9) * 5) : 0, 1.6, 0.8);
-    await place('freitas', svgF(T, { back: true, armL: 30 + kick * 40, armR: 30 }), 0, 0, 12, { k: HGT(T) / 1.75 });
-    BALL.position.set(lerp(0.2, 1.6, bp), 0.11 + Math.sin(bp * Math.PI) * 0.8, lerp(12.4, 22.3, bp)); BALL.rotation.x = T * 10;
-    await place('saci', svgS(T, { armL: 160, armR: 160, bendL: 0, bendR: 0, handL: 'open', handR: 'open', expr: 'surprised' }), -1.2 * dive, 0, 21, { rot: -dive * 70, hip: 0.6, ground: true });
+    const run = Math.min(1, (T - 30.9) / 1.45), z = lerp(9, 13, E.inOut(run));
+    const k = E.back(inv(32.25, 32.42, T)) - E.in(inv(32.45, 32.8, T)) * 0.8, bp = inv(32.42, 32.95, T);
+    camSet(-5.5, 1.1, z + 0.8, 0, 1.0, z + 1.6, 46);
+    bulgeNet(WORLD.goals.far, T > 32.95 ? 1.0 * Math.exp(-(T - 32.95) * 5) : 0, 1.6, 0.8);
+    await place('freitas', svgF(T, { side: true, face: 0.8, walk: T < 32.25 ? T * 11 : -0.9 + k * 2.2, run: 1, expr: T < 32.4 ? 'angry' : 'smug', tilt: -k * 5 }), 0, 0, z, { k: HGT(T) / 1.75 });
+    BALL.position.set(0.1, 0.11 + (T < 32.42 ? 0 : Math.sin(bp * Math.PI) * 0.9), T < 32.42 ? z + 0.55 : lerp(z + 0.55, 22.3, bp)); BALL.rotation.x = T * 12;
+    await place('saci', svgS(T, { armL: 160, armR: 160, bendL: 0, bendR: 0, handL: 'open', handR: 'open', expr: 'surprised' }), -1.0 * E.out(inv(32.6, 32.95, T)), 0, 21, { rot: -E.out(inv(32.6, 32.95, T)) * 70, hip: 0.6, ground: true });
     await players(T, { only: (px, pz) => pz > 6 });
-    return { mood: 'orange', over: popIcon(T, 31.0, calendar('+7'), 540, 400, 0.9 * clamp(1 - (T - 32.2) * 3)) + comic(T, 32.9, 'GOL!', 640, 560, { size: 130 }) + HUD3(T) };
+    return { mood: 'orange', over: popIcon(T, 31.0, calendar('+7'), 540, 400, 0.9 * clamp(1 - (T - 32.2) * 3)) + comic(T, 32.95, 'GOL!', 640, 560, { size: 130 }) + HUD3(T) };
   } },
   // 22 — "Arrogante!" e cresce mais dez (câmera recua e desce)
   { t0: 33.2, async draw(t, T) {
     const q = E.inOut(inv(34.6, 35.6, T)), k = HGT(T) / 1.75;
-    orb(0, lerp(1.5, 1.3, q), -4, lerp(1.9, 4.0, q), 0, lerp(1.0, 0.3, q), 42, 4 - 4 * q);
+    orb(0, lerp(1.3, 1.3, q), -4, lerp(2.8, 4.4, q), 0, lerp(1.0, 0.3, q), 42, 4 - 4 * q);
     const e = exprAt(T, [[33.2, 'angry'], [34.5, 'surprised'], [35.4, 'smug']]);
     await place('freitas', svgF(T, { expr: e.expr, mouth: Math.max(lips(T, [[33.3, 34.4]]), T < 34.4 ? 0.3 : 0), armR: 170, bendR: 10, armL: 20, squash: e.pop - 0.15 * pulse(T, 35.1, 0.2) }), 0, 0, -4, { k });
     return { mood: 'orange', over: comic(T, 33.4, 'ARROGANTE!', 540, 480, { size: 96, fill: '#ff7a45', life: 1.1 }) + popIcon(T, 35.0, `<rect x="-170" y="-60" width="340" height="110" rx="22" fill="#ffd23f" stroke="${INK}" stroke-width="8"/><text y="28" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="76" fill="${INK}">+10 cm</text>`, 540, 420) + HUD3(T) };
@@ -239,7 +251,7 @@ const SHOTS3 = [
   } },
   // 25 — "Aí veio o pior": vira azul, close com rolagem
   { t0: 40.3, async draw(t, T) {
-    orb(PO3.x, 1.4, PO3.z, 1.9 - 0.25 * ease(t, 0, 1.5), 0, 1.4, 38, lerp(0, -6, t / 1.5));
+    orb(PO3.x, 1.2, PO3.z, 2.9 - 0.25 * ease(t, 0, 1.5), 0, 1.4, 42, lerp(0, -6, t / 1.5));
     await place('polo', svgP(T, { expr: 'worried', lx: -0.6, ly: 0.3, mouth: lips(T, [[40.4, 41.4]]) }), PO3.x, 0, PO3.z);
     return { mood: 'blue', over: HUD3(T) };
   } },
@@ -277,7 +289,7 @@ const SHOTS3 = [
   } },
   // 30 — Saci vê e tira as luvas, uma de cada vez
   { t0: 48.7, async draw(t, T) {
-    orb(0, 1.2, 21, T < 49.3 ? 1.7 : 2.4, 0, 1.2, 40);
+    orb(0, 1.1, 21, T < 49.3 ? 2.7 : 3.1, 0, 1.2, 42);
     const e = exprAt(T, [[48.7, 'surprised'], [49.3, 'angry']]);
     let id = 'saci', o = { expr: e.expr, squash: e.pop, armL: 12, armR: 12, bendL: 20, bendR: 20 };
     const p1 = inv(49.5, 49.85, T), p2 = inv(49.85, 50.15, T), p3 = inv(50.15, 50.45, T), p4 = inv(50.45, 50.7, T);
@@ -294,7 +306,7 @@ const SHOTS3 = [
   } },
   // 31 — "Pra que jogar a bola na Mavie?"
   { t0: 51.4, async draw(t, T) {
-    orb(0, 1.4, 21, 2.3, 0, 1.15, 38, 6);
+    orb(0, 1.25, 21, 2.8, 0, 1.15, 42, 6);
     CAM.position.x += shake(T, 51.5, 8) / 200;
     const e = exprAt(T, [[51.4, 'angry'], [52.3, 'sad']]);
     await place('saci', svgS(T, { id: 'saciSem', face: 0.2, expr: e.expr, squash: e.pop, armR: 60, bendR: 40, handR: 'point', headTilt: Math.sin(T * 6) * 3, mouth: lips(T, [[51.5, 52.7]]) }), 0, 0, 21);
@@ -303,7 +315,7 @@ const SHOTS3 = [
   // 32 — dá de ombros e cresce mais um metro (câmera desce e recua)
   { t0: 53.1, async draw(t, T) {
     const sh = pulse(T, 53.9, 0.4), q = E.inOut(inv(54.4, 55.6, T)), k = HGT(T) / 1.75;
-    orb(0, lerp(1.4, 2.4, q), -4, lerp(2.2, 6.5, q), 0, lerp(1.3, 0.25, q), 44, -4 * q);
+    orb(0, lerp(1.3, 2.4, q), -4, lerp(3.0, 6.5, q), 0, lerp(1.3, 0.25, q), 44, -4 * q);
     const e = exprAt(T, [[53.1, 'smug'], [54.5, 'surprised'], [55.3, 'smug']]);
     await place('freitas', svgF(T, { expr: e.expr, squash: e.pop, armL: 30 + sh * 20, armR: 30 + sh * 20, bendL: 100 * sh + 10, bendR: 100 * sh + 10, handL: 'open', handR: 'open', headTilt: sh * 8 }), 0, 0, -4, { k });
     await players(T, { mode: 'look', fx: 0, fz: -4, up: true, only: (px, pz) => pz > -1 && pz < 10 });
@@ -353,49 +365,53 @@ const SHOTS3 = [
     await place('freitas', svgF(T, { face: Math.sin(T * 0.7) * 0.3, expr: T > 67.5 ? 'sad' : 'neutral', ly: -0.4, headTilt: Math.sin(T) * 3 }), -0.2, 0, -3.8, { k: HGT(T) / 1.75 });
     return { mood: 'blue', over: leavesWind(T, 18) + comic(T, 67.6, 'FFFUUU...', 540, 380, { size: 70, fill: '#c8d8f0', life: 1.4, rot: 0 }) + HUD3(T) };
   } },
-  // 39 — Saci sobe no banco (sépia)
+  // 39 — Saci sobe no banco: anda, agacha, pula em arco e pousa no assento
   { t0: 69.0, async draw(t, T) {
-    const up = E.back(inv(69.8, 70.4, T)), walk = inv(69.0, 69.8, T);
-    camSet(9.2, 1.6, 2.6, 12.8, 1.6, 6.0, 46);
-    await place('freitas', svgF(T, { face: -0.4, expr: 'sad', ly: 1, lx: -1 }), 11.9, 0, 7.0, { k: HGT(T) / 1.75 });
-    await place('saci', svgS(T, { id: 'saciSem', side: up < 0.1, face: 0.8, walk: T < 69.8 ? T * 8 : null, expr: 'worried', ly: -1, lx: 1, squash: 0.06 * pulse(T, 70.4, 0.15) }), lerp(11.4, 12.9, walk), up * 0.47, lerp(4.4, 6.0, walk));
+    const walk = inv(69.0, 69.7, T), jump = inv(69.85, 70.25, T), crouch = pulse(T, 69.78, 0.1) + 0.6 * pulse(T, 70.3, 0.1);
+    camSet(10.6, 1.3, 2.4, 12.6, 1.3, 6.0, 48);
+    await place('freitas', svgF(T, { face: -0.4, expr: 'sad', ly: 1, lx: -1 }), 12.35, 0, 6.3, { k: HGT(T) / 1.75 });
+    const sx = T < 69.85 ? lerp(11.4, 12.55, walk) : lerp(12.55, 12.95, jump), sy = T < 69.85 ? 0 : 0.49 * E.out(jump) + Math.sin(jump * Math.PI) * 0.35, sz = T < 69.85 ? lerp(4.2, 5.55, walk) : 5.55;
+    const K = await place('saci', svgS(T, { id: 'saciSem', side: T < 70.25, face: 0.8, walk: T < 69.7 ? T * 8 : null, expr: 'worried', ly: -1, lx: 1, armFront: jump > 0 && jump < 1 ? 150 : null }), sx, sy, sz);
+    K.m.scale.y = 1 - crouch * 0.15;
     return { mood: 'sepia', over: HUD3(T) };
   } },
-  // 40 — abraça a perna dele (de costas, câmera baixa)
+  // 40 — abraço: de lado, o Saci em cima do banco envolve a perna dele com os dois braços
   { t0: 71.0, async draw(t, T) {
-    const arm = lerp(30, 88, E.inOut(inv(71.1, 72.2, T)));
-    camSet(14.6, 0.9, 3.6, 12.4, 1.6, 6.8, 48);
-    await place('freitas', svgF(T, { face: -0.2, expr: T > 72.4 ? 'surprised' : 'sad', ly: 1 }), 11.9, 0, 7.0, { k: HGT(T) / 1.75 });
-    await place('saci', svgS(T, { id: 'saciSem', back: true, armL: arm, armR: arm, bendL: 55, bendR: 55 }), 12.3, 0.47, 6.4);
-    return { mood: 'sepia', over: (T > 72.4 ? popIcon(T, 72.4, `<path d="M 0 30 C -60 -10 -40 -60 0 -30 C 40 -60 60 -10 0 30 Z" fill="#e86a7a" stroke="${INK}" stroke-width="7"/>`, 540, 640, 1.1) : '') + HUD3(T) };
+    const arm = E.inOut(inv(71.1, 71.9, T)), squeeze = 0.03 * Math.sin(T * 6) * (T > 71.9 ? 1 : 0);
+    camSet(12.7 - 0.2 * ease(t, 0, 2.9), 1.5, 2.9 + 0.3 * ease(t, 0, 2.9), 12.7, 1.6, 6.0, 46);
+    await place('freitas', svgF(T, { face: 0.3, expr: T > 72.4 ? (T > 73.2 ? 'happy' : 'surprised') : 'sad', ly: 1, lx: 0.6 }), 12.35, 0, 6.3, { k: HGT(T) / 1.75 });
+    // vista lateral virada para a perna; os dois braços esticam e fecham em volta da coxa
+    const K = await place('saci', svgS(T, { id: 'saciSem', side: true, face: -0.8, expr: 'sad', armFront: lerp(10, 82, arm), armBack: lerp(10, 95, arm), headTilt: 10 * arm }), 12.95, 0.49, 5.75);
+    K.m.scale.x = 1 + squeeze;
+    return { mood: 'sepia', over: (T > 72.4 ? popIcon(T, 72.4, `<path d="M 0 30 C -60 -10 -40 -60 0 -30 C 40 -60 60 -10 0 30 Z" fill="#e86a7a" stroke="${INK}" stroke-width="7"/>`, 540, 560, 1.1) : '') + HUD3(T) };
   } },
   // 41 — "Desce daí, craque. Eu não sei jogar sem você."
   { t0: 73.9, async draw(t, T) {
-    camSet(12.6, 1.6, 4.6, 12.9, 1.9, 6.0, 38, -3);
+    camSet(12.4, 1.6, 4.0, 12.95, 1.9, 5.75, 40, -3);
     const e = exprAt(T, [[73.9, 'happy'], [75.2, 'sad']]);
-    await place('saci', svgS(T, { id: 'saciSem', face: 0.2, expr: e.expr, squash: e.pop, ly: -1, lx: 0.4, headTilt: -8, tears: T > 75.4 ? 0.4 : 0, mouth: lips(T, [[74.0, 76.3]]) }), 12.9, 0.47, 6.0);
+    await place('saci', svgS(T, { id: 'saciSem', face: 0.2, expr: e.expr, squash: e.pop, ly: -1, lx: 0.4, headTilt: -8, tears: T > 75.4 ? 0.4 : 0, mouth: lips(T, [[74.0, 76.3]]) }), 12.95, 0.49, 5.75);
     return { mood: 'sepia', over: popIcon(T, 74.1, bubble('DESCE DAÍ!', 420, 64), 540, 330) + HUD3(T) };
   } },
   // 42 — começa a encolher (câmera sobe junto)
   { t0: 76.9, async draw(t, T) {
     const q = E.inOut(clamp(t / 2.1));
-    camSet(9.4, lerp(0.3, 1.4, q), lerp(2.0, 3.4, q), 11.9, lerp(3.0, 1.4, q), 7.0, 50);
-    await place('freitas', svgF(T, { expr: 'surprised', ly: -0.3, squash: 0.05 * Math.sin(T * 25) * (T > 77.6 ? 1 : 0) }), 11.9, 0, 7.0, { k: HGT(T) / 1.75 });
+    camSet(10.2, lerp(0.3, 1.4, q), lerp(2.0, 3.2, q), 12.35, lerp(3.0, 1.4, q), 6.3, 50);
+    await place('freitas', svgF(T, { expr: 'surprised', ly: -0.3, squash: 0.05 * Math.sin(T * 25) * (T > 77.6 ? 1 : 0) }), 12.35, 0, 6.3, { k: HGT(T) / 1.75 });
     return { mood: 'sepia', over: comic(T, 77.8, 'FIUUU...', 540, 420, { size: 90, life: 1.2 }) + HUD3(T) };
   } },
   // 43 — um metro, dois, até o tamanho de sempre
   { t0: 79.0, async draw(t, T) {
     camSet(10.0, 1.2, 2.4 + 0.5 * ease(t, 0, 3.9), 12.3, 1.0, 6.8, 46);
     const e = exprAt(T, [[79, 'surprised'], [82, 'happy']]);
-    await place('freitas', svgF(T, { face: 0.3, expr: e.expr, squash: e.pop }), 11.9, 0, 7.0, { k: HGT(T) / 1.75 });
-    await place('saci', svgS(T, { id: 'saciSem', face: -0.5, expr: T > 81 ? 'laugh' : 'happy' }), 12.9, 0, 6.0);
+    await place('freitas', svgF(T, { face: 0.3, expr: e.expr, squash: e.pop }), 12.35, 0, 6.3, { k: HGT(T) / 1.75 });
+    await place('saci', svgS(T, { id: 'saciSem', face: -0.5, expr: T > 81 ? 'laugh' : 'happy' }), 12.95, 0.49, 5.75);
     return { mood: 'sepia', over: comic(T, 79.2, '-1 m', 540, 440, { size: 110 }) + comic(T, 79.95, '-2 m', 540, 440, { size: 110 }) + popIcon(T, 82.0, `<text text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="100" fill="#ffd23f" stroke="${INK}" stroke-width="12" paint-order="stroke">1,75 m</text>`, 540, 420) + HUD3(T) };
   } },
   // 44 — ajoelha e pede desculpa (câmera na altura da Mavie)
   { t0: 82.9, async draw(t, T) {
     const kneel = E.out(inv(82.9, 83.5, T));
     camSet(11.6, 0.6, 3.6, 12.95, 0.6, 6.8, 46);
-    await place('freitas', svgF(T, { face: 0.6, expr: 'sad', mouth: talk(T, [[84.0, 84.8]]), armL: 40, armR: 60, bendL: 90, bendR: 70, handR: 'open' }), 12.3, -0.45 * kneel, 7.0, { sw: 0.01 });
+    await place('freitas', kneelSVG(T, kneel, { face: 0.6, expr: 'sad', mouth: talk(T, [[84.0, 84.8]]), armL: 40, armR: 60, bendL: 90, bendR: 70, handR: 'open' }), 12.3, 0, 7.0);
     await place('mavie', mavie(0, 0, { t: T, face: -1, s: 0.55, wag: inv(84.2, 85.0, T) * 0.7 }), 13.6, 0, 6.6, { sw: 0.8 });
     return { mood: 'sepia', over: popIcon(T, 84.1, bubble('DESCULPA', 360, 58), 540, 380) };
   } },
@@ -403,15 +419,15 @@ const SHOTS3 = [
   { t0: 85.5, async draw(t, T) {
     const lick = T > 85.6 ? Math.max(0, Math.sin((T - 85.6) * 9)) : 0;
     camSet(11.0, 1.0, 4.4, 12.3, 0.95, 6.9, 44);
-    await place('freitas', svgF(T, { face: 0.45, expr: T > 85.7 ? 'laugh' : 'surprised', mouth: 0.6, headTilt: -6 - lick * 8, armL: 60, armR: 60, bendL: 80, bendR: 80, handL: 'open', handR: 'open' }), 12.3, -0.45, 7.0, { sw: 0.01 });
-    await place('mavie', `<g transform="rotate(-22)">${mavie(0, 0, { t: T, face: -1, s: 0.55, wag: 1, lick })}</g>`, 12.55 - lick * 0.05, 0.62, 6.95, { sw: 0.01 });
+    await place('freitas', kneelSVG(T, 1, { face: 0.45, expr: T > 85.7 ? 'laugh' : 'surprised', mouth: 0.6, headTilt: -6 - lick * 8, armL: 60, armR: 60, bendL: 80, bendR: 80, handL: 'open', handR: 'open' }), 12.3, 0, 7.0);
+    await place('mavie', `<g transform="rotate(-22)">${mavie(0, 0, { t: T, face: -1, s: 0.55, wag: 1, lick })}</g>`, 12.55 - lick * 0.05, 0.3, 6.95, { sw: 0.01 });
     return { mood: 'sepia', over: comic(T, 85.8, 'SLURP!', 540, 440, { size: 110, fill: '#ee8aaa' }) + comic(T, 86.4, 'SLURP!', 600, 520, { size: 80, fill: '#ee8aaa', rot: 8 }) };
   } },
   // 46 — Saci: "Arrogante."
   { t0: 87.2, async draw(t, T) {
-    camSet(11.4, 1.5, 4.0, 12.9, 1.4, 6.0, 38, 4);
+    camSet(11.0, 1.4, 3.4, 12.95, 1.2, 5.75, 42, 4);
     const e = exprAt(T, [[87.2, 'happy'], [88.3, 'smug']]);
-    await place('saci', svgS(T, { id: 'saciSem', face: 0.3, expr: e.expr, squash: e.pop, wink: T > 88.3, armL: 30, armR: 30, bendL: 120, bendR: 120, mouth: lips(T, [[88.4, 89.2]]) }), 12.9, 0, 6.0);
+    await place('saci', svgS(T, { id: 'saciSem', face: 0.3, expr: e.expr, squash: e.pop, wink: T > 88.3, armL: 30, armR: 30, bendL: 120, bendR: 120, mouth: lips(T, [[88.4, 89.2]]) }), 12.95, 0, 5.75);
     return { mood: 'orange' };
   } },
   // 47 — os dois riem (câmera em arco), a pelada volta
@@ -444,6 +460,15 @@ const SHOTS3 = [
     return { mood: 'orange', over: q };
   } },
 ];
+// Freitas ajoelhado: o desenho dele desce até os joelhos tocarem o chão; as canelas somem para trás
+function kneelSVG(T, k, o) {
+  const P = CAST2.freitas, d = 62 * k, x0 = 19.6;
+  const body = person('freitas', Object.assign({ x: 0, y: d, s: 1, t: T, mouth: 0, shadow: false }, o));
+  let legs = '';
+  for (const sx of [-1, 1]) { const hx = sx * x0, kx = sx * (x0 + 10 * k), ky = -10; legs += `<path d="M ${hx} ${f2(-110 + d)} L ${f2(kx)} ${ky}" stroke="${OL}" stroke-width="36" stroke-linecap="round"/><path d="M ${hx} ${f2(-110 + d)} L ${f2(lerp(hx, kx, 0.5))} ${f2(lerp(-110 + d, ky, 0.5))}" stroke="${P.bottom}" stroke-width="26" stroke-linecap="round"/><path d="M ${f2(lerp(hx, kx, 0.5))} ${f2(lerp(-110 + d, ky, 0.5))} L ${f2(kx)} ${ky}" stroke="${P.skin}" stroke-width="24" stroke-linecap="round"/><ellipse cx="${f2(kx)}" cy="${ky + 2}" rx="17" ry="13" fill="${P.skin}" stroke="${OL}" stroke-width="5"/>`; }
+  const shadow = `<ellipse cx="0" cy="2" rx="70" ry="12" fill="#1b1424" opacity="0.25"/>`;
+  return shadow + `<clipPath id="kc"><rect x="-400" y="-900" width="800" height="${f2(900 - 104 + d)}"/></clipPath><g clip-path="url(#kc)">${body}</g>` + legs;
+}
 // câmera em órbita: alvo (tx,ty,tz), distância, ângulo (graus, 0 = olhando para +z), altura da câmera
 function orb(tx, ty, tz, dist, yaw, cy, fov = 42, roll = 0) { const a = yaw * Math.PI / 180; camSet(tx + Math.sin(a) * dist, cy, tz - Math.cos(a) * dist, tx, ty, tz, fov, roll); }
 // torcida na arquibancada (lado esquerdo, x negativo)
