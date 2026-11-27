@@ -195,7 +195,7 @@ window.renderFrame = async function (f) {
   const T = f / FPS; let i = 0; for (let j = SHOTS3.length - 1; j >= 0; j--) if (T >= SHOTS3[j].t0) { i = j; break; }
   const sh = SHOTS3[i], t = T - sh.t0, xf = 0.3;
   animateWorld(T);
-  const draw = async (S, tt) => { hideCuts(); const r = await S.draw(tt, T); mood(r.mood || 'orange'); return r; };
+  const draw = async (S, tt) => { hideCuts(); BALL.position.set(0, -5, 0); BALL.rotation.set(0, 0, 0); const r = await S.draw(tt, T); mood(r.mood || 'orange'); return r; };
   let over;
   if (i > 0 && t < xf) {
     const p = SHOTS3[i - 1]; await draw(p, T - p.t0); R3.setRenderTarget(RT[0]); R3.render(SCENE, CAM);

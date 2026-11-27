@@ -378,10 +378,10 @@ const SHOTS3 = [
   // 40 — abraço: de lado, o Saci em cima do banco envolve a perna dele com os dois braços
   { t0: 71.0, async draw(t, T) {
     const arm = E.inOut(inv(71.1, 71.9, T)), squeeze = 0.03 * Math.sin(T * 6) * (T > 71.9 ? 1 : 0);
-    camSet(12.7 - 0.2 * ease(t, 0, 2.9), 1.5, 2.9 + 0.3 * ease(t, 0, 2.9), 12.7, 1.6, 6.0, 46);
-    await place('freitas', svgF(T, { face: 0.3, expr: T > 72.4 ? (T > 73.2 ? 'happy' : 'surprised') : 'sad', ly: 1, lx: 0.6 }), 12.35, 0, 6.3, { k: HGT(T) / 1.75 });
+    camSet(12.65, 1.5, 2.3 + 0.3 * ease(t, 0, 2.9), 12.65, 1.45, 6.0, 46);
+    await place('freitas', svgF(T, { face: 0.3, expr: T > 72.4 ? (T > 73.2 ? 'happy' : 'surprised') : 'sad', ly: 1, lx: 0.6 }), 12.5, 0, 6.3, { k: HGT(T) / 1.75 });
     // vista lateral virada para a perna; os dois braços esticam e fecham em volta da coxa
-    const K = await place('saci', svgS(T, { id: 'saciSem', side: true, face: -0.8, expr: 'sad', armFront: lerp(10, 82, arm), armBack: lerp(10, 95, arm), headTilt: 10 * arm }), 12.95, 0.49, 5.75);
+    const K = await place('saci', svgS(T, { id: 'saciSem', side: true, face: 0.8, expr: 'sad', armFront: lerp(10, 82, arm), armBack: lerp(10, 95, arm), headTilt: 10 * arm }), 12.82, 0.49, 5.75);
     K.m.scale.x = 1 + squeeze;
     return { mood: 'sepia', over: (T > 72.4 ? popIcon(T, 72.4, `<path d="M 0 30 C -60 -10 -40 -60 0 -30 C 40 -60 60 -10 0 30 Z" fill="#e86a7a" stroke="${INK}" stroke-width="7"/>`, 540, 560, 1.1) : '') + HUD3(T) };
   } },
@@ -415,13 +415,16 @@ const SHOTS3 = [
     await place('mavie', mavie(0, 0, { t: T, face: -1, s: 0.55, wag: inv(84.2, 85.0, T) * 0.7 }), 13.6, 0, 6.6, { sw: 0.8 });
     return { mood: 'sepia', over: popIcon(T, 84.1, bubble('DESCULPA', 360, 58), 540, 380) };
   } },
-  // 45 — a Mavie lambe a cara dele
+  // 45 — a Mavie lambe a cara dele: close desenhado (overlay), a ponta da língua cai na bochecha
   { t0: 85.5, async draw(t, T) {
-    const lick = T > 85.6 ? Math.max(0, Math.sin((T - 85.6) * 9)) : 0;
-    camSet(11.0, 1.0, 4.4, 12.3, 0.95, 6.9, 44);
-    await place('freitas', kneelSVG(T, 1, { face: 0.45, expr: T > 85.7 ? 'laugh' : 'surprised', mouth: 0.6, headTilt: -6 - lick * 8, armL: 60, armR: 60, bendL: 80, bendR: 80, handL: 'open', handR: 'open' }), 12.3, 0, 7.0);
-    await place('mavie', `<g transform="rotate(-22)">${mavie(0, 0, { t: T, face: -1, s: 0.55, wag: 1, lick })}</g>`, 12.55 - lick * 0.05, 0.3, 6.95, { sw: 0.01 });
-    return { mood: 'sepia', over: comic(T, 85.8, 'SLURP!', 540, 440, { size: 110, fill: '#ee8aaa' }) + comic(T, 86.4, 'SLURP!', 600, 520, { size: 80, fill: '#ee8aaa', rot: 8 }) };
+    camSet(11.0, 1.0, 4.4, 12.3, 0.95, 6.9, 50);
+    const lick = T > 85.6 ? Math.max(0, Math.sin((T - 85.6) * 8)) : 0, s = 3.0, fx0 = 430, fy0 = 2050;
+    const fr = person('freitas', { x: fx0, y: fy0, s, t: T, face: 0.45, expr: T > 85.7 ? 'laugh' : 'surprised', mouth: 0.6, headTilt: -4 - lick * 6, armL: 60, armR: 60, bendL: 80, bendR: 80, handL: 'open', handR: 'open', shadow: false });
+    const cheekX = fx0 + (0.45 * 24 + 44) * s, cheekY = fy0 + (H2 + 28) * s;
+    const k = 2.3, mx = cheekX + 172 * k + 20 * (1 - lick), my = cheekY + 132 * k + 30 * (1 - lick);
+    const mv = mavie(mx, my, { t: T, face: -1, s: k, wag: 1, lick: 0.25 + 0.75 * lick });
+    const wet = T > 85.8 ? `<ellipse cx="${f2(cheekX)}" cy="${f2(cheekY)}" rx="70" ry="38" fill="#bfe6f6" opacity="0.55"/>` + [0, 1, 2].map(i => `<circle cx="${f2(cheekX + 30 + i * 45 + Math.sin(T * 4 + i) * 10)}" cy="${f2(cheekY - 80 - i * 40 - ((T * 120 + i * 40) % 60))}" r="12" fill="#8fd0f0" stroke="${INK}" stroke-width="4"/>`).join('') : '';
+    return { mood: 'sepia', over: `<rect width="1080" height="1920" fill="#3a2a1a" opacity="0.35"/>` + fr + wet + mv + comic(T, 85.8, 'SLURP!', 540, 440, { size: 110, fill: '#ee8aaa' }) + comic(T, 86.4, 'SLURP!', 600, 520, { size: 80, fill: '#ee8aaa', rot: 8 }) };
   } },
   // 46 — Saci: "Arrogante."
   { t0: 87.2, async draw(t, T) {
