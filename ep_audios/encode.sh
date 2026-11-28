@@ -2,7 +2,7 @@
 set -e
 # TikTok (2 passadas, 3,2 Mbps), versão sem música e HQ (CRF 16), com checagem de quadros pretos, congelados e loudness.
 cd "$(dirname "$0")"; source ep.conf
-VF="scale=1080:1920:flags=lanczos+accurate_rnd+full_chroma_int,unsharp=3:3:0.3"
+VF="scale=1080:1920:flags=lanczos+accurate_rnd+full_chroma_int,eq=saturation=1.2:contrast=1.06:gamma=1.02,unsharp=3:3:0.3"
 COL="-colorspace bt709 -color_primaries bt709 -color_trc bt709"
 cd renders
 ffmpeg -v error -y -framerate 30 -i ../frames/f%05d.jpg -vf "$VF" -c:v libx264 -preset slow -tune animation -b:v 3200k -pass 1 -x264-params aq-mode=3 -pix_fmt yuv420p -r 30 -an -f null /dev/null
