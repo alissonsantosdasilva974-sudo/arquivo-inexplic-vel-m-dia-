@@ -1,75 +1,73 @@
-# Trilha original sintetizada (48 kHz estéreo), duração lida de ep.conf. Mude BPM, melodia e END por episódio se quiser.
-import numpy as np, wave, os, re
+# Trilha original emotiva (sintetizada): piano suave + cordas + reverb. Gera audio/music.wav (48 kHz estéreo).
+# Estrutura ligada à história:
+#  0–11 s   abertura: piano esparso, mistério (lá menor com nona)
+#  11–44 s  rotina: arpejo Am–F–C–G a 72 bpm
+#  44–64 s  silêncio da casa: só cordas graves, notas soltas
+#  64–84 s  ouvindo os áudios: piano volta com melodia, cordas crescem
+#  84–94 s  corrida e abraço: crescendo e resolução em dó maior (Am → C)
+#  94–fim   final suave em lá menor, emendando no começo (loop)
+import numpy as np, wave, re, os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 DUR = float(re.search(r'DUR=([0-9.]+)', open('ep.conf').read()).group(1))
-SR = 48000; N = int(DUR * SR)
-rng = np.random.default_rng(11)
-BPM = 100; beat = 60 / BPM
-def ks(freq, dur, bright=0.5, amp=0.3):
-    n = int(dur * SR); p = max(2, int(SR / freq)); buf = rng.uniform(-1, 1, p) * amp
-    out = np.zeros(n); dec = 0.996 - (1 - bright) * 0.004
-    for i in range(n):
-        out[i] = buf[i % p]; buf[i % p] = dec * 0.5 * (buf[i % p] + buf[(i + 1) % p])
-    return out
-def note(m): return 440 * 2 ** ((m - 69) / 12)
-# chord progression C - Am - F - G (ukulele voicings around C4)
-CH = [[60, 64, 67, 72], [57, 60, 64, 69], [53, 57, 60, 65], [55, 59, 62, 67]]
-BASS = [36, 33, 29, 31]
-def render_bar(ci, swing=True):
-    L = int(4 * beat * SR); l = np.zeros(L); r = np.zeros(L)
-    ch = CH[ci]; patt = [0, 2, 1, 3, 2, 1, 3, 2]
-    cache = {}
-    for k in range(8):
-        t = k * beat / 2 + (0.03 if (swing and k % 2) else 0)
-        m = ch[patt[k]]
-        if m not in cache: cache[m] = ks(note(m), 1.2, 0.6, 0.25)
-        s = cache[m]; i = int(t * SR); j = min(L, i + len(s)); pan = 0.35 + 0.3 * (patt[k] / 3)
-        l[i:j] += s[:j - i] * (1 - pan); r[i:j] += s[:j - i] * pan
-    # bass on beats 1 and 3
-    for b in (0, 2):
-        n = int(beat * 1.6 * SR); tt = np.arange(n) / SR; f = note(BASS[ci])
-        bs = 0.22 * np.exp(-tt * 2.5) * (np.sin(2 * np.pi * f * tt) + 0.3 * np.sin(4 * np.pi * f * tt))
-        i = int(b * beat * SR); j = min(L, i + n); l[i:j] += bs[:j - i]; r[i:j] += bs[:j - i]
-    # shaker on off-beats
-    for k in range(8):
-        n = int(0.06 * SR); x = rng.standard_normal(n); x = x - np.convolve(x, np.ones(6) / 6, 'same'); x *= np.exp(-np.arange(n) / SR * 60) * (0.05 if k % 2 else 0.025)
-        i = int((k * beat / 2) * SR); j = min(L, i + n); l[i:j] += x[:j - i] * 0.8; r[i:j] += x[:j - i]
-    return l, r
-bars = [render_bar(i) for i in range(4)]
-loopL = np.concatenate([b[0] for b in bars]); loopR = np.concatenate([b[1] for b in bars])
-# little bell melody layered every other loop
-def bell(f, amp=0.08):
-    n = int(1.0 * SR); t = np.arange(n) / SR; return amp * np.exp(-t * 4) * (np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * 2.76 * f * t))
-mel = [(0, 79), (1.5, 76), (2, 77), (4, 81), (6, 79), (8, 77), (9.5, 76), (10, 74), (12, 74), (13.5, 76), (14, 79)]
-melL = np.zeros_like(loopL)
-for b, m in mel:
-    s = bell(note(m)); i = int(b * beat * SR); j = min(len(melL), i + len(s)); melL[i:j] += s[:j - i]
-def tile(sig, n, offset=0):
-    out = np.zeros(n); L = len(sig); pos = 0
-    while pos < n: k = min(L, n - pos); out[pos:pos + k] = sig[:k]; pos += k
-    return out
-L = np.zeros(N); R = np.zeros(N)
-A, B, C = DUR, DUR, DUR
-nA = int(A * SR)
-mL = tile(loopL, nA) + tile(melL, nA) * (np.arange(nA) // len(loopL) % 2)
-mR = tile(loopR, nA) + tile(melL, nA) * (np.arange(nA) // len(loopL) % 2)
-L[:nA] = mL; R[:nA] = mR
-# (no 'madness' section in this episode)
-# resume when Polo is back
-nC = int(C * SR); nRest = N - nC
-L[nC:] = tile(loopL, nRest) + tile(melL, nRest); R[nC:] = tile(loopR, nRest) + tile(melL, nRest)
-END = DUR - 0.65  # acorde final (mude se o final for em outro ponto)
-fin = int(END * SR)
-L[fin:] = 0; R[fin:] = 0
-# final chord hit on "VOLTO"
-hitL = np.zeros(N - fin)
-for m in [48, 60, 64, 67, 72, 76]: hitL += ks(note(m), DUR - END + 0.01, 0.7, 0.22)[:N - fin]
-b2 = bell(note(84), 0.14); hitL[:len(b2)] += b2[:len(hitL)]
-L[fin:] += hitL; R[fin:] += hitL
-# fade in first 0.3 s, out last 0.6 s
-fi = int(0.3 * SR); L[:fi] *= np.linspace(0, 1, fi); R[:fi] *= np.linspace(0, 1, fi)
-fo = int(0.6 * SR); L[-fo:] *= np.linspace(1, 0, fo); R[-fo:] *= np.linspace(1, 0, fo)
-st = np.stack([L, R], 1); st /= np.abs(st).max() * 1.05
+SR = 48000; N = int(DUR * SR) + SR
+L = np.zeros(N); R = np.zeros(N); rng = np.random.default_rng(3)
+hz = lambda m: 440 * 2 ** ((m - 69) / 12)
+def piano(m, dur, amp):
+    n = int(min(dur + 1.6, 5) * SR); t = np.arange(n) / SR; f = hz(m)
+    s = sum(a * np.sin(2 * np.pi * f * k * t * (1 + 0.0004 * k)) * np.exp(-t * (1.2 + 0.9 * k)) for k, a in [(1, 1), (2, 0.45), (3, 0.22), (4, 0.1), (5, 0.05)])
+    rel = np.ones(n); e = int(dur * SR); rel[e:] = np.exp(-np.arange(n - e) / SR * 6) if e < n else 1
+    return amp * s * np.minimum(1, t / 0.005) * rel
+def strings(m, dur, amp):
+    n = int((dur + 0.8) * SR); t = np.arange(n) / SR; f = hz(m); s = np.zeros(n)
+    for d in (-0.12, 0, 0.11):
+        ph = 2 * np.pi * f * (1 + d / 100) * t + 0.002 * np.sin(2 * np.pi * 5 * t)
+        s += sum(np.sin(ph * k) / k * 0.8 ** k for k in range(1, 7))
+    env = np.minimum(1, t / 0.9) * np.minimum(1, np.maximum(0, (dur + 0.8 - t)) / 0.8)
+    return amp * s / 3 * env
+def put(sig, t0, pan=0.0):
+    i = int(t0 * SR); k = min(len(sig), N - i)
+    if k <= 0: return
+    L[i:i + k] += sig[:k] * (1 - pan) * 0.5 * 2 ** 0.5; R[i:i + k] += sig[:k] * (1 + pan) * 0.5 * 2 ** 0.5
+BEAT = 60 / 72; BAR = 4 * BEAT
+CH = {'Am': [57, 60, 64, 71], 'F': [53, 57, 60, 67], 'C': [48, 55, 60, 64], 'G': [55, 59, 62, 69], 'Dm': [50, 57, 60, 65], 'Em': [52, 55, 59, 66], 'Fmaj': [53, 57, 60, 64]}
+BASS = {'Am': 45, 'F': 41, 'C': 36, 'G': 43, 'Dm': 38, 'Em': 40, 'Fmaj': 41}
+def arpeggio(ch, t0, amp=0.12, pat=(0, 1, 2, 3, 2, 1, 2, 3)):
+    put(piano(BASS[ch], BAR, amp * 1.3), t0, -0.2)
+    for i, p in enumerate(pat): put(piano(CH[ch][p] + 12 * (i >= 4 and p == 3), BEAT * 0.9, amp * (0.9 if i % 2 else 1.0)), t0 + i * BEAT / 2, 0.25 * ((i % 3) - 1))
+def pad(ch, t0, dur, amp=0.035): [put(strings(m, dur, amp), t0, (i - 1.5) * 0.3) for i, m in enumerate(CH[ch][:3])]; put(strings(BASS[ch], dur, amp * 0.9), t0)
+# 0–11: abertura esparsa
+for i, (m, tt) in enumerate([(69, 0.2), (72, 1.6), (76, 3.0), (71, 4.4), (69, 6.2), (64, 7.6), (72, 9.0)]): put(piano(m, 1.6, 0.11), tt, 0.3 * ((i % 3) - 1))
+pad('Am', 0, 5.3, 0.028); pad('F', 5.3, 5.8, 0.028)
+# 11–44: rotina (arpejo)
+prog = ['Am', 'F', 'C', 'G']; t = 11.1; i = 0
+while t < 43.8: arpeggio(prog[i % 4], t, 0.1 if t < 26 else 0.085); t += BAR; i += 1
+for k, tt in enumerate(np.arange(11.1, 43.8, BAR)): pad(prog[k % 4], tt, BAR, 0.02)
+# 44–64: silêncio — cordas graves e notas soltas
+for k, (ch, tt) in enumerate([('Dm', 44.0), ('Am', 49.0), ('F', 54.0), ('Em', 59.0)]): pad(ch, tt, 5.2, 0.03)
+for m, tt in [(76, 46.5), (74, 51.2), (72, 56.0), (71, 58.6), (69, 61.6)]: put(piano(m, 2.2, 0.08), tt, 0.2)
+# 64–84: ouvindo — arpejo + melodia
+prog2 = ['F', 'G', 'Em', 'Am', 'Dm', 'G', 'C', 'Am']; t = 64.2; i = 0
+mel = [(72, 0), (74, 1), (76, 2), (76, 3.5), (74, 4), (72, 5), (71, 6), (72, 7.5)]
+while t < 84.0:
+    arpeggio(prog2[i % 8], t, 0.085); pad(prog2[i % 8], t, BAR, 0.03 + 0.003 * i)
+    for m, b in mel[(i % 2) * 4:(i % 2) * 4 + 4]: put(piano(m + 12, BEAT * 1.2, 0.07), t + (b % 4) * BEAT, -0.15)
+    t += BAR; i += 1
+# 84–94: corrida e abraço — crescendo e resolução em dó maior
+for k, (ch, tt) in enumerate([('F', 84.2), ('G', 86.6), ('C', 89.0), ('G', 91.4)]):
+    arpeggio(ch, tt, 0.1 + 0.01 * k); pad(ch, tt, 2.5, 0.045 + 0.006 * k)
+for m, tt in [(76, 89.0), (79, 89.9), (84, 90.8), (83, 91.6), (79, 92.4), (76, 93.2)]: put(piano(m, 1.0, 0.09), tt)
+# 94–fim: final suave
+pad('Am', 94.2, DUR - 94.2, 0.03); [put(piano(m, 2.0, 0.08), tt) for m, tt in [(69, 94.4), (72, 95.6), (76, 96.8), (71, 98.0)]]
+# reverb (impulso exponencial, via FFT)
+def reverb(x, sec=2.2, wet=0.28):
+    n = int(sec * SR); ir = rng.standard_normal(n) * np.exp(-np.arange(n) / SR * 3.2); ir[0] = 0; ir /= np.abs(ir).sum() / 6
+    m = len(x) + n; F = 1 << (m - 1).bit_length(); y = np.fft.irfft(np.fft.rfft(x, F) * np.fft.rfft(ir, F), F)[:len(x)]
+    return x * (1 - wet) + y * wet
+L = reverb(L); R = reverb(R)
+L = L[:int(DUR * SR)]; R = R[:int(DUR * SR)]
+fade = int(0.4 * SR); env = np.ones(len(L)); env[-fade:] = np.linspace(1, 0.3, fade); L *= env; R *= env
+pk = max(np.abs(L).max(), np.abs(R).max()); L *= 0.7 / pk; R *= 0.7 / pk
+os.makedirs('audio', exist_ok=True)
 with wave.open('audio/music.wav', 'wb') as w:
-    w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((st * 32767).astype('<i2').tobytes())
-print('ok')
+    w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((np.stack([L, R], 1) * 32767).astype('<i2').tobytes())
+print('ok', round(DUR, 2))
